@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>読み方 — Yomikata · Genki L14</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f3e8; --ink:#2b3a67; --muted:#8a8577; --line:#ddd5bf; --card:#fffdf6;
+  --hi:#F5C542; --hi-soft:#FBE9A6; --ok:#2e7d4f; --ok-soft:#dff0e4; --bad:#c0392b; --bad-soft:#f6dcd8;
+  --on:#1f6f9a; --kun:#b06a2a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141C17; --ink:#E9EFE6; --muted:#9BAEA2; --line:#2E3D34; --card:#1B2620;
+    --hi:#E0B23C; --hi-soft:#4A3F17; --ok:#6CC59A; --ok-soft:#1F3A2C; --bad:#E27A67; --bad-soft:#3E1F19;
+    --on:#8EC0EE; --kun:#E3B27E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141C17; --ink:#E9EFE6; --muted:#9BAEA2; --line:#2E3D34; --card:#1B2620;
+  --hi:#E0B23C; --hi-soft:#4A3F17; --ok:#6CC59A; --ok-soft:#1F3A2C; --bad:#E27A67; --bad-soft:#3E1F19;
+  --on:#8EC0EE; --kun:#E3B27E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.kj{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
+.app{max-width:640px;margin:0 auto;padding:16px 16px 48px;min-height:100vh}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0 18px;border-bottom:2px solid var(--ink)}
+header .brand{font-size:26px;font-weight:900;letter-spacing:.02em}
+header .brand small{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:13px;color:var(--muted);margin-left:8px}
+header .lesson{color:var(--muted);font-size:14px}
+.screen{display:none;padding-top:20px}
+.screen.active{display:block}
+h2{font-size:18px;font-weight:700;margin:0 0 4px}
+.lede{color:var(--muted);margin:0 0 18px}
+/* hub map */
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:420px){.map{grid-template-columns:repeat(4,1fr);gap:8px}}
+.node{position:relative;aspect-ratio:1;background:var(--card);border:1.5px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .12s}
+.node:active{transform:scale(.96)}
+.node .ch{font-size:44px;font-weight:600;line-height:1}
+.node .mn{font-size:11px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
+.node .ring{position:absolute;inset:6px;border-radius:10px;pointer-events:none;border:3px solid transparent}
+.node.cleared .ring{border-color:var(--hi)}
+.node.cleared .ch{background:linear-gradient(transparent 55%,var(--hi-soft) 55%)}
+.node .pct{position:absolute;top:6px;right:8px;font-size:11px;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{padding:12px 18px;border-radius:12px;border:1.5px solid var(--ink);font-weight:700;transition:background .12s}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.quiet{border-color:var(--line);color:var(--muted);font-weight:500}
+.btn:disabled{opacity:.4;cursor:default}
+.stats{display:flex;gap:18px;color:var(--muted);font-size:14px;margin-top:22px;flex-wrap:wrap}
+.stats b{color:var(--ink)}
+/* hub screen */
+.hero{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin:8px 0 8px}
+.hero .big{font-size:132px;font-weight:600;line-height:1;text-align:center}
+.readings{display:flex;flex-direction:column;gap:6px;font-size:22px}
+.readings.on{align-items:flex-end;text-align:right}
+.readings .r{padding:2px 10px;border-radius:8px;background:var(--card);border:1.5px solid var(--line)}
+.readings.on .r{color:var(--on)} .readings.kun .r{color:var(--kun)}
+.readings .lab{font-size:12px;color:var(--muted);padding:0 4px}
+.meaning{text-align:center;color:var(--muted);margin:0 0 20px}
+.modes{display:grid;gap:10px}
+.mode{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;text-align:left;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px}
+.mode .ic{font-size:28px;width:38px;text-align:center}
+.mode b{display:block}
+.mode .d > span{color:var(--muted);font-size:14px}
+.mode em{font-style:normal;color:var(--muted);font-size:13px}
+.mode:disabled{opacity:.45}
+.wordlist{margin-top:22px;border-top:1.5px solid var(--line);padding-top:12px}
+.wordlist .w{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line)}
+.wordlist .w .kj{font-size:22px}
+.wordlist .w .rd{color:var(--muted)}
+.wordlist .w .st{font-size:12px;color:var(--muted)}
+.wordlist .w button{color:var(--muted)}
+/* round */
+.topbar{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--muted)}
+.topbar .prog{flex:1;height:6px;background:var(--line);border-radius:6px;overflow:hidden}
+.topbar .prog i{display:block;height:100%;background:var(--hi);width:0;transition:width .25s}
+.q{margin-top:26px;text-align:center;min-height:160px}
+.q .instr{color:var(--muted);font-size:14px;margin-bottom:10px}
+.q .word{font-size:64px;font-weight:600;line-height:1.15}
+.q .word .hub{background:linear-gradient(transparent 50%,var(--hi-soft) 50%);border-radius:4px}
+.q .word .blank{display:inline-block;width:.9em;height:.9em;border:2.5px dashed var(--line);border-radius:8px;vertical-align:-.12em;margin:0 .04em}
+.q .mean{color:var(--muted);margin-top:6px;font-size:17px}
+.q .listen{display:inline-flex;align-items:center;gap:8px;margin-top:10px;padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font-weight:700}
+.q .listen:active{background:var(--hi-soft)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.opts.one{grid-template-columns:1fr}
+.opt{padding:16px 10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;font-size:26px;font-weight:700;transition:background .12s,border-color .12s,transform .1s}
+.opt:active{transform:scale(.98)}
+.opt.kjopt{font-size:38px;padding:14px 10px}
+.opt .tt{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt.dim{opacity:.45}
+.buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:22px}
+.bucket{padding:18px 8px;border:2px dashed var(--line);border-radius:16px;font-size:26px;font-weight:700;background:var(--card)}
+.bucket .tt{display:block;font-size:11px;color:var(--muted);font-weight:500}
+.bucket.right{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.bucket.wrong{border-style:solid;border-color:var(--bad);background:var(--bad-soft)}
+.fb{margin-top:20px;min-height:84px;padding:14px 16px;border-radius:14px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .head{font-size:22px;font-weight:900}
+.fb .head .en{font-size:12px;font-weight:500;color:var(--muted);margin-left:6px}
+.fb .sub{margin-top:4px}
+.fb .tip{margin-top:8px;font-size:14px;color:var(--muted);border-top:1px solid rgba(0,0,0,.08);padding-top:8px}
+.fb .kj{font-size:20px}
+.next{margin-top:14px;display:flex;justify-content:flex-end;gap:10px}
+.streak{font-weight:700;color:var(--ink)}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink)}
+/* summary */
+.score{font-size:52px;font-weight:900;line-height:1;margin:6px 0 2px}
+.score small{font-size:16px;font-weight:500;color:var(--muted)}
+.family{margin-top:16px;padding:12px 14px;background:var(--card);border:1.5px solid var(--line);border-radius:14px}
+.family .rh{font-size:22px;font-weight:900}
+.family .rh i{font-style:normal;font-size:12px;color:var(--muted);margin-left:8px;font-weight:500}
+.family .ws{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:6px}
+.family .ws span{font-size:20px}
+.family .ws span small{font-size:13px;color:var(--muted);margin-left:4px}
+.missed{margin-top:16px}
+.missed .w{padding:6px 0;border-bottom:1px solid var(--line);font-size:20px}
+.missed .w small{color:var(--muted);font-size:14px;margin-left:8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.foot{margin-top:28px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.foot button{text-decoration:underline;color:var(--muted)}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.pop{animation:pop .25s ease-out}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+ruby{ruby-position:over}
+ruby.c,ruby.s,ruby.tg{cursor:pointer}
+ruby rt{font-family:"Zen Kaku Gothic New",sans-serif;font-size:.34em;color:var(--muted);visibility:hidden;font-weight:500}
+ruby.rv rt{visibility:visible}
+.q .word ruby{padding-top:.1em}
+.sent{font-size:34px;line-height:2.1;text-align:left;padding:8px 4px}
+.sent ruby.tg{border-bottom:3px solid var(--hi)}
+.sent ruby.s{border-bottom:1.5px dotted var(--line)}
+.hint{min-height:24px;margin-top:8px;text-align:center;font-size:15px;color:var(--muted)}
+.hint .onr,.hint .kunr{font-style:normal;padding:0 3px}
+.hint .onr{color:var(--on)} .hint .kunr{color:var(--kun)}
+
+#bgArt{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18}
+#bgArt svg{width:100%;height:100%;display:block}
+.app{position:relative;z-index:1}
+header .right{display:flex;align-items:center;gap:10px}
+#btnSound{font-size:13px;font-weight:700;border:1.5px solid var(--line);border-radius:8px;padding:4px 9px;background:var(--card)}
+#btnSound.off{color:var(--muted);text-decoration:line-through;opacity:.7}
+.sig{margin:34px auto 0;display:flex;align-items:center;justify-content:center;gap:11px;line-height:1;user-select:none}
+.logo{display:inline-flex;flex-direction:column;align-items:center;line-height:1;color:var(--bad);font-weight:800;font-size:19px;letter-spacing:.04em;border:2px solid var(--bad);border-radius:11px;padding:6px 15px 5px;background:rgba(255,255,255,.5)}
+.logo b{font-weight:900}
+.logo small{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.72;margin-top:2px}
+.sig .yr{font-size:12px;font-weight:600;color:var(--muted)}
+/* sort mode */
+.zones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+@media (max-width:460px){.zones{grid-template-columns:1fr}}
+.zone{min-height:150px;border:2.5px dashed var(--line);border-radius:16px;padding:12px;background:var(--card);text-align:left;transition:border-color .12s,background .12s}
+.zone.over{border-color:var(--ink);background:var(--hi-soft)}
+.zone.done{border-style:solid}
+.zone b{display:block;font-size:17px}
+.zone .cnt{float:right;font-size:13px;font-weight:700;color:var(--ink);background:var(--hi-soft);border-radius:999px;padding:1px 9px}
+.zone.on b{color:var(--on)} .zone.kun b{color:var(--kun)}
+.zone small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin:2px 0 8px}
+.zone .slots{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
+.zone .none{color:var(--muted);font-size:13px;font-style:italic}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px;min-height:56px}
+.tile{padding:9px 16px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-size:24px;font-weight:700;cursor:grab;touch-action:none;user-select:none;box-shadow:2px 3px 0 rgba(43,58,103,.18);position:relative}
+.tile.dragging{z-index:50;cursor:grabbing;box-shadow:6px 8px 0 rgba(43,58,103,.2)}
+.tile.sel{outline:3px solid var(--hi);outline-offset:2px}
+.tile.placed{cursor:default;border-color:var(--ok);background:var(--ok-soft);box-shadow:none;font-size:20px;padding:6px 12px}
+.tile.placed em{display:block;font-style:normal;font-size:12px;color:var(--muted);font-weight:500}
+.tile.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.slotrow{display:flex;justify-content:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.slot{position:relative;width:74px;height:74px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:600}
+.slot.open{border:2.5px dashed var(--line);background:var(--card);cursor:pointer}
+.slot.open.over{border-color:var(--ink);background:var(--hi-soft)}
+.slot.kana{color:var(--muted)}
+.slot.filled{border:2.5px solid var(--ok);background:var(--ok-soft)}
+.slot small{position:absolute;top:4px;left:0;right:0;text-align:center;font-family:"Zen Kaku Gothic New",sans-serif;font-size:12px;color:var(--muted);visibility:hidden}
+.slot.rv small{visibility:visible}
+.slot .tile.kt{border:0;background:none;box-shadow:none;font-size:44px;padding:0}
+.tile.kt{font-size:34px;padding:8px 14px}
+.slot .lab{position:absolute;left:0;right:0;bottom:-22px;text-align:center;font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;font-weight:700;font-style:normal}
+.slotrow{margin-bottom:22px}
+.onr{color:var(--on)} .kunr{color:var(--kun)}
+.sortnote i,.fb i{font-style:normal}
+.sortnote .used,.fb .used{background:var(--hi-soft);border-radius:4px;padding:0 4px;font-weight:700}
+.sortnote .others,.fb .others{opacity:.75;font-size:.9em}
+.fb .why{margin-top:6px;font-size:14px;color:var(--muted);font-style:italic}
+.fb .bd.why{font-style:italic;color:var(--muted);border-top:1px solid rgba(0,0,0,.08);margin-top:6px;padding-top:6px}
+.fb .note{margin-top:8px;font-size:14px;color:var(--muted)}
+.fb .legend2{font-size:12px;color:var(--muted);border-top:1px solid rgba(0,0,0,.08);margin-top:6px;padding-top:6px}
+.fb .legend2 .onr,.fb .legend2 .kunr{font-weight:700}
+.fb .bdt{font-weight:700;margin-bottom:4px}
+.fb .bd{padding:3px 0;color:var(--ink);font-size:15px}
+.fb .bd .kj{font-size:22px;margin-right:4px}
+.typerow{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.tin{font:inherit;font-size:26px;font-weight:700;text-align:center;width:300px;max-width:100%;padding:10px 14px;color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:12px}
+.tin:focus{outline:3px solid var(--hi);outline-offset:2px}
+.tin.right{border-color:var(--ok);background:var(--ok-soft)} .tin.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.yours{text-align:center;margin-top:10px;font-size:20px;min-height:24px} .yours s{color:var(--bad)}
+.legend{margin-top:14px;text-align:center;font-size:12.5px;color:var(--muted)}
+.legend .onr,.legend .kunr{font-weight:700}
+.storyhead{margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:16px;text-align:left}
+.storyhead b{display:block;font-size:22px;line-height:1.25}
+.storyhead span{color:var(--muted);font-size:14px}
+.storyhead .listen{margin:0;padding:8px 14px;font-size:14px;flex:none}
+.story{font-size:25px;line-height:2.05;text-align:left;padding:4px 2px}
+.story ruby.stg{background:linear-gradient(transparent 52%,var(--hi-soft) 52%);border-radius:3px;cursor:pointer}
+.story ruby.s{border-bottom:1.5px dotted var(--line);cursor:pointer}
+.story rt{font-size:.36em}
+.story .num{font-size:14px;font-family:"Zen Kaku Gothic New",sans-serif;color:var(--ink);vertical-align:.55em;margin:0 1px 0 3px;cursor:pointer;font-weight:700;opacity:.85}
+.trans{display:none;margin-top:12px;padding:10px 12px;border-left:3px solid var(--line);color:var(--muted);font-size:15px;text-align:left}
+.trans.show{display:block}
+.blanks{display:grid;gap:8px;margin-top:18px}
+.blank-row{display:grid;grid-template-columns:auto 170px 1fr;align-items:center;gap:10px;padding:6px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--card)}
+@media (max-width:460px){.blank-row{grid-template-columns:auto 1fr;grid-template-areas:"n i" "r r"}.blank-row .bres{grid-area:r}}
+.blank-row .bn{font-size:20px;font-weight:700}
+.bin{font:inherit;font-size:21px;font-weight:700;padding:7px 10px;width:100%;color:var(--ink);background:transparent;border:0;border-bottom:2px dashed var(--line)}
+.bin:focus{outline:none;border-bottom-color:var(--hi);background:var(--hi-soft)}
+.bin:disabled{border-bottom-style:solid}
+.blank-row .bres{font-size:15px;color:var(--muted)}
+.blank-row .bres .kj{font-size:20px;margin-right:4px}
+.blank-row .bres s{color:var(--bad)}
+.blank-row.right{border-color:var(--ok);background:var(--ok-soft)}
+.fb .formnote{margin-top:10px;font-size:15px;font-weight:700}
+.fb .formnote .kj{font-size:20px}
+.blank-row.wrong{border-color:var(--bad);background:var(--bad-soft)}
+@media (min-width:900px){
+  .app.wide{max-width:1080px}
+  .app.wide #s-round.two-col{display:grid;grid-template-columns:1.1fr .9fr;column-gap:30px;align-items:start;
+    grid-template-areas:"top top" "q ans" "hint ans" "fb ans" "next next"}
+  .app.wide #s-round.two-col .topbar{grid-area:top}
+  .app.wide #s-round.two-col #q{grid-area:q;margin-top:20px}
+  .app.wide #s-round.two-col #hint{grid-area:hint}
+  .app.wide #s-round.two-col #answers{grid-area:ans;position:sticky;top:16px;margin-top:20px}
+  .app.wide #s-round.two-col #fb{grid-area:fb;align-self:start}
+  .app.wide #s-round.two-col #nextrow{grid-area:next}
+  .app.wide #s-round.two-col .blanks{margin-top:0}
+  .app.wide #s-round.two-col .storyhead{text-align:left}
+  .app.wide #s-round.two-col .q .instr{text-align:left}
+}
+.slidebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
+.slopts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.slopts .lp{padding:5px 11px;font-size:13px}
+.slopts .lp small{font-size:9.5px}
+.stage{text-align:center;padding:26px 0 10px;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.stage-k{font-size:clamp(110px,30vw,190px);line-height:1;font-weight:600}
+.stage-k.in{animation:kin .5s ease-out}
+@keyframes kin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.stage-m{color:var(--muted);margin-top:6px;font-size:17px}
+.stage-m .lestag{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:6px}
+.dots{display:flex;gap:6px;justify-content:center;margin:16px 0 4px;min-height:8px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
+.dots i.on{background:var(--hi);transform:scale(1.3)}
+.stage .card{margin-top:10px;min-height:150px;opacity:0;transition:opacity .45s ease}
+.stage .card.in{opacity:1}
+.stage .card .rd{font-size:clamp(40px,11vw,64px);font-weight:700;line-height:1.1}
+.stage .card .as{margin-top:10px;font-size:19px;color:var(--muted)}
+.stage .card .as .kj{font-size:34px;color:var(--ink)}
+.stage .card .as .kj b{background:linear-gradient(transparent 52%,var(--hi-soft) 52%);font-weight:600}
+.stage .card .as .rr{font-size:22px;color:var(--muted);margin-left:4px}
+.stage .card .mn{margin-top:6px;font-size:18px}
+.slidefoot{display:flex;gap:10px;justify-content:center;border-top:1.5px solid var(--line);padding-top:14px}
+.star{font-size:17px;color:var(--muted)}
+.star.on{color:var(--hi)}
+.lessonpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px}
+.lp-label{font-size:13px;color:var(--muted);margin-right:2px}
+.lp{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;padding:6px 14px;border:1.5px solid var(--line);border-radius:999px;font-weight:700;background:var(--card)}
+.lp small{font-size:10.5px;font-weight:500;color:var(--muted)}
+.lp.on{border-color:var(--ink);background:var(--hi-soft)}
+.lp.alt{font-weight:500;color:var(--muted);border-style:dashed}
+.fills{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+@media (max-width:560px){.fills{grid-template-columns:1fr}}
+.fillgroup{padding:12px 14px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);text-align:left}
+.fillgroup b{display:block;font-size:17px}
+.fillgroup.on b{color:var(--on)} .fillgroup.kun b{color:var(--kun)}
+.fillgroup .cnt{float:right;font-size:13px;font-weight:700;color:var(--ink);background:var(--hi-soft);border-radius:999px;padding:1px 9px}
+.fillgroup small{display:block;color:var(--muted);font-size:12.5px;line-height:1.35;margin:2px 0 10px}
+.fillgroup .nonerow{color:var(--muted);font-size:13px;font-style:italic;padding:6px 0}
+.fillrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.fin{font:inherit;font-size:24px;font-weight:700;text-align:center;width:130px;padding:7px 8px;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:10px}
+.fin:focus{outline:none;border-color:var(--hi);background:var(--hi-soft)}
+.fillrow.wrong .fin{border-color:var(--bad);background:var(--bad-soft)}
+.fillrow.right .fin{border-color:var(--ok);background:var(--ok-soft)}
+.hintbtn{font-size:13px;font-weight:700;padding:6px 11px;border:1.5px solid var(--bad);color:var(--bad);border-radius:999px}
+.fillrow .fres{font-size:14px;color:var(--muted)}
+.fillrow .hinttext{display:block;flex-basis:100%;margin-top:2px;padding:6px 10px;border-left:3px solid var(--hi);background:var(--hi-soft);color:var(--ink);border-radius:0 8px 8px 0}
+.fillrow .hinttext b{font-weight:700}
+.fillrow .hinttext .kj{font-size:18px}
+.fillrow .fres .kj{font-size:19px;margin-right:2px}
+.fb .bd b.onr,.fb .bd b.kunr{font-size:19px}
+.sortnote{margin-top:10px;font-size:14px;color:var(--muted);text-align:center;min-height:20px}
+</style>
+</head>
+<body>
+<div id="bgArt" aria-hidden="true"></div>
+<div class="app">
+<header>
+  <div class="brand kj">読み方 <small>Yomikata</small></div>
+  <div class="right"><span class="lesson" id="lessonlabel">Genki · L13–14</span><button id="btnSound">♪ ON</button></div>
+</header>
+
+<!-- HOME -->
+<section class="screen active" id="s-home">
+  <h2>Read</h2>
+  <p class="lede">A word comes up; you say how it sounds. Tap any kanji you don't know for a hint. No timer, stop whenever.</p>
+  <div class="lessonpick" id="lessonpick"></div>
+  <div class="modes">
+    <button class="mode" data-mode="words"><span class="ic">📖</span><span class="d"><b>Read words</b><span>Random words from the lesson, pick the full reading</span></span><em></em></button>
+    <button class="mode" data-mode="sentences"><span class="ic">📝</span><span class="d"><b>Read sentences</b><span>Keep reading through a sentence; one compound is the stop</span></span><em></em></button>
+    <button class="mode" data-mode="cloze"><span class="ic">👂</span><span class="d"><b>Sound cloze</b><span>Hear a random word, find the missing kanji</span></span><em></em></button>
+    <button class="mode" data-mode="build"><span class="ic">🧩</span><span class="d"><b>Build a word</b><span>Hear a random word, pick the piece that completes it</span></span><em></em></button>
+    <button class="mode" data-mode="type"><span class="ic">⌨️</span><span class="d"><b>Type the reading</b><span>See the word in kanji, type it in hiragana; tap a kanji if you're stuck</span></span><em></em></button>
+    <button class="mode" data-mode="story"><span class="ic">📜</span><span class="d"><b>Story time</b><span>A short story with numbered kanji; fill in every reading, then check</span></span><em></em></button>
+    <button class="mode" data-mode="fill"><span class="ic">✍️</span><span class="d"><b>Write the readings</b><span>See a kanji, type its on'yomi and kun'yomi from memory</span></span><em></em></button>
+    <button class="mode" data-mode="sort"><span class="ic">🗂</span><span class="d"><b>On or kun?</b><span>Drag a kanji's real readings into the right box; leave the impostors</span></span><em></em></button>
+  </div>
+  <div class="row"><button class="btn quiet" id="btn-review">Review misses</button><button class="btn quiet" id="btn-slides">🎧 Pronunciations — passive slideshow</button></div>
+  <div class="stats" id="stats"></div>
+  <h2 style="margin-top:30px">Look up a kanji</h2>
+  <p class="lede">Every reading and every word it appears in, plus a focused drill.</p>
+  <div class="map" id="map"></div>
+  <div class="foot">Audio uses your device's Japanese voice. <button id="btn-test">Test voice</button> · <button id="btn-reset">Reset progress</button></div>
+</section>
+
+<!-- HUB -->
+<section class="screen" id="s-hub">
+  <button class="btn quiet" id="hub-back" style="padding:8px 14px">← Back</button>
+  <div class="hero">
+    <div class="readings on" id="hub-on"></div>
+    <div class="big kj" id="hub-ch"></div>
+    <div class="readings kun" id="hub-kun"></div>
+  </div>
+  <p class="meaning" id="hub-mn"></p>
+  <div class="modes" id="modes"></div>
+  <div class="wordlist" id="hub-words"></div>
+</section>
+
+<!-- ROUND -->
+<section class="screen" id="s-round">
+  <div class="topbar">
+    <button class="btn quiet" id="round-quit" style="padding:6px 12px">Stop</button>
+    <div class="prog" id="progwrap"><i id="prog"></i></div>
+    <span id="round-info"></span>
+  </div>
+  <div class="q" id="q"></div>
+  <div class="hint" id="hint"></div>
+  <div id="answers"></div>
+  <div class="fb" id="fb"></div>
+  <div class="next" id="nextrow" style="display:none"><button class="btn primary" id="btn-next">Next</button></div>
+</section>
+
+<!-- SLIDESHOW -->
+<section class="screen" id="s-slide">
+  <div class="slidebar">
+    <button class="btn quiet" id="sl-close" style="padding:6px 12px">✕ Close</button>
+    <div class="slopts" id="slopts"></div>
+  </div>
+  <div class="stage" id="stage">
+    <div class="stage-k kj" id="sl-kanji"></div>
+    <div class="stage-m" id="sl-mean"></div>
+    <div class="dots" id="sl-dots"></div>
+    <div class="card" id="sl-card"></div>
+  </div>
+  <div class="slidefoot">
+    <button class="btn" id="sl-prev">‹ Kanji</button>
+    <button class="btn primary" id="sl-play">⏸ Pause</button>
+    <button class="btn" id="sl-next">Kanji ›</button>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="screen" id="s-sum">
+  <h2 id="sum-title">Done</h2>
+  <div class="score" id="sum-score"></div>
+  <p class="lede" id="sum-note"></p>
+  <div id="sum-families"></div>
+  <div class="missed" id="sum-missed"></div>
+  <div class="row">
+    <button class="btn primary" id="sum-again">Keep going</button>
+    <button class="btn" id="sum-hub">Back to kanji</button>
+    <button class="btn quiet" id="sum-home">Home</button>
+  </div>
+</section>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ===== game-voice.js inlined (self-contained; no network needed).
+     Master copy lives at https://github.com/berlintintin/game-voice ===== -->
+<script>
+(function () {
+  "use strict";
+  let AC = null, audioUnlocked = false, enabled = true, jaVoice = null;
+  function unlock() {
+    try {
+      if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+      if (AC.state === "suspended") AC.resume();
+      if (!audioUnlocked) {
+        audioUnlocked = true;
+        const o = AC.createOscillator(), g = AC.createGain();
+        g.gain.value = 0.0001; o.connect(g).connect(AC.destination); o.start(); o.stop(AC.currentTime + 0.02);
+      }
+    } catch (e) {}
+  }
+  ["touchstart", "pointerdown", "mousedown", "keydown"].forEach(function (ev) { window.addEventListener(ev, unlock, { passive: true }); });
+  function beep(freq, dur, type, vol, when, slide) {
+    if (!enabled) return;
+    type = type || "square"; vol = vol == null ? 0.05 : vol; when = when || 0; slide = slide || 0;
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      const o = AC.createOscillator(), g = AC.createGain();
+      o.type = type; o.frequency.setValueAtTime(freq, AC.currentTime + when);
+      if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, freq + slide), AC.currentTime + when + dur);
+      g.gain.setValueAtTime(vol, AC.currentTime + when);
+      g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + when + dur);
+      o.connect(g).connect(AC.destination); o.start(AC.currentTime + when); o.stop(AC.currentTime + when + dur + 0.02);
+    } catch (e) {}
+  }
+  const sfx = {
+    snap:    function () { beep(523, .09, "square", .05); beep(659, .09, "square", .05, .08); beep(784, .14, "square", .05, .16); },
+    wrong:   function () { beep(140, .3, "sawtooth", .05, 0, -60); },
+    fanfare: function () { [523, 659, 784, 1047].forEach(function (f, i) { beep(f, .12, "square", .05, i * .09); }); },
+    shoot:   function () { beep(880, .09, "square", .04, 0, -600); },
+    chip:    function () { beep(300, .05, "square", .04); },
+    pickup:  function (n) { beep(900 + (n || 0) * 8, .06, "sine", .02); },
+  };
+  function pickVoice() {
+    if (!window.speechSynthesis) return;
+    const vs = speechSynthesis.getVoices();
+    jaVoice = vs.find(function (v) { return v.lang === "ja-JP" && /kyoko|otoya|google/i.test(v.name); })
+           || vs.find(function (v) { return v.lang && v.lang.indexOf("ja") === 0; }) || null;
+  }
+  if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  function speak(text, opts) {
+    if (!enabled || !window.speechSynthesis) return;
+    opts = opts || {};
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = opts.lang || "ja-JP"; u.pitch = opts.pitch == null ? 1.0 : opts.pitch; u.rate = opts.rate == null ? 1.0 : opts.rate;
+      if (u.lang === "ja-JP" && jaVoice) u.voice = jaVoice;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+  function say(text, opts) {
+    if (!enabled) return;
+    const sylls = Math.min(8, text.replace(/[ーっ！!。〜]/g, "").length);
+    for (let i = 0; i < sylls; i++) { const f = 520 + Math.random() * 380 + (i === sylls - 1 ? -160 : 0); beep(f, .08, "square", .05, i * 0.085); }
+    setTimeout(function () { speak(text, opts); }, sylls * 85 + 60);
+  }
+  const PRAISE = [
+    ["すばらしい！", "Subarashii! — Magnificent!"], ["いちばん！", "Ichiban! — You're number one!"], ["かんぺき！", "Kanpeki! — Flawless!"],
+    ["よくできました！", "Yoku dekimashita! — Well done!"], ["てんさい！", "Tensai! — Genius!"], ["そのちょうし！", "Sono choushi! — Keep it up!"],
+    ["やったね！", "Yatta ne! — You did it!"], ["すごい！", "Sugoi! — Incredible!"], ["せいかい！", "Seikai! — Correct!"],
+    ["おみごと！", "O-migoto! — Bravo!"], ["さすが！", "Sasuga! — That's the stuff!"], ["いいぞ、いいぞ！", "Ii zo, ii zo! — Yeah, keep going!"],
+    ["かっこいい！", "Kakkoii! — So cool!"], ["ぴったり！", "Pittari! — Perfect fit!"], ["ズバリ！", "Zubari! — Nailed it!"],
+    ["大当たり！", "Ōatari! — Bullseye!"], ["そのとおり！", "Sono tōri! — Exactly right!"], ["しんじられない！", "Shinjirarenai! — Unbelievable!"],
+  ];
+  const OOPS = [["ちがうよ〜", "Chigau yo — not that one"], ["もういちど！", "Mō ichido! — one more try!"], ["おしい！", "Oshii! — so close!"]];
+  function pick(bank) { return bank[Math.floor(Math.random() * bank.length)]; }
+  function praise(opts) { const p = pick(PRAISE); if (!(opts && opts.silent)) say(p[0]); return { jp: p[0], en: p[1] }; }
+  function oops() { const o = pick(OOPS); return { jp: o[0], en: o[1] }; }
+  function setEnabled(on) { enabled = !!on; if (!enabled && window.speechSynthesis) speechSynthesis.cancel(); }
+  function bindToggle(btn, onLabel, offLabel) {
+    onLabel = onLabel || "♪ ON"; offLabel = offLabel || "♪ OFF";
+    btn.textContent = enabled ? onLabel : offLabel;
+    btn.addEventListener("click", function () { setEnabled(!enabled); btn.textContent = enabled ? onLabel : offLabel; btn.classList.toggle("off", !enabled); });
+  }
+  window.GameVoice = { unlock, beep, sfx, speak, say, praise, oops, PRAISE, OOPS, setEnabled, bindToggle, get enabled() { return enabled; } };
+})();
+</script>
+<script>
+/* Background scenes — faint Japanese line-art, one per round. Shared with the other Heinze games. */
+const SCENES = [
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="690" cy="230" r="92" stroke="#c0392b" stroke-width="4"/>
+  <path d="M560 258 Q620 250 690 254 Q770 258 828 252" stroke="#c0392b" stroke-width="3"/>
+  <path d="M40 430 Q200 418 380 428 Q560 438 740 428 Q860 422 930 430"/>
+  <path d="M80 480 Q240 470 420 480 Q600 490 780 480 M160 530 Q340 522 520 530 Q700 538 860 530"/>
+  <path d="M300 430 L296 356 M318 430 L320 360"/>
+  <path d="M310 356 Q262 344 258 300 Q258 262 300 258 Q346 254 356 292 Q362 320 340 340"/>
+  <path d="M300 258 Q288 216 306 178 Q318 156 342 158"/>
+  <path d="M342 158 Q362 156 368 170 Q370 182 356 184 L342 178"/>
+  <path d="M368 168 L398 162" stroke="#c0392b"/>
+  <path d="M280 300 Q310 330 352 322" stroke-width="2"/>
+  <path d="M120 430 Q118 380 128 356 M140 430 Q142 386 136 360 M158 430 Q160 396 168 372" stroke-width="2.5"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M40 300 Q160 220 280 290 M600 280 Q740 190 920 280" stroke-width="2.5" opacity=".7"/>
+  <circle cx="180" cy="140" r="46" stroke="#c0392b" stroke-width="3.5"/>
+  <g stroke="#c0392b" stroke-width="6">
+    <path d="M330 200 Q480 176 630 200 L640 176 Q480 148 320 176 Z"/>
+    <path d="M352 232 L608 232"/>
+    <path d="M372 214 L360 470 M588 214 L600 470"/>
+    <path d="M480 200 L480 232"/>
+    <path d="M344 470 L376 470 M584 470 L616 470"/>
+  </g>
+  <path d="M60 500 Q220 490 400 500 Q580 510 760 500 Q860 494 920 500"/>
+  <path d="M140 545 Q320 537 500 545 Q680 553 860 545" stroke-width="2.5"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M110 540 Q300 300 400 222 L440 200 Q480 184 520 200 L560 222 Q680 300 880 540"/>
+  <path d="M400 222 L424 250 L448 226 L474 254 L500 228 L524 252 L548 228 L560 222" stroke-width="2.5"/>
+  <circle cx="120" cy="130" r="40" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M960 60 Q860 90 780 150 Q740 182 716 220" stroke-width="4"/>
+  <path d="M840 110 Q818 132 812 156 M770 158 Q752 178 748 200"/>
+  <g stroke="#c0392b" stroke-width="2.5">
+    <circle cx="806" cy="164" r="12"/><circle cx="842" cy="118" r="11"/><circle cx="744" cy="208" r="12"/>
+    <circle cx="878" cy="92" r="9"/><circle cx="768" cy="150" r="7"/>
+  </g>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="180" cy="150" r="50" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M560 116 L560 92"/>
+  <circle cx="560" cy="86" r="7" stroke="#c0392b"/>
+  <path d="M502 150 Q560 120 618 150 L636 150 Q560 132 484 150 Z"/>
+  <path d="M486 210 Q560 182 634 210 L656 210 Q560 190 464 210 Z"/>
+  <path d="M468 278 Q560 248 652 278 L676 278 Q560 256 444 278 Z"/>
+  <path d="M448 352 Q560 318 672 352 L698 352 Q560 326 422 352 Z"/>
+  <path d="M430 438 Q560 400 690 438 L718 438 Q560 406 402 438 Z"/>
+  <path d="M470 438 L470 524 M650 438 L650 524 M470 524 L650 524"/>
+  <rect x="536" y="478" width="48" height="46" rx="2"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="806" cy="140" r="46" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M120 40 L128 560 M124 150 Q140 148 156 152 M126 270 Q142 268 158 272 M128 380 Q144 378 160 382"/>
+  <path d="M206 20 L212 560 M209 120 Q194 118 178 122 M210 240 Q195 238 179 242 M211 360 Q196 358 180 362"/>
+  <path d="M300 62 L306 560 M303 180 Q319 178 335 182 M304 320 Q320 318 336 322"/>
+  <path d="M156 152 Q186 140 214 150 M335 182 Q368 172 394 186" stroke-width="2.5"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="200" cy="56" r="12" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M200 68 L200 560"/>
+  <path d="M168 94 L232 94" stroke-width="2.5"/>
+  <g>
+    <path d="M232 130 q120 -28 244 6 q40 10 56 0 l52 -32 v72 l-52 -32 q-16 -10 -56 0 q-124 34 -244 6 z"/>
+    <ellipse cx="236" cy="140" rx="7" ry="16"/>
+    <circle cx="272" cy="126" r="7" stroke="#c0392b" stroke-width="2.5"/>
+    <path d="M320 120 q13 22 1 42 M366 122 q13 23 1 44 M412 128 q13 22 1 42" stroke-width="2"/>
+  </g>
+  <g transform="translate(8,132)">
+    <path d="M232 130 q120 -28 244 6 q40 10 56 0 l52 -32 v72 l-52 -32 q-16 -10 -56 0 q-124 34 -244 6 z" stroke="#c0392b"/>
+    <ellipse cx="236" cy="140" rx="7" ry="16" stroke="#c0392b"/>
+    <circle cx="272" cy="126" r="7" stroke-width="2.5"/>
+    <path d="M320 120 q13 22 1 42 M366 122 q13 23 1 44 M412 128 q13 22 1 42" stroke-width="2" stroke="#c0392b"/>
+  </g>
+  <g transform="translate(16,264)">
+    <path d="M232 130 q120 -28 244 6 q40 10 56 0 l52 -32 v72 l-52 -32 q-16 -10 -56 0 q-124 34 -244 6 z"/>
+    <ellipse cx="236" cy="140" rx="7" ry="16"/>
+    <circle cx="272" cy="126" r="7" stroke="#c0392b" stroke-width="2.5"/>
+    <path d="M320 120 q13 22 1 42 M366 122 q13 23 1 44 M412 128 q13 22 1 42" stroke-width="2"/>
+  </g>
+  <path d="M40 540 Q300 526 560 536 Q780 544 930 528" stroke-width="2.5" opacity=".6"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="800" cy="152" r="52" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M20 470 C 150 470 200 396 250 316 C 316 208 440 190 528 252 C 606 306 612 404 700 436 C 800 472 900 452 950 430"/>
+  <path d="M252 318 C 306 346 336 392 340 444" stroke-width="2.5"/>
+  <path d="M302 302 C 352 318 386 356 398 406" stroke-width="2"/>
+  <g stroke="#c0392b" stroke-width="2.5">
+    <circle cx="268" cy="300" r="13"/><circle cx="302" cy="270" r="10"/><circle cx="344" cy="248" r="12"/>
+    <circle cx="390" cy="230" r="9"/><circle cx="440" cy="222" r="11"/><circle cx="492" cy="234" r="8"/>
+  </g>
+  <path d="M614 496 q36 26 82 26 q46 0 82 -26 z"/>
+  <path d="M696 496 L696 440 M700 446 L742 490 L700 490" stroke-width="2.5"/>
+  <path d="M40 528 Q260 516 480 526 Q700 536 920 520" stroke-width="2.5"/>
+  <path d="M120 566 Q340 556 560 564 Q780 572 900 558" stroke-width="2" opacity=".6"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M0 78 Q480 196 960 78"/>
+  <g transform="translate(144,108)">
+    <path d="M0 0 L0 12"/><path d="M-11 12 L11 12" stroke-width="4"/>
+    <ellipse cx="0" cy="48" rx="27" ry="35" stroke="#c0392b" stroke-width="3.5"/>
+    <path d="M-17 16 L17 16 M-17 80 L17 80" stroke="#c0392b" stroke-width="3"/>
+    <path d="M-22 34 q22 8 44 0 M-25 48 q25 9 50 0 M-22 62 q22 8 44 0" stroke-width="1.8" opacity=".75"/>
+  </g>
+  <g transform="translate(288,127)">
+    <path d="M0 0 L0 12"/><path d="M-11 12 L11 12" stroke-width="4"/>
+    <ellipse cx="0" cy="48" rx="27" ry="35" stroke="#c0392b" stroke-width="3.5"/>
+    <path d="M-17 16 L17 16 M-17 80 L17 80" stroke="#c0392b" stroke-width="3"/>
+    <path d="M-22 34 q22 8 44 0 M-25 48 q25 9 50 0 M-22 62 q22 8 44 0" stroke-width="1.8" opacity=".75"/>
+  </g>
+  <g transform="translate(480,137)">
+    <path d="M0 0 L0 12"/><path d="M-11 12 L11 12" stroke-width="4"/>
+    <ellipse cx="0" cy="48" rx="27" ry="35" stroke="#c0392b" stroke-width="3.5"/>
+    <path d="M-17 16 L17 16 M-17 80 L17 80" stroke="#c0392b" stroke-width="3"/>
+    <path d="M-22 34 q22 8 44 0 M-25 48 q25 9 50 0 M-22 62 q22 8 44 0" stroke-width="1.8" opacity=".75"/>
+  </g>
+  <g transform="translate(672,127)">
+    <path d="M0 0 L0 12"/><path d="M-11 12 L11 12" stroke-width="4"/>
+    <ellipse cx="0" cy="48" rx="27" ry="35" stroke="#c0392b" stroke-width="3.5"/>
+    <path d="M-17 16 L17 16 M-17 80 L17 80" stroke="#c0392b" stroke-width="3"/>
+    <path d="M-22 34 q22 8 44 0 M-25 48 q25 9 50 0 M-22 62 q22 8 44 0" stroke-width="1.8" opacity=".75"/>
+  </g>
+  <g transform="translate(816,108)">
+    <path d="M0 0 L0 12"/><path d="M-11 12 L11 12" stroke-width="4"/>
+    <ellipse cx="0" cy="48" rx="27" ry="35" stroke="#c0392b" stroke-width="3.5"/>
+    <path d="M-17 16 L17 16 M-17 80 L17 80" stroke="#c0392b" stroke-width="3"/>
+    <path d="M-22 34 q22 8 44 0 M-25 48 q25 9 50 0 M-22 62 q22 8 44 0" stroke-width="1.8" opacity=".75"/>
+  </g>
+  <path d="M60 430 L900 430" stroke-width="2.5" opacity=".7"/>
+  <path d="M150 430 L150 560 M810 430 L810 560" stroke-width="2.5" opacity=".7"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="180" cy="130" r="44" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M418 322 q-58 42 -58 122 q0 92 120 92 q120 0 120 -92 q0 -80 -58 -122"/>
+  <circle cx="480" cy="268" r="72"/>
+  <path d="M432 220 L420 174 L466 198 M528 220 L540 174 L494 198"/>
+  <path d="M452 258 q10 -12 20 0 M508 258 q10 -12 20 0" stroke-width="2.5"/>
+  <path d="M474 286 q6 8 12 0" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M470 292 q10 12 20 0" stroke-width="2"/>
+  <path d="M424 276 L386 266 M424 288 L388 292 M536 276 L574 266 M536 288 L572 292" stroke-width="2"/>
+  <path d="M438 334 q42 18 84 0" stroke="#c0392b" stroke-width="3"/>
+  <circle cx="480" cy="348" r="10" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M546 372 q34 -10 36 -48" stroke-width="3"/>
+  <circle cx="584" cy="306" r="26"/>
+  <ellipse cx="480" cy="446" rx="54" ry="32" stroke="#c0392b" stroke-width="3"/>
+  <path d="M452 440 L508 440" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M300 536 L660 536" stroke-width="2.5" opacity=".7"/>
+</g></svg>`,
+`<svg viewBox="0 0 960 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+<g fill="none" stroke="#2b3a67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="872" cy="72" r="34" stroke="#c0392b" stroke-width="3.5"/>
+  <path d="M760 118 Q812 106 864 118 M786 140 Q834 130 882 140" stroke-width="2" opacity=".55"/>
+  <g fill="#f7f3e8">
+    <path d="M452 362 L452 300 L508 300 L508 362 Z" stroke-width="2"/>
+    <path d="M418 350 Q480 332 542 350 L552 350 Q480 326 408 350 Z"/>
+    <path d="M426 318 Q480 303 534 318 L544 318 Q480 297 416 318 Z"/>
+    <path d="M434 288 Q480 275 526 288 L536 288 Q480 269 424 288 Z"/>
+    <path d="M442 260 Q480 249 518 260 L527 260 Q480 243 433 260 Z"/>
+  </g>
+  <path d="M456 318 L456 350 M504 318 L504 350 M462 288 L462 318 M498 288 L498 318 M468 260 L468 288 M492 260 L492 288 M480 248 L480 228" stroke-width="2"/>
+  <circle cx="480" cy="222" r="6" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M470 336 L490 336 M474 306 L486 306" stroke-width="2" opacity=".7"/>
+  <path d="M0 600 L424 366 M960 600 L536 366" stroke-width="2.5"/>
+  <path d="M60 600 Q480 556 900 600" stroke-width="2"/>
+  <path d="M186 524 Q480 498 774 524" stroke-width="2"/>
+  <path d="M276 470 Q480 452 684 470" stroke-width="2"/>
+  <path d="M340 430 Q480 418 620 430" stroke-width="1.8"/>
+  <path d="M388 400 Q480 392 572 400" stroke-width="1.8"/>
+  <path d="M420 378 Q480 373 540 378" stroke-width="1.8"/>
+  <path d="M8 600 L8 254 L192 296 L192 524 Z" fill="#f7f3e8"/>
+  <path d="M-8 240 L198 286 L198 302 L-8 258 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M28 249 L28 291 M68 258 L68 300 M108 267 L108 309 M148 276 L148 318" stroke-width="1.6" opacity=".65"/>
+  <path d="M30 600 L30 444 L104 460 L104 600" stroke-width="2.5"/>
+  <path d="M24 442 L110 460 L110 496 L24 478 Z" fill="#f7f3e8" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M52 448 L52 486 M81 454 L81 492" stroke="#c0392b" stroke-width="1.8"/>
+  <path d="M122 468 L122 566 L182 578 L182 484 Z" stroke-width="2.5"/>
+  <path d="M134 471 L134 569 M146 473 L146 571 M158 476 L158 573 M170 478 L170 576" stroke-width="1.5" opacity=".7"/>
+  <path d="M116 420 L116 436" stroke-width="2"/>
+  <ellipse cx="116" cy="452" rx="15" ry="19" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M105 438 L127 438 M105 466 L127 466" stroke="#c0392b" stroke-width="2"/>
+  <path d="M192 524 L192 296 L312 324 L312 466 Z" fill="#f7f3e8"/>
+  <path d="M186 288 L318 318 L318 332 L186 302 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M206 292 L206 322 M238 299 L238 329 M270 307 L270 337" stroke-width="1.5" opacity=".6"/>
+  <path d="M210 466 L210 384 L258 395 L258 477" stroke-width="2.5"/>
+  <path d="M206 383 L262 395 L262 420 L206 408 Z" fill="#f7f3e8" stroke="#c0392b" stroke-width="2"/>
+  <path d="M274 400 L274 456 L302 462 L302 407 Z" stroke-width="2"/>
+  <path d="M283 402 L283 458 M292 404 L292 460" stroke-width="1.5" opacity=".7"/>
+  <ellipse cx="268" cy="368" rx="11" ry="14" stroke="#c0392b" stroke-width="2"/>
+  <path d="M268 348 L268 354" stroke-width="2"/>
+  <path d="M312 466 L312 324 L404 346 L404 412 Z" fill="#f7f3e8"/>
+  <path d="M308 318 L410 341 L410 352 L308 329 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M328 412 L328 362 L364 370 L364 420" stroke-width="2"/>
+  <path d="M376 374 L376 406 L398 411 L398 379 Z" stroke-width="1.8"/>
+  <path d="M952 600 L952 246 L768 290 L768 524 Z" fill="#f7f3e8"/>
+  <path d="M968 232 L762 280 L762 296 L968 250 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M932 241 L932 285 M892 251 L892 295 M852 260 L852 304 M812 270 L812 314" stroke-width="1.6" opacity=".65"/>
+  <path d="M930 600 L930 438 L856 455 L856 600" stroke-width="2.5"/>
+  <path d="M936 436 L850 455 L850 491 L936 472 Z" fill="#f7f3e8" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M908 442 L908 480 M879 449 L879 487" stroke="#c0392b" stroke-width="1.8"/>
+  <path d="M838 462 L838 562 L778 575 L778 480 Z" stroke-width="2.5"/>
+  <path d="M826 465 L826 565 M814 468 L814 567 M802 470 L802 570 M790 473 L790 572" stroke-width="1.5" opacity=".7"/>
+  <path d="M844 414 L844 430" stroke-width="2"/>
+  <ellipse cx="844" cy="446" rx="15" ry="19" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M833 432 L855 432 M833 460 L855 460" stroke="#c0392b" stroke-width="2"/>
+  <path d="M768 524 L768 290 L648 320 L648 466 Z" fill="#f7f3e8"/>
+  <path d="M774 282 L642 314 L642 328 L774 296 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M754 287 L754 317 M722 294 L722 324 M690 302 L690 332" stroke-width="1.5" opacity=".6"/>
+  <path d="M750 466 L750 380 L702 391 L702 477" stroke-width="2.5"/>
+  <path d="M754 379 L698 391 L698 416 L754 404 Z" fill="#f7f3e8" stroke="#c0392b" stroke-width="2"/>
+  <path d="M686 398 L686 456 L658 462 L658 405 Z" stroke-width="2"/>
+  <path d="M677 400 L677 458 M668 402 L668 460" stroke-width="1.5" opacity=".7"/>
+  <ellipse cx="692" cy="366" rx="11" ry="14" stroke="#c0392b" stroke-width="2"/>
+  <path d="M692 346 L692 352" stroke-width="2"/>
+  <path d="M648 466 L648 320 L556 344 L556 412 Z" fill="#f7f3e8"/>
+  <path d="M652 314 L550 339 L550 350 L652 325 Z" fill="#f7f3e8" stroke-width="2.5"/>
+  <path d="M632 412 L632 360 L596 369 L596 420" stroke-width="2"/>
+  <path d="M584 373 L584 405 L562 410 L562 378 Z" stroke-width="1.8"/>
+  <path d="M30 196 Q480 268 930 196" stroke-width="2.5"/>
+  <g stroke="#c0392b" stroke-width="2.5">
+    <ellipse cx="212" cy="248" rx="13" ry="17"/><ellipse cx="346" cy="264" rx="13" ry="17"/>
+    <ellipse cx="480" cy="270" rx="13" ry="17"/><ellipse cx="614" cy="264" rx="13" ry="17"/>
+    <ellipse cx="748" cy="248" rx="13" ry="17"/>
+  </g>
+  <path d="M203 234 L221 234 M203 262 L221 262 M337 250 L355 250 M337 278 L355 278 M471 256 L489 256 M471 284 L489 284 M605 250 L623 250 M605 278 L623 278 M739 234 L757 234 M739 262 L757 262" stroke="#c0392b" stroke-width="1.8"/>
+  <path d="M212 226 L212 231 M346 242 L346 247 M480 248 L480 253 M614 242 L614 247 M748 226 L748 231" stroke-width="2"/>
+  <path d="M116 588 L120 566 L150 566 L154 588 Z" stroke-width="2"/>
+  <path d="M126 566 Q124 540 136 528 M136 566 Q140 542 152 534 M132 566 Q128 546 116 540" stroke-width="2"/>
+  <path d="M844 582 L840 560 L810 560 L806 582 Z" stroke-width="2"/>
+  <path d="M834 560 Q836 534 824 522 M824 560 Q820 536 808 528 M828 560 Q832 540 844 534" stroke-width="2"/>
+</g></svg>`,
+];
+const bgArt = document.getElementById("bgArt");
+let sceneIdx = Math.floor(Math.random() * SCENES.length);
+function setScene(advance) { if (advance) sceneIdx = (sceneIdx + 1) % SCENES.length; bgArt.innerHTML = SCENES[sceneIdx]; }
+setScene(false);
+</script>
+
+<script src="yomikata-content.js"></script>
+<script>
+/* ================= DATA: Genki II Lesson 14 kanji (読み書き編 pp.281-282) =================
+   word: [written, reading segmented per character with '.', meaning, exception?]
+   Segmented readings are what make hints and decoys possible: 音楽 → おん.がく */
+
+
+const CIRC = '⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳';
+
+function isHL(w){ return (P.hl && Object.prototype.hasOwnProperty.call(P.hl, w.w)) ? !!P.hl[w.w] : HL.has(w.w); }
+function toggleHL(w){ P.hl = P.hl || {}; P.hl[w.w] = !isHL(w); save(); }
+
+/* ================= CONTENT (yomikata-content.js) ================= */
+const C = window.YOMIKATA_CONTENT;
+if (!C) {
+  document.querySelector('.app').innerHTML =
+    '<h2 style="margin-top:40px">Content file missing</h2>' +
+    '<p class="lede">yomikata.html needs <b>yomikata-content.js</b> sitting next to it in the same folder. ' +
+    'That file holds every lesson; this one is just the engine.</p>';
+  throw new Error('yomikata-content.js not loaded');
+}
+window.KANJI_LESSONS = C.lessons;
+const OTHER = C.other, OTHER_KUN = new Set(C.otherKun), WHY = C.why, HL = new Set(C.highlighted);
+const SENTENCES = C.sentences, STORIES = C.stories, STORY_BASE = C.storyBase;
+
+/* Console helper: yomikataCheck() validates everything in the content file. */
+function yomikataCheck(){
+  const problems = [];
+  Object.entries(C.lessons).forEach(([n, list]) => {
+    const seen = new Set();
+    list.forEach(h => {
+      if (!h.ch || !h.mn) problems.push(`L${n}: kanji entry missing ch/mn`);
+      if (!h.on.length && !h.kun.length) problems.push(`L${n} ${h.ch}: no readings listed`);
+      if (seen.has(h.ch)) problems.push(`L${n}: ${h.ch} listed twice`);
+      seen.add(h.ch);
+      const ws = new Set();
+      (h.words || []).forEach(w => {
+        const [written, reading] = w;
+        const seg = String(reading).split('.'), chars = [...written];
+        if (seg.length !== chars.length) return problems.push(`L${n} ${h.ch} ${written}: ${seg.length} segments for ${chars.length} characters (${reading})`);
+        const i = chars.indexOf(h.ch);
+        if (i < 0) return problems.push(`L${n} ${h.ch} ${written}: the kanji is not in the word`);
+        if (!h.on.includes(seg[i]) && !h.kun.includes(seg[i])) problems.push(`L${n} ${h.ch} ${written}: reading "${seg[i]}" is not in its on/kun list`);
+        if (ws.has(written)) problems.push(`L${n} ${h.ch}: ${written} listed twice`);
+        ws.add(written);
+      });
+    });
+  });
+  (C.sentences || []).forEach(s => { if (!/\|\*\]/.test(s[0])) problems.push(`sentence has no |* target: ${s[0].slice(0, 24)}…`); });
+  (C.stories || []).forEach(s => { if (!/\|\*\]/.test(s.s)) problems.push(`story "${s.t}" has no blanks`); });
+  const kanji = Object.values(C.lessons).flat().length;
+  const words = Object.values(C.lessons).flat().reduce((a, h) => a + h.words.length, 0);
+  if (problems.length) { console.warn(`yomikataCheck: ${problems.length} problem(s)`); problems.forEach(x => console.warn('  ' + x)); }
+  else console.log(`yomikataCheck: clean — ${Object.keys(C.lessons).length} lessons, ${kanji} kanji, ${words} words`);
+  return problems;
+}
+window.yomikataCheck = yomikataCheck;
+
+/* ================= MODEL (rebuilt whenever the lesson range changes) ================= */
+const ALL_LESSONS = Object.keys(window.KANJI_LESSONS).map(Number).sort((a, b) => a - b);
+let LESSONS_ON = ALL_LESSONS.slice();
+let HUBS = [], byChar = {}, HUB_WORDS = [], UNIQUE_WORDS = [], READING_OF = {}, ALL_KANJI = [], SENT = [], STOR = [];
+const isHubKanji = c => !!byChar[c];
+const isKanji = c => /[\u4E00-\u9FFF]/.test(c);
+function buildModel(){
+  HUBS = LESSONS_ON.flatMap(n => (window.KANJI_LESSONS[n] || []).map(h => ({...h, lesson: n, words: h.words.map(w => {
+    const seg = w[1].split('.'); const chars = [...w[0]]; const hi = chars.indexOf(h.ch);
+    const hr = seg[hi];
+    return {w: w[0], r: seg.join(''), m: w[2], seg, chars, hr, t: h.on.includes(hr) ? 'on' : 'kun', x: !!w[3], hub: h.ch, lesson: n};
+  })})));
+  byChar = Object.fromEntries(HUBS.map(h => [h.ch, h]));
+  HUB_WORDS = HUBS.flatMap(h => h.words);
+  UNIQUE_WORDS = [...new Map(HUB_WORDS.map(w => [w.w, w])).values()];
+  READING_OF = {};
+  HUB_WORDS.forEach(w => w.chars.forEach((c, i) => { if (isKanji(c)) (READING_OF[c] = READING_OF[c] || new Set()).add(w.seg[i]); }));
+  ALL_KANJI = Object.keys(READING_OF);
+  SENT = SENTENCES.filter(x => LESSONS_ON.includes(x[4] || 14));
+  STOR = STORIES.filter(x => LESSONS_ON.includes(x.lesson || 14));
+}
+function lessonLabel(){
+  if (LESSONS_ON.length === 1) return `Genki · L${LESSONS_ON[0]}`;
+  const a = Math.min(...LESSONS_ON), b = Math.max(...LESSONS_ON);
+  return LESSONS_ON.length === (b - a + 1) ? `Genki · L${a}–${b}` : `Genki · L${LESSONS_ON.join(', L')}`;
+}
+
+/* ================= PROGRESS ================= */
+const KEY = 'yomikata-v3';
+let P = {words:{}, hubs:{}, lessons:null, hl:null, slideScope:'hl', slideSpeed:4500};
+try { const s = localStorage.getItem(KEY); if (s) P = Object.assign(P, JSON.parse(s)); } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(P)); } catch(e) {} }
+function wstat(w){ return P.words[w.w] || (P.words[w.w] = {c:0, m:0}); }
+function solid(w){ const s = wstat(w); return s.c >= 2 && s.c > s.m; }
+function hubPct(h){ return Math.round(100 * h.words.filter(solid).length / h.words.length); }
+
+/* ================= AUDIO (GameVoice, shared with the other Heinze games) ================= */
+function speak(text, rate){ try { speechSynthesis.cancel(); } catch(e) {} GameVoice.speak(text, {rate: rate || 0.9}); }
+GameVoice.bindToggle(document.getElementById('btnSound'));
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const pick = (a, n) => shuffle(a).slice(0, n);
+function show(id){ if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; }
+  if (id !== 's-round') { document.querySelector('.app').classList.remove('wide'); $('#s-round').classList.remove('two-col'); }
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); $('#'+id).classList.add('active'); window.scrollTo(0,0); }
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 1600); }
+const PRAISE = ['正解！','よくできました','いいね！','その調子！','ばっちり！'];
+const PRAISE_X = ['すごい！','さすが！','完璧！'];
+function hubMark(w, hub){ return [...w.w].map(c => c === (hub || w.hub) ? `<span class="hub">${c}</span>` : c).join(''); }
+function whyTip(hub, hr, written, x){
+  const h = byChar[hub]; const t = h.on.includes(hr) ? 'on' : 'kun';
+  const after = written.split(hub)[1] || ''; const kanaRight = /[\u3040-\u309F]/.test(after);
+  const nk = (written.match(/[\u4E00-\u9FFF]/g) || []).length;
+  if (x) return t === 'kun' && nk >= 2 ? `Exception: kanji + kanji, but ${hub} reads kun'yomi (${hr}) here. One to memorize.` : `Exception: ${hub} takes its less common reading ${hr} here.`;
+  if (kanaRight && t === 'kun') return `Kana attached after ${hub} → kun'yomi (${hr}). Okurigana is the giveaway.`;
+  if (nk >= 2 && t === 'on') return `Kanji next to kanji → usually on'yomi (${hr}).`;
+  if (t === 'kun') return `${hub} on its own → kun'yomi (${hr}).`;
+  return `${hub} reads ${hr} here.`;
+}
+/* Wrong readings that are wrong in the instructive way: swap one kanji's reading for another real reading of that kanji. */
+function readingDecoys(w){
+  const out = new Set();
+  w.chars.forEach((c, i) => {
+    const h = byChar[c]; if (!h) return;
+    [...h.on, ...h.kun].filter(r => r !== w.seg[i]).forEach(alt => out.add(w.seg.map((s, j) => j === i ? alt : s).join('')));
+  });
+  const hi = w.chars.findIndex(isHubKanji);
+  const pool = HUBS.filter(h => h.ch !== w.chars[hi]).flatMap(h => [...h.on, ...h.kun]);
+  shuffle(pool).forEach(alt => { if (out.size < 6) out.add(w.seg.map((s, j) => j === hi ? alt : s).join('')); });
+  out.delete(w.r);
+  return pick([...out], 3);
+}
+function targetDecoys(r, hub, hr){
+  const out = new Set(); const h = byChar[hub];
+  [...h.on, ...h.kun].filter(x => x !== hr).forEach(alt => out.add(r.replace(hr, alt)));
+  shuffle(HUBS.filter(x => x.ch !== hub).flatMap(x => [...x.on, ...x.kun])).forEach(alt => { if (out.size < 6) out.add(r.replace(hr, alt)); });
+  out.delete(r);
+  return pick([...out], 3);
+}
+
+/* ================= HOME ================= */
+function renderHome(){
+  const map = $('#map'); map.innerHTML = '';
+  HUBS.forEach(h => {
+    const pct = hubPct(h); const done = pct >= 80;
+    const b = document.createElement('button');
+    b.className = 'node' + (done ? ' cleared' : '');
+    b.innerHTML = `<span class="ring"></span><span class="ch kj">${h.ch}</span><span class="mn">${h.mn}</span>${pct ? `<span class="pct">${pct}%</span>` : ''}`;
+    b.onclick = () => openHub(h.ch);
+    map.appendChild(b);
+  });
+  const solidN = UNIQUE_WORDS.filter(solid).length;
+  const missed = UNIQUE_WORDS.filter(w => wstat(w).m > wstat(w).c).length;
+  $('#stats').innerHTML = `<span><b>${solidN}</b>/${UNIQUE_WORDS.length} words solid</span><span><b>${HUBS.filter(h => hubPct(h) >= 80).length}</b>/${HUBS.length} kanji cleared</span><span><b>${missed}</b> to review</span>`;
+  $('#btn-review').disabled = missed === 0;
+  renderLessons();
+  const empties = {sentences: !SENT.length, story: !STOR.length};
+  document.querySelectorAll('#s-home .mode').forEach(b => {
+    const off = !!empties[b.dataset.mode];
+    b.disabled = off;
+    b.querySelector('em').textContent = off ? 'none for these lessons yet' : '';
+  });
+}
+document.querySelectorAll('#s-home .mode').forEach(b => b.onclick = () => { if (!b.disabled) startEndless(b.dataset.mode); });
+
+/* ================= LESSON RANGE ================= */
+function renderLessons(){
+  const el = $('#lessonpick');
+  el.innerHTML = `<span class="lp-label">Quiz me on</span>` +
+    ALL_LESSONS.map(n => `<button class="lp${LESSONS_ON.includes(n) ? ' on' : ''}" data-n="${n}">L${n}<small>${(window.KANJI_LESSONS[n] || []).length} kanji</small></button>`).join('') +
+    `<button class="lp alt" id="lp-all">${LESSONS_ON.length === ALL_LESSONS.length ? 'Only the latest' : 'All lessons'}</button>`;
+  el.querySelectorAll('.lp[data-n]').forEach(b => b.onclick = () => {
+    const n = +b.dataset.n;
+    const next = LESSONS_ON.includes(n) ? LESSONS_ON.filter(x => x !== n) : [...LESSONS_ON, n].sort((a, c) => a - c);
+    if (!next.length) return toast('Keep at least one lesson on.');
+    setLessons(next);
+  });
+  $('#lp-all').onclick = () => setLessons(LESSONS_ON.length === ALL_LESSONS.length ? [ALL_LESSONS[ALL_LESSONS.length - 1]] : ALL_LESSONS.slice());
+  $('#lessonlabel').textContent = lessonLabel();
+}
+function setLessons(list){
+  LESSONS_ON = list; P.lessons = list; save();
+  buildModel(); renderHome();
+  toast(`${lessonLabel().replace('Genki · ', '')} · ${UNIQUE_WORDS.length} words`);
+}
+
+/* ================= HUB (lookup + drill) ================= */
+let curHub = null;
+function openHub(ch){
+  curHub = byChar[ch];
+  $('#hub-ch').textContent = ch; $('#hub-mn').textContent = curHub.mn;
+  const rd = (arr, lab) => `<span class="lab">${lab}</span>` + (arr.length ? arr.map(r => `<span class="r kj">${r}</span>`).join('') : `<span class="lab">none</span>`);
+  $('#hub-on').innerHTML = rd(curHub.on, "▶ on'yomi"); $('#hub-kun').innerHTML = rd(curHub.kun, "▷ kun'yomi");
+  $('#modes').innerHTML = `<button class="mode" id="drill"><span class="ic">🎯</span><span class="d"><b>Drill ${ch}</b><span>All its words, pick how ${ch} sounds in each</span></span><em>${curHub.words.length} words</em></button>`;
+  $('#drill').onclick = () => startDrill(curHub);
+  $('#hub-words').innerHTML = `<div class="lede" style="margin:0 0 6px;font-size:14px">Words in this lesson</div>` + curHub.words.map(w => {
+    const s = wstat(w); const st = s.c+s.m === 0 ? 'new' : (solid(w) ? '✓ solid' : `${s.c}✓ ${s.m}✗`);
+    return `<div class="w"><span class="kj">${hubMark(w)}</span><span class="rd">${w.r} <small>${w.m}</small></span><span class="st"><button class="star${isHL(w) ? ' on' : ''}" data-hl="${w.w}" title="highlighted in your textbook">${isHL(w) ? '★' : '☆'}</button> ${st} <button data-say="${w.r}" aria-label="play">🔊</button></span></div>`;
+  }).join('') + `<div class="lede" style="font-size:12.5px;margin:10px 0 0">★ marks the words highlighted in your book — the Pronunciations slideshow can stick to just those. Tap a star to correct it.</div>`;
+  $('#hub-words').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+  $('#hub-words').querySelectorAll('[data-hl]').forEach(b => b.onclick = () => { const w = curHub.words.find(x => x.w === b.dataset.hl); toggleHL(w); openHub(curHub.ch); });
+  show('s-hub');
+}
+$('#hub-back').onclick = () => { renderHome(); show('s-home'); };
+
+/* ================= ROUND ENGINE ================= */
+let R = null;
+function weightedWord(pool, avoid){
+  let items = pool.map(w => { const s = wstat(w); return {w, wt: 1 + 2*Math.max(0, s.m - s.c) + (s.c + s.m === 0 ? 1.5 : 0) + (solid(w) ? -0.6 : 0)}; }).filter(i => i.w !== avoid);
+  if (!items.length) return pool[0];
+  let t = items.reduce((a, i) => a + i.wt, 0), r = Math.random() * t;
+  for (const i of items) { r -= i.wt; if (r <= 0) return i.w; }
+  return items[items.length - 1].w;
+}
+function startEndless(mode, pool, title){
+  R = {mode, endless: true, hub: null, pool: pool || UNIQUE_WORDS, i: 0, correct: 0, streak: 0, lastHr: null, results: [], title: title || null, last: null, hinted: false, sentIdx: shuffle(SENT.map((_, i) => i)), sp: 0, storyIdx: shuffle(STOR.map((_, i) => i)), tp: 0};
+  $('#progwrap').style.display = 'none'; setScene(true);
+  document.querySelector('.app').classList.toggle('wide', mode === 'story');
+  $('#s-round').classList.toggle('two-col', mode === 'story');
+  show('s-round'); nextQ();
+}
+function startDrill(hub){
+  const list = hub.words.slice().sort((a, b) => (wstat(b).m - wstat(b).c) - (wstat(a).m - wstat(a).c) || Math.random() - .5);
+  R = {mode: 'drill', endless: false, hub, qs: list, i: 0, correct: 0, streak: 0, lastHr: null, results: [], hinted: false};
+  $('#progwrap').style.display = ''; setScene(true);
+  document.querySelector('.app').classList.remove('wide'); $('#s-round').classList.remove('two-col');
+  show('s-round'); nextQ();
+}
+function nextQ(){
+  $('#fb').className = 'fb'; $('#fb').innerHTML = ''; $('#nextrow').style.display = 'none'; $('#hint').innerHTML = ''; R.hinted = false;
+  const info = `${R.correct}/${R.results.length}${R.streak > 1 ? ` · <span class="streak">${R.lastHr} ×${R.streak} 🔥</span>` : ''}`;
+  if (R.endless) {
+    $('#round-info').innerHTML = R.mode === 'fill' ? `${R.results.length} kanji · ${R.correct} clean` : R.mode === 'sort' ? `${R.results.length} sorted · ${R.correct} clean` : (R.mode === 'story' ? `story ${R.tp + 1} of ${STOR.length}${R.results.length ? ` · ${R.correct}/${R.results.length} blanks` : ''}` : info);
+    if (R.mode === 'sentences') { const s = SENT[R.sentIdx[R.sp % R.sentIdx.length]]; R.sp++; return qSentence(s); }
+    if (R.mode === 'story') { const st = STOR[R.storyIdx[R.tp % R.storyIdx.length]]; R.tp++; return qStory(st); }
+    if (R.mode === 'fill') { const cand = HUBS.filter(h => h !== R.last); const h = cand[Math.floor(Math.random() * cand.length)]; R.last = h; return qFill(h); }
+    if (R.mode === 'sort') { const cand = HUBS.filter(h => h !== R.last); const h = cand[Math.floor(Math.random() * cand.length)]; R.last = h; return qSort(h); }
+    const w = weightedWord(R.pool, R.last); R.last = w;
+    ({words: qWord, cloze: qCloze, build: qBuild, type: qType})[R.mode](w);
+  } else {
+    if (R.i >= R.qs.length) return finishRound();
+    $('#prog').style.width = `${(R.i / R.qs.length) * 100}%`;
+    $('#round-info').innerHTML = `${R.i + 1}/${R.qs.length}${R.streak > 1 ? ` · <span class="streak">${R.lastHr} ×${R.streak} 🔥</span>` : ''}`;
+    qPicker(R.qs[R.i]);
+  }
+}
+
+/* ---- hint: tap any kanji ---- */
+function charSpans(w){ return w.chars.map((c, i) => `<ruby class="c" data-i="${i}">${c}<rt>${w.seg[i]}</rt></ruby>`).join(''); }
+function bindHints(w, ctx){
+  document.querySelectorAll('#q ruby.c').forEach(el => el.onclick = () => {
+    const i = +el.dataset.i, c = w.chars[i]; if (!isKanji(c)) return;
+    el.classList.add('rv'); R.hinted = true;
+    const h = byChar[c];
+    $('#hint').innerHTML = h
+      ? `<span class="kj">${c}</span> ${h.mn} · <span class="kj">${h.on.map(r => `<i class="onr">${r}</i>`).join(' ')} ${h.kun.map(r => `<i class="kunr">${r}</i>`).join(' ')}</span>${ctx === 'reading' ? '' : ` · here: ${w.seg[i]}`}`
+      : `<span class="kj">${c}</span> ${OTHER[c] || ''} · reads ${w.seg[i]} here`;
+  });
+}
+
+/* ---- MODE: read words (full reading) ---- */
+function qWord(w){
+  $('#q').innerHTML = `<div class="instr">How is this read? Tap a kanji for a hint.</div><div class="word kj">${charSpans(w)}</div><div class="mean">${w.m}</div>`;
+  bindHints(w, 'reading');
+  const opts = shuffle([w.r, ...readingDecoys(w)]);
+  $('#answers').innerHTML = `<div class="opts">${opts.map(r => `<button class="opt kj" data-r="${r}">${r}</button>`).join('')}</div>`;
+  $('#answers').querySelectorAll('.opt').forEach(b => b.onclick = () => grade(b.dataset.r === w.r, {w, hub: w.hub, hr: w.hr, r: w.r, written: w.w, m: w.m, x: w.x}, b, '.opt', o => o.dataset.r === w.r));
+}
+/* ---- MODE: type the reading ---- */
+const toHira = t => t.replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60)).replace(/[\s\u3000]/g, '');
+function qType(w){
+  $('#q').innerHTML = `<div class="instr">Type the reading in hiragana. Tap a kanji for its furigana.</div><div class="word kj">${charSpans(w)}</div><div class="mean">${w.m}</div>`;
+  bindHints(w, 'reading');
+  $('#answers').innerHTML = `<div class="typerow"><input class="tin" id="tin" type="text" lang="ja" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ひらがなで…" aria-label="reading"><button class="btn primary" id="tgo">こたえる</button></div><div class="yours" id="yours"></div>`;
+  const inp = $('#tin'); inp.focus();
+  const check = () => {
+    const typed = toHira(inp.value); if (!typed) return;
+    const ok = typed === toHira(w.r);
+    inp.disabled = true; $('#tgo').disabled = true;
+    if (!ok) $('#yours').innerHTML = `<s>${inp.value}</s> → <span class="kj">${w.r}</span>`;
+    grade(ok, {w, hub: w.hub, hr: w.hr, r: w.r, written: w.w, m: w.m, x: w.x}, inp, '.tin', () => ok);
+  };
+  $('#tgo').onclick = check;
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); e.stopPropagation(); check(); } });
+}
+/* ---- MODE: read sentences ---- */
+function parseSentence(str){
+  const toks = []; const re = /\[([^|\]]+)\|([^|\]]+)(\|\*)?\]|([^\[]+)/g; let m;
+  while ((m = re.exec(str))) toks.push(m[1] ? {t: m[1], r: m[2], target: !!m[3]} : {t: m[4]});
+  return toks;
+}
+function qSentence(S){
+  const toks = parseSentence(S[0]); const tg = toks.find(t => t.target);
+  const hub = S[2], hr = S[3];
+  $('#q').innerHTML = `<div class="instr">Read through. How is the marked word read? Tap other kanji if you get stuck.</div><div class="sent kj">${toks.map((t, i) => t.r ? `<ruby class="${t.target ? 'tg' : 's'}" data-i="${i}">${t.target ? hubMark({w: t.t}, hub) : t.t}<rt>${t.r}</rt></ruby>` : t.t).join('')}</div>`;
+  document.querySelectorAll('#q ruby.s').forEach(el => el.onclick = () => el.classList.add('rv'));
+  const tgEl = $('#q ruby.tg');
+  tgEl.onclick = () => { R.hinted = true; const h = byChar[hub]; $('#hint').innerHTML = `<span class="kj">${hub}</span> ${h.mn} · <span class="kj">${h.on.map(r => `<i class="onr">${r}</i>`).join(' ')} ${h.kun.map(r => `<i class="kunr">${r}</i>`).join(' ')}</span>`; };
+  const opts = shuffle([tg.r, ...targetDecoys(tg.r, hub, hr)]);
+  $('#answers').innerHTML = `<div class="opts">${opts.map(r => `<button class="opt kj" data-r="${r}">${r}</button>`).join('')}</div>`;
+  let wordRef = HUB_WORDS.find(w => w.w === tg.t && w.hub === hub) || null;
+  if (!wordRef) { const chars = [...tg.t]; wordRef = {w: tg.t, r: tg.r, m: S[1], chars, seg: chars.map(c => c === hub ? hr : ''), hub, hr, t: byChar[hub].on.includes(hr) ? 'on' : 'kun', x: false, synth: true}; }
+  $('#answers').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const ok = b.dataset.r === tg.r;
+    document.querySelectorAll('#q ruby').forEach(el => el.classList.add('rv'));
+    grade(ok, {w: wordRef, hub, hr, r: tg.r, written: tg.t, m: S[1], x: wordRef ? wordRef.x : false, sentence: toks.map(t => t.r || t.t).join('')}, b, '.opt', o => o.dataset.r === tg.r);
+  });
+}
+/* ---- MODE: sound cloze (random word, random blanked kanji) ---- */
+function qCloze(w){
+  const hubIdx = w.chars.map((c, i) => isHubKanji(c) ? i : -1).filter(i => i >= 0);
+  const bi = pick(hubIdx, 1)[0]; const target = w.chars[bi];
+  $('#q').innerHTML = `<div class="instr">Listen. Which kanji is missing?</div><div class="word kj">${w.chars.map((c, i) => i === bi ? '<span class="blank"></span>' : c).join('')}</div><div class="mean">${w.m}</div><button class="listen" id="listen">🔊 Play again</button>`;
+  const decoys = pick(HUBS.map(h => h.ch).filter(c => !w.chars.includes(c)), 3);
+  const opts = shuffle([target, ...decoys]);
+  $('#answers').innerHTML = `<div class="opts">${opts.map(c => `<button class="opt kjopt kj" data-c="${c}">${c}</button>`).join('')}</div>`;
+  $('#answers').querySelectorAll('.opt').forEach(b => b.onclick = () => grade(b.dataset.c === target, {w, hub: target, hr: w.seg[bi], r: w.r, written: w.w, m: w.m, x: w.x}, b, '.opt', o => o.dataset.c === target));
+  $('#listen').onclick = () => speak(w.r);
+  setTimeout(() => speak(w.r), 250);
+}
+/* ---- MODE: build a word (reading on top, drag kanji into the slots) ---- */
+/* READING_OF and ALL_KANJI are built in buildModel(). */
+function kanjiInfo(c, reading){
+  const h = byChar[c];
+  if (h) return {mn: h.mn, on: h.on, kun: h.kun, type: h.on.includes(reading) ? 'on' : (h.kun.includes(reading) ? 'kun' : null)};
+  const rs = [...(READING_OF[c] || [])];
+  return {mn: OTHER[c] || '', on: rs.filter(r => !OTHER_KUN.has(c + r)), kun: rs.filter(r => OTHER_KUN.has(c + r)), type: OTHER_KUN.has(c + reading) ? 'kun' : 'on', partial: true};
+}
+const yomiLabel = t => t === 'on' ? "▶ on'yomi" : (t === 'kun' ? "▷ kun'yomi" : 'reading');
+function readingExplain(c, reading){
+  const k = kanjiInfo(c, reading);
+  const list = t => k[t].map(r => r === reading ? `<i class="${t}r used">${r}</i>` : `<i class="${t}r">${r}</i>`).join(' ');
+  const total = k.on.length + k.kun.length;
+  const others = total <= 1 ? '' : (k.on.length ? `▶ ${list('on')}` : '') + (k.kun.length ? ` &nbsp;▷ ${list('kun')}` : '');
+  const here = k.type ? `<b class="${k.type}r">${reading}</b> ${yomiLabel(k.type)}` : `<b>${reading}</b>`;
+  return `<span class="kj">${c}</span> ${k.mn} — here ${here}${others ? ` <span class="others">· all: ${others}</span>` : ''}${k.partial && others ? ' <span class="others">(readings seen in this lesson)</span>' : ''}`;
+}
+function qBuild(w){
+  const need = w.chars.map((c, i) => isKanji(c) ? i : -1).filter(i => i >= 0);
+  const needed = need.map(i => w.chars[i]);
+  const tempting = ALL_KANJI.filter(c => !w.chars.includes(c) && need.some(i => READING_OF[c].has(w.seg[i])));
+  const others = ALL_KANJI.filter(c => !w.chars.includes(c) && !tempting.includes(c));
+  const decoys = pick(tempting, 2).concat(pick(others, Math.max(3, 6 - needed.length)));
+  const tiles = shuffle([...new Set([...needed, ...decoys])]);
+  let filled = 0, misses = 0, done = false, sel = null;
+  $('#q').innerHTML = `<div class="instr">Build this word in kanji. Drag each kanji into its place. Tap a slot for a hint.</div><div class="word kj" style="font-size:40px;color:var(--muted)">${w.r}</div><div class="mean">${w.m}</div>
+    <div class="slotrow">${w.chars.map((c, i) => isKanji(c) ? `<span class="slot open kj" data-i="${i}"><small>${w.seg[i]}</small></span>` : `<span class="slot kana kj">${c}</span>`).join('')}</div>`;
+  $('#answers').innerHTML = `<div class="tiles">${tiles.map(c => `<button class="tile kj kt" data-c="${c}">${c}</button>`).join('')}</div><div class="sortnote" id="sortnote"></div><div class="legend"><span class="onr">▶ on'yomi</span> Chinese-derived sound, used in kanji+kanji · <span class="kunr">▷ kun'yomi</span> native Japanese word, used alone or with kana</div>`;
+  const slots = [...$('#q').querySelectorAll('.slot.open')];
+  const note = t => { $('#sortnote').innerHTML = t; };
+  function finish(){
+    done = true;
+    $('#answers').querySelectorAll('.tile:not(.placed)').forEach(t => { t.disabled = true; t.classList.add('dim'); });
+    const ok = misses === 0 && !R.hinted;
+    const st = wstat(w); if (ok) st.c++; else if (misses > 0) st.m++; save();
+    R.results.push({a: {w, written: w.w, r: w.r, m: w.m, hub: w.hub, hr: w.hr}, ok});
+    const fb = $('#fb');
+    speak(w.r);
+    const breakdown = (w.x ? `<div class="note">${whyTip(w.hub, w.hr, w.w, true)}</div>` : '') + wordBreakdown(w);
+    if (ok) { R.correct++; const pr = GameVoice.praise({silent: true}); GameVoice.sfx.fanfare(); setTimeout(() => GameVoice.say(pr.jp, {rate: 1}), Math.round(w.r.length * 230 / 0.9) + 420); fb.className = 'fb show ok pop'; fb.innerHTML = `<div class="head">${pr.jp} <small class="en">${pr.en}</small></div><div class="sub"><span class="kj">${w.w}</span> ${w.r} — ${w.m}</div>${breakdown}`; }
+    else { fb.className = 'fb show bad pop'; fb.innerHTML = `<div class="head">できた <small class="en">Dekita — got there</small></div><div class="sub"><span class="kj">${w.w}</span> ${w.r} — ${w.m}</div><div class="tip">${misses ? `${misses} wrong drop${misses > 1 ? 's' : ''}. ` : ''}${R.hinted ? 'Used a hint, so it stays in rotation.' : ''}</div>${breakdown}`; }
+    $('#nextrow').style.display = 'flex'; $('#btn-next').focus();
+  }
+  function drop(tile, slot){
+    if (done || !slot || !slot.classList.contains('open') || tile.classList.contains('placed')) return;
+    const c = tile.dataset.c, i = +slot.dataset.i;
+    tile.classList.remove('sel'); sel = null;
+    if (w.chars[i] === c) {
+      tile.classList.add('placed'); tile.disabled = true; slot.classList.remove('open'); slot.classList.add('filled'); slot.innerHTML = ''; slot.appendChild(tile);
+      GameVoice.sfx.snap(); filled++;
+      const ki = kanjiInfo(c, w.seg[i]); slot.insertAdjacentHTML('beforeend', `<i class="lab ${ki.type || ''}r">${w.seg[i]}</i>`);
+      note(readingExplain(c, w.seg[i]));
+      if (filled === need.length) finish();
+    } else if (w.chars.includes(c)) {
+      misses++; GameVoice.sfx.wrong(); tile.classList.add('shake'); setTimeout(() => tile.classList.remove('shake'), 400);
+      note(`${c} is in this word, but not there.`);
+    } else {
+      misses++; GameVoice.sfx.wrong(); tile.classList.add('shake'); setTimeout(() => tile.classList.remove('shake'), 400);
+      const k = kanjiInfo(c, null);
+      const rd = (k.on.length ? `▶ ${k.on.map(r => `<i class="onr">${r}</i>`).join('・')}` : '') + (k.kun.length ? ` &nbsp;▷ ${k.kun.map(r => `<i class="kunr">${r}</i>`).join('・')}` : '');
+      note(`<span class="kj">${c}</span> (${k.mn}) reads ${rd}${k.partial ? ' <span class="others">(as seen in this lesson)</span>' : ''} — none of that is in ${w.r}.`);
+    }
+  }
+  $('#answers').querySelectorAll('.tile').forEach(tile => {
+    tile.addEventListener('pointerdown', e => {
+      if (done || tile.classList.contains('placed')) return;
+      e.preventDefault();
+      SD = {tile, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, moved: false, zones: slots,
+        zoneAt: (x, y) => { tile.style.visibility = 'hidden'; const el = document.elementFromPoint(x, y); tile.style.visibility = ''; return el ? el.closest('.slot.open') : null; },
+        drop,
+        tap: () => { $('#answers').querySelectorAll('.tile').forEach(t => t.classList.remove('sel')); if (sel === tile) sel = null; else { sel = tile; tile.classList.add('sel'); note('Now tap a slot.'); } }
+      };
+    });
+  });
+  slots.forEach(sl => sl.addEventListener('click', () => {
+    if (done || !sl.classList.contains('open')) return;
+    if (sel) return drop(sel, sl);
+    sl.classList.add('rv'); R.hinted = true; note(`That slot is ${w.seg[+sl.dataset.i]}.`);
+  }));
+}
+/* ---- MODE: drill one kanji (picker) ---- */
+function qPicker(w){
+  const h = byChar[w.hub];
+  $('#q').innerHTML = `<div class="instr">How does <span class="kj" style="font-size:18px">${w.hub}</span> sound here?</div><div class="word kj">${charSpans(w)}</div><div class="mean">${w.m}</div>`;
+  bindHints(w, 'reading');
+  let opts = [...new Set([...h.on, ...h.kun])];
+  if (opts.length < 3) opts = opts.concat(pick([...new Set(HUBS.filter(x => x.ch !== h.ch).flatMap(x => [...x.on, ...x.kun]))].filter(r => !opts.includes(r)), 4 - opts.length));
+  opts = shuffle(opts.slice(0, 5));
+  $('#answers').innerHTML = `<div class="opts">${opts.map(r => `<button class="opt kj" data-r="${r}">${r}<span class="tt">${h.on.includes(r) ? '▶ on' : (h.kun.includes(r) ? '▷ kun' : '')}</span></button>`).join('')}</div>`;
+  $('#answers').querySelectorAll('.opt').forEach(b => b.onclick = () => grade(b.dataset.r === w.hr, {w, hub: w.hub, hr: w.hr, r: w.r, written: w.w, m: w.m, x: w.x}, b, '.opt', o => o.dataset.r === w.hr));
+}
+
+/* Drag plumbing for the sort mode: one set of document listeners, the live drag lives in SD. */
+let SD = null;
+document.addEventListener('pointermove', e => {
+  if (!SD) return;
+  const dx = e.clientX - SD.x, dy = e.clientY - SD.y; SD.lx = e.clientX; SD.ly = e.clientY;
+  if (!SD.moved && Math.hypot(dx, dy) > 6) { SD.moved = true; SD.tile.classList.add('dragging'); }
+  if (SD.moved) { e.preventDefault(); SD.tile.style.transform = `translate(${dx}px,${dy}px)`; const z = SD.zoneAt(e.clientX, e.clientY); SD.zones.forEach(zz => zz.classList.toggle('over', zz === z)); }
+}, {passive: false});
+function endDrag(e){
+  if (!SD) return;
+  const d = SD; SD = null;
+  const x = (e && e.clientX) || d.lx, y = (e && e.clientY) || d.ly;
+  d.zones.forEach(zz => zz.classList.remove('over'));
+  d.tile.classList.remove('dragging'); d.tile.style.transform = '';
+  if (d.moved) d.drop(d.tile, d.zoneAt(x, y)); else d.tap();
+}
+document.addEventListener('pointerup', endDrag);
+document.addEventListener('pointercancel', endDrag);
+window.addEventListener('blur', () => endDrag(null));
+
+/* ---- MODE: on or kun? (drag real readings into the right box, leave impostors) ---- */
+function qSort(h){
+  const ex = r => h.words.find(w => w.hr === r);
+  const truth = {}; h.on.forEach(r => truth[r] = 'on'); h.kun.forEach(r => truth[r] = 'kun');
+  const real = [...h.on, ...h.kun];
+  const owners = {}; HUBS.filter(x => x !== h).forEach(x => [...x.on, ...x.kun].forEach(r => { if (!truth[r] && !owners[r]) owners[r] = x.ch; }));
+  const decoys = pick(Object.keys(owners), Math.max(3, 7 - real.length));
+  const tiles = shuffle([...real, ...decoys]);
+  let placed = 0, misses = 0, done = false, sel = null;
+  $('#q').innerHTML = `<div class="instr">Drag each real reading of this kanji into its box. Some tiles belong to other kanji — leave those.</div><div class="word kj" style="font-size:96px">${h.ch}</div><div class="mean">${h.mn}</div>`;
+  $('#answers').innerHTML = `<div class="zones">
+    <div class="zone on" data-z="on"><b>▶ on'yomi 音読み <span class="cnt" data-cnt="on">${h.on.length ? `0 of ${h.on.length}` : 'none'}</span></b><small>The sound that came with the character from Chinese. Usually what you hear in kanji + kanji compounds (音楽, 家族).</small><div class="slots"></div></div>
+    <div class="zone kun" data-z="kun"><b>▷ kun'yomi 訓読み <span class="cnt" data-cnt="kun">${h.kun.length ? `0 of ${h.kun.length}` : 'none'}</span></b><small>The native Japanese word the character was attached to. Usually when the kanji stands alone or has kana after it (音, 楽しい).</small><div class="slots"></div></div>
+  </div><div class="tiles">${tiles.map(r => `<button class="tile kj" data-r="${r}">${r}</button>`).join('')}</div><div class="sortnote" id="sortnote"></div>`;
+  const zones = [...$('#answers').querySelectorAll('.zone')];
+  const note = t => { $('#sortnote').innerHTML = t; };
+  function zoneAt(x, y){ const el = document.elementFromPoint(x, y); return el ? el.closest('.zone') : null; }
+  function finish(){
+    done = true;
+    zones.forEach(z => { z.classList.add('done'); if (!z.querySelector('.tile')) z.querySelector('.slots').innerHTML = `<span class="none">${h.ch} has no ${z.dataset.z}'yomi in this lesson</span>`; });
+    $('#answers').querySelectorAll('.tile:not(.placed)').forEach(t => { t.disabled = true; t.classList.add('dim'); t.title = 'not a reading of ' + h.ch; });
+    const ok = misses === 0;
+    R.results.push({a: {written: h.ch, r: real.join('・'), m: h.mn, hub: h.ch, hr: real[0]}, ok});
+    if (ok) R.correct++;
+    const fb = $('#fb');
+    if (ok) { const pr = GameVoice.praise({silent: true}); GameVoice.sfx.fanfare(); setTimeout(() => GameVoice.say(pr.jp, {rate: 1}), 500); fb.className = 'fb show ok pop'; fb.innerHTML = `<div class="head">${pr.jp} <small class="en">${pr.en}</small></div><div class="sub">Clean sort. ${h.ch} = ${real.join('、')}</div>`; }
+    else { fb.className = 'fb show bad pop'; fb.innerHTML = `<div class="head">できた <small class="en">Dekita — got there</small></div><div class="sub">${misses} wrong drop${misses > 1 ? 's' : ''} on the way. ${h.ch} = ${real.join('、')}</div>`; }
+    $('#nextrow').style.display = 'flex'; $('#btn-next').focus();
+  }
+  function drop(tile, zone){
+    if (done || !zone || tile.classList.contains('placed')) return;
+    const r = tile.dataset.r, t = truth[r], z = zone.dataset.z;
+    tile.classList.remove('sel'); sel = null;
+    if (t === z) {
+      tile.classList.add('placed'); tile.disabled = true; zone.querySelector('.slots').appendChild(tile);
+      const w = ex(r); if (w) tile.innerHTML = `${r}<em>${w.w} ${w.r}</em>`;
+      GameVoice.sfx.snap(); if (w) speak(w.r); placed++;
+      const have = zone.querySelectorAll('.tile').length, want = z === 'on' ? h.on.length : h.kun.length;
+      zone.querySelector('.cnt').textContent = have === want ? `${want} of ${want} ✓` : `${have} of ${want}`;
+      note(w ? `${r} as in <span class="kj">${w.w}</span> (${w.m})` : '');
+      if (placed === real.length) finish();
+    } else if (t) {
+      misses++; GameVoice.sfx.wrong(); tile.classList.add('shake'); setTimeout(() => tile.classList.remove('shake'), 400);
+      const w = ex(r);
+      note(`${r} is real, but it's the <b>${t}'yomi</b>${w ? ` — as in <span class="kj">${w.w}</span> (${w.r})` : ''}.`);
+    } else {
+      misses++; GameVoice.sfx.wrong(); tile.classList.add('shake'); setTimeout(() => tile.classList.remove('shake'), 400);
+      note(`${r} isn't a reading of ${h.ch}. It belongs to <span class="kj">${owners[r]}</span>.`);
+    }
+  }
+  $('#answers').querySelectorAll('.tile').forEach(tile => {
+    tile.addEventListener('pointerdown', e => {
+      if (done || tile.classList.contains('placed')) return;
+      e.preventDefault();
+      SD = {tile, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY, moved: false, zones,
+        zoneAt: (x, y) => { tile.style.visibility = 'hidden'; const el = document.elementFromPoint(x, y); tile.style.visibility = ''; return el ? el.closest('.zone') : null; },
+        drop,
+        tap: () => { $('#answers').querySelectorAll('.tile').forEach(t => t.classList.remove('sel')); if (sel === tile) sel = null; else { sel = tile; tile.classList.add('sel'); note('Now tap a box.'); } }
+      };
+    });
+  });
+  zones.forEach(z => z.addEventListener('click', () => { if (sel) drop(sel, z); }));
+}
+
+function wordBreakdown(w){
+  if (!w) return '';
+  const need = w.chars.map((c, i) => (isKanji(c) && w.seg[i]) ? i : -1).filter(i => i >= 0);
+  if (!need.length) return '';
+  const kana = w.chars.map((c, i) => isKanji(c) ? null : c).filter(Boolean).join('');
+  const allOn = need.length >= 2 && need.every(i => kanjiInfo(w.chars[i], w.seg[i]).type === 'on');
+  const anyKun = need.some(i => kanjiInfo(w.chars[i], w.seg[i]).type === 'kun');
+  let pattern = '';
+  if (allOn) pattern = "Kanji + kanji, all on'yomi \u2014 the usual pattern.";
+  else if (anyKun && kana) pattern = "Kana hanging off the kanji (okurigana) \u2014 so kun'yomi.";
+  return `<div class="tip"><div class="bdt"><span class="kj">${w.w}</span> = ${w.r}</div>${need.map(i => `<div class="bd">${readingExplain(w.chars[i], w.seg[i])}</div>`).join('')}${pattern ? `<div class="bd others">${pattern}</div>` : ''}${WHY[w.w] ? `<div class="bd why">${WHY[w.w]}</div>` : ''}<div class="bd legend2"><span class="onr">\u25b6 on</span> Chinese-derived, used in kanji+kanji \u00b7 <span class="kunr">\u25b7 kun</span> native Japanese, alone or with kana</div></div>`;
+}
+
+/* ---- MODE: story time (numbered kanji in a paragraph, fill in every reading) ---- */
+function qStory(S){
+  const toks = parseSentence(S.s);
+  let n = 0; const targets = [];
+  const body = toks.map((t, i) => {
+    if (!t.r) return t.t;
+    if (t.target) { n++; targets.push({n, w: t.t, r: t.r, hinted: false}); return `<span class="num" data-n="${n}">${CIRC[n]}</span><ruby class="stg" data-n="${n}">${t.t}<rt>${t.r}</rt></ruby>`; }
+    return `<ruby class="s" data-i="${i}">${t.t}<rt>${t.r}</rt></ruby>`;
+  }).join('');
+  const spoken = toks.map(t => t.r || t.t).join('');
+  $('#q').innerHTML = `<div class="instr">Read the story, then write each numbered word's reading in hiragana. Tap any other kanji for furigana.</div>
+    <div class="storyhead"><div><b class="kj">${S.t}</b><span>${S.en}</span></div><button class="listen" id="sread">🔊 読む</button></div>
+    <div class="story kj">${body}</div>`;
+  $('#sread').onclick = () => speak(spoken, 0.85);
+  $('#answers').innerHTML = `<div class="blanks">${targets.map(t => `<label class="blank-row" data-n="${t.n}"><span class="bn">${CIRC[t.n]}</span><input class="bin" type="text" lang="ja" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ひらがな" aria-label="reading ${t.n}"><span class="bres"></span></label>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="scheck">答え合わせ · Check</button></div>`;
+  document.querySelectorAll('#q ruby.s').forEach(el => el.onclick = () => el.classList.add('rv'));
+  document.querySelectorAll('#q ruby.stg, #q .num').forEach(el => el.onclick = () => {
+    const i = +el.dataset.n; const t = targets[i - 1]; if (!t || t.done) return;
+    t.hinted = true; R.hinted = true;
+    document.querySelector(`#q ruby.stg[data-n="${i}"]`).classList.add('rv');
+    $('#hint').innerHTML = `${CIRC[i]} <span class="kj">${t.w}</span> — ${t.r}`;
+  });
+  const rows = [...$('#answers').querySelectorAll('.blank-row')];
+  rows.forEach((row, idx) => row.querySelector('.bin').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+      e.preventDefault(); e.stopPropagation();
+      const next = rows[idx + 1]; if (next) next.querySelector('.bin').focus(); else $('#scheck').click();
+    }
+  }));
+  rows[0] && rows[0].querySelector('.bin').focus();
+  $('#scheck').onclick = () => {
+    if ($('#scheck').disabled) return;
+    $('#scheck').disabled = true;
+    document.querySelectorAll('#q ruby').forEach(el => el.classList.add('rv'));
+    let got = 0; const missed = [];
+    targets.forEach((t, idx) => {
+      const row = rows[idx], inp = row.querySelector('.bin');
+      const ok = toHira(inp.value) === toHira(t.r);
+      inp.disabled = true; t.done = true;
+      row.classList.add(ok ? 'right' : 'wrong');
+      row.querySelector('.bres').innerHTML = ok
+        ? `<span class="kj">${t.w}</span> ${t.r} ✓${t.hinted ? ' <i class="others">(hint)</i>' : ''}`
+        : `<span class="kj">${t.w}</span> <b>${t.r}</b>${inp.value.trim() ? ` <s>${inp.value}</s>` : ''}`;
+      const base = STORY_BASE[t.w] || t.w;
+      const ref = HUB_WORDS.find(w => w.w === base) || null;
+      if (ref) { const st = wstat(ref); if (ok && !t.hinted) st.c++; else if (!ok) st.m++; }
+      if (ok) got++; else missed.push({t, ref});
+      R.results.push({a: {w: ref, written: t.w, r: t.r, m: ref ? ref.m : '', hub: ref ? ref.hub : null, hr: ref ? ref.hr : null}, ok});
+      if (ok) R.correct++;
+    });
+    save();
+    const clean = got === targets.length;
+    const fb = $('#fb');
+    if (clean) {
+      const pr = GameVoice.praise({silent: true}); GameVoice.sfx.fanfare(); setTimeout(() => GameVoice.say(pr.jp, {rate: 1}), 500);
+      fb.className = 'fb show ok pop';
+      fb.innerHTML = `<div class="head">${pr.jp} <small class="en">${pr.en}</small></div><div class="sub">All ${targets.length} readings right.</div><div class="tip">${S.tr}</div>`;
+    } else {
+      GameVoice.sfx.wrong();
+      fb.className = 'fb show bad pop';
+      fb.innerHTML = `<div class="head">${got} / ${targets.length}</div><div class="sub">${S.tr}</div>` +
+        missed.map(m => m.ref ? `<div class="formnote">${CIRC[m.t.n]} <span class="kj">${m.t.w}</span> ${m.t.r}${m.ref.w !== m.t.w ? ` — from <span class="kj">${m.ref.w}</span> ${m.ref.r}` : ''}</div>` + wordBreakdown(m.ref) : `<div class="tip"><div class="bdt"><span class="kj">${m.t.w}</span> = ${m.t.r}</div></div>`).join('');
+    }
+    $('#nextrow').style.display = 'flex'; $('#btn-next').focus();
+  };
+}
+
+/* ---- MODE: write the readings (type on'yomi and kun'yomi from memory) ---- */
+function qFill(h){
+  const groups = [
+    {k: 'on', label: "▶ on'yomi 音読み", list: h.on, note: 'Chinese-derived — what you hear in kanji + kanji compounds'},
+    {k: 'kun', label: "▷ kun'yomi 訓読み", list: h.kun, note: 'native Japanese — the kanji alone or with kana after it'}
+  ];
+  const solvedVals = {on: new Set(), kun: new Set()};
+  let clean = true, done = false;
+  $('#q').innerHTML = `<div class="instr">Write every reading of this kanji from memory — one box per reading.</div>
+    <div class="word kj" style="font-size:104px">${h.ch}</div><div class="mean">${h.mn}</div>`;
+  $('#answers').innerHTML = `<div class="fills">${groups.map(g => `
+    <div class="fillgroup ${g.k}">
+      <b>${g.label} <span class="cnt">${g.list.length ? `${g.list.length} reading${g.list.length > 1 ? 's' : ''}` : 'none'}</span></b>
+      <small>${g.note}</small>
+      ${g.list.length ? g.list.map((_, i) => `<div class="fillrow" data-k="${g.k}" data-i="${i}">
+          <input class="fin kj" type="text" lang="ja" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ひらがな" aria-label="${g.k}yomi ${i + 1}">
+          <button class="hintbtn" type="button">ヒント 1/3</button><span class="fres"></span>
+        </div>`).join('') : `<div class="nonerow">${h.ch} has no ${g.k}'yomi in this lesson — nothing to write here.</div>`}
+    </div>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="fcheck">答え合わせ · Check</button></div>
+    <div class="sortnote" id="sortnote"></div>`;
+  const note = t => { $('#sortnote').innerHTML = t; };
+  const rows = [...$('#answers').querySelectorAll('.fillrow')];
+  const ex = r => h.words.find(w => w.hr === r);
+  function markRight(row, val, given){
+    row.classList.remove('wrong'); row.classList.add('right');
+    const inp = row.querySelector('.fin');
+    inp.value = val; inp.disabled = true;
+    row.querySelector('.hintbtn').style.display = 'none';
+    const w = ex(val);
+    row.querySelector('.fres').innerHTML = `${given ? '<i class="others">given</i> ' : '✓ '}${w ? `<span class="kj">${w.w}</span> ${w.r}` : ''}`;
+    if (w) speak(w.r);
+  }
+  function check(){
+    if (done) return;
+    let allOk = true;
+    groups.forEach(g => {
+      if (!g.list.length) return;
+      rows.filter(r => r.dataset.k === g.k).forEach(row => {
+        if (row.classList.contains('right')) return;
+        const inp = row.querySelector('.fin');
+        const v = toHira(inp.value);
+        if (v && g.list.includes(v) && !solvedVals[g.k].has(v)) { solvedVals[g.k].add(v); GameVoice.sfx.snap(); markRight(row, v); }
+      });
+      const left = g.list.filter(r => !solvedVals[g.k].has(r));
+      let li = 0;
+      rows.filter(r => r.dataset.k === g.k && !r.classList.contains('right')).forEach(row => {
+        allOk = false; clean = false;
+        row.classList.add('wrong');
+        row.dataset.target = left[li++] || '';
+        const hb2 = row.querySelector('.hintbtn');
+        hb2.style.display = '';
+        if (!row.dataset.lvl) { hb2.textContent = 'ヒント 1/3'; row.querySelector('.fres').innerHTML = '<i class="others">not one of them yet</i>'; }
+      });
+    });
+    if (allOk) finish(); else { GameVoice.sfx.wrong(); note('Red boxes are still open — fix one, or tap ヒント for a nudge.'); const first = rows.find(r => r.classList.contains('wrong')); first && first.querySelector('.fin').focus(); }
+  }
+  function finish(){
+    done = true;
+    $('#fcheck').disabled = true;
+    const fb = $('#fb');
+    const all = [...h.on, ...h.kun];
+    R.results.push({a: {written: h.ch, r: all.join('・'), m: h.mn, hub: h.ch, hr: all[0]}, ok: clean});
+    if (clean) {
+      R.correct++;
+      const pr = GameVoice.praise({silent: true}); GameVoice.sfx.fanfare(); setTimeout(() => GameVoice.say(pr.jp, {rate: 1}), 500);
+      fb.className = 'fb show ok pop';
+      fb.innerHTML = `<div class="head">${pr.jp} <small class="en">${pr.en}</small></div><div class="sub">From memory, first try.</div>${famBlock(h)}`;
+    } else {
+      fb.className = 'fb show bad pop';
+      fb.innerHTML = `<div class="head">できた <small class="en">Dekita — got there</small></div><div class="sub"><span class="kj">${h.ch}</span> ${h.mn}</div>${famBlock(h)}`;
+    }
+    $('#nextrow').style.display = 'flex'; $('#btn-next').focus();
+  }
+  rows.forEach(row => {
+    const inp = row.querySelector('.fin'), hb = row.querySelector('.hintbtn');
+    hb.style.display = 'none';
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) {
+        e.preventDefault(); e.stopPropagation();
+        const open = rows.filter(r => !r.classList.contains('right'));
+        const nxt = open[open.indexOf(row) + 1];
+        if (nxt) nxt.querySelector('.fin').focus(); else check();
+      }
+    });
+    inp.addEventListener('input', () => { if (row.classList.contains('wrong')) { row.classList.remove('wrong'); const r = row.querySelector('.fres'); if (!r.querySelector('.hinttext')) r.innerHTML = ''; } });
+    hb.onclick = () => {
+      const t = row.dataset.target; if (!t) return;
+      const lvl = (+row.dataset.lvl || 0) + 1; row.dataset.lvl = lvl;
+      const w = ex(t), res = row.querySelector('.fres');
+      const steps = [
+        () => `<b>Shape:</b> ${shapeHint(t)}`,
+        () => { const bw = w && blankedWord(w, h.ch, t); return bw ? `<b>In a word:</b> ${bw} — what fills the ○?` : `<b>Next:</b> it is ${h.on.includes(t) ? "an on'yomi" : "a kun'yomi"} of ${h.ch}.`; },
+        () => `<b>First kana:</b> <span class="kj">${t[0]}</span>${'○'.repeat(Math.max(0, t.length - 1))}`,
+        () => null
+      ];
+      if (lvl >= 4) {
+        markRight(row, t, true); solvedVals[row.dataset.k].add(t); clean = false; hb.style.display = 'none';
+        if (rows.every(r => r.classList.contains('right'))) finish();
+        return;
+      }
+      res.innerHTML = `<span class="hinttext">${steps[lvl - 1]()}</span>`;
+      hb.textContent = lvl === 3 ? '答えを見る' : `ヒント ${lvl + 1}/3`;
+      row.querySelector('.fin').focus();
+    };
+  });
+  $('#fcheck').onclick = check;
+  rows[0] && rows[0].querySelector('.fin').focus();
+}
+const KANA_ROWS = {'あ':'あいうえお','か':'かきくけこ','が':'がぎぐげご','さ':'さしすせそ','ざ':'ざじずぜぞ','た':'たちつてと','だ':'だぢづでど','な':'なにぬねの','は':'はひふへほ','ば':'ばびぶべぼ','ぱ':'ぱぴぷぺぽ','ま':'まみむめも','や':'やゆよ','ら':'らりるれろ','わ':'わをん'};
+const ROW_ROMAJI = {'あ':'a-','か':'k-','が':'g-','さ':'s-','ざ':'z-','た':'t-','だ':'d-','な':'n-','は':'h-','ば':'b-','ぱ':'p-','ま':'m-','や':'y-','ら':'r-','わ':'w-'};
+function kanaRow(ch){ for (const [row, set] of Object.entries(KANA_ROWS)) if (set.includes(ch)) return row; return null; }
+function shapeHint(t){
+  const row = kanaRow(t[0]);
+  const small = /[ゃゅょっ]/.test(t) ? ', with a small kana in it' : '';
+  return `${t.length} kana${small}${row ? `, starting in the <span class="kj">${row}</span> row (${ROW_ROMAJI[row]})` : ''}.`;
+}
+function blankedWord(w, hub, t){
+  const i = w.chars.findIndex((c, j) => c === hub && w.seg[j] === t);
+  if (i < 0) return null;
+  return `<span class="kj">${w.w}</span> = ${w.seg.map((sg, j) => j === i ? '○'.repeat(t.length) : sg).join('')}`;
+}
+function famBlock(h){
+  const fam = {}; h.words.forEach(w => (fam[w.hr] = fam[w.hr] || []).push(w));
+  return `<div class="tip"><div class="bdt">How ${h.ch} sounds</div>` + Object.entries(fam).map(([r, ws]) =>
+    `<div class="bd"><b class="${h.on.includes(r) ? 'onr' : 'kunr'}">${r}</b> <i class="others">${h.on.includes(r) ? "▶ on'yomi" : "▷ kun'yomi"}</i> — ${ws.map(w => `<span class="kj">${w.w}</span> ${w.r}`).join('、 ')}</div>`).join('') + `</div>`;
+}
+
+/* ---- grading ---- */
+function grade(ok, a, btn, sel, isRight){
+  const btns = [...$('#answers').querySelectorAll(sel)];
+  if (sel !== '.tin' && btns.some(b => b.disabled)) return;
+  btns.forEach(b => { b.disabled = true; if (isRight(b)) b.classList.add('right'); else if (b === btn) b.classList.add('wrong'); else b.classList.add('dim'); });
+  if (a.w) { const s = wstat(a.w); if (ok && !R.hinted) s.c++; else if (!ok) s.m++; save(); }
+  R.results.push({a, ok});
+  document.querySelectorAll('#q ruby').forEach(el => el.classList.add('rv'));
+  const fb = $('#fb');
+  if (ok) {
+    R.correct++;
+    if (R.hinted) R.streak = 0; else { R.streak = (R.lastHr === a.hr) ? R.streak + 1 : 1; R.lastHr = a.hr; }
+    const pr = GameVoice.praise({silent: true});
+    const head = R.hinted ? 'そうそう <small class="en">Sō sō — that\'s it</small>' : `${pr.jp} <small class="en">${pr.en}</small>`;
+    GameVoice.sfx.snap();
+    if (!R.hinted) setTimeout(() => GameVoice.say(pr.jp, {rate: 1}), Math.round((a.sentence || a.r).length * 230 / 0.9) + 420);
+    fb.className = 'fb show ok pop';
+    fb.innerHTML = `<div class="head">${head}</div><div class="sub"><span class="kj">${a.written}</span> ${a.r} — ${a.m}</div>${R.hinted ? `<div class="note">With a hint, so it stays in rotation.</div>` : ''}${a.x ? `<div class="note">${whyTip(a.hub, a.hr, a.written, a.x)}</div>` : ''}${wordBreakdown(a.w)}`;
+  } else {
+    R.streak = 0;
+    GameVoice.sfx.wrong();
+    const oo = GameVoice.oops();
+    fb.className = 'fb show bad pop';
+    fb.innerHTML = `<div class="head">${oo.jp} <small class="en">${oo.en}</small></div><div class="sub"><span class="kj">${a.written}</span> ${a.r} — ${a.m}</div>${(a.x || !a.w) ? `<div class="note">${whyTip(a.hub, a.hr, a.written, a.x)}</div>` : ''}${wordBreakdown(a.w)}`;
+  }
+  setTimeout(() => speak(a.sentence || a.r), 120);
+  $('#nextrow').style.display = 'flex'; $('#btn-next').focus();
+}
+$('#btn-next').onclick = () => { R.i++; nextQ(); };
+$('#round-quit').onclick = () => { if (R.results.length) finishRound(); else if (R.hub) openHub(R.hub.ch); else { renderHome(); show('s-home'); } };
+document.addEventListener('keydown', e => {
+  if (!$('#s-round').classList.contains('active')) return;
+  if (e.key === 'Enter' && $('#nextrow').style.display !== 'none') $('#btn-next').click();
+  if (/^[1-5]$/.test(e.key) && e.target.tagName !== 'INPUT' && $('#nextrow').style.display === 'none') { const b = $('#answers').querySelectorAll('button')[+e.key - 1]; if (b) b.click(); }
+});
+
+/* ================= PRONUNCIATIONS (passive slideshow) ================= */
+let SLIDE = null;
+const SPEEDS = [{k: 'slow', ms: 6000, label: 'Slow'}, {k: 'normal', ms: 4500, label: 'Normal'}, {k: 'fast', ms: 3200, label: 'Fast'}];
+function entriesFor(h){
+  const scope = P.slideScope || 'hl';
+  let ws = scope === 'hl' ? h.words.filter(isHL) : h.words.slice();
+  if (!ws.length) ws = h.words.slice();
+  const order = [...h.on, ...h.kun];
+  return ws.sort((a, b) => (order.indexOf(a.hr) - order.indexOf(b.hr)) || a.w.length - b.w.length);
+}
+function clearSlideTimers(){ if (!SLIDE) return; SLIDE.timers.forEach(clearTimeout); SLIDE.timers = []; }
+/* One queued utterance run per slide: the reading, "as in", the word, "which means ...".
+   Each language gets its own voice, nothing is cancelled mid-run, and the slide advances
+   when the last utterance actually finishes — with a timer only as a fallback. */
+let slVoiceJa = null;
+function pickSlideVoice(){
+  try { const vs = speechSynthesis.getVoices().filter(v => /^ja/i.test(v.lang));
+        slVoiceJa = vs.find(v => /Kyoko|O-ren|Google 日本語|Nanami|Ayumi|Haruka/i.test(v.name)) || vs[0] || null; } catch(e) {}
+}
+if ('speechSynthesis' in window) { pickSlideVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickSlideVoice); } catch(e) {} }
+function speakSequence(parts, token, onDone){
+  if (!('speechSynthesis' in window) || !GameVoice.enabled) { onDone(false); return; }
+  try { speechSynthesis.cancel(); } catch(e) {}
+  SLIDE.timers.push(setTimeout(() => {
+    if (!SLIDE || SLIDE.paused || SLIDE.token !== token) return;
+    let last = null, spoke = false;
+    parts.forEach(pp => {
+      try {
+        const u = new SpeechSynthesisUtterance(pp.t);
+        u.lang = pp.lang; u.rate = pp.rate || 0.9;
+        if (pp.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
+        last = u; spoke = true;
+        speechSynthesis.speak(u);
+      } catch(e) {}
+    });
+    if (last) last.onend = () => { if (SLIDE && SLIDE.token === token && !SLIDE.paused) onDone(true); };
+    if (!spoke) onDone(false);
+  }, 160));
+}
+function slideDwell(){ return {6000: 2200, 4500: 1400, 3200: 900}[P.slideSpeed || 4500] || 1400; }
+function renderSlideOpts(){
+  const sp = P.slideSpeed || 4500;
+  $('#slopts').innerHTML =
+    `<span class="lp-label">Words</span>
+     <button class="lp${(P.slideScope || 'hl') === 'hl' ? ' on' : ''}" data-scope="hl">Highlighted<small>tested on</small></button>
+     <button class="lp${P.slideScope === 'all' ? ' on' : ''}" data-scope="all">All<small>every word</small></button>
+     <span class="lp-label" style="margin-left:8px">Pace</span>` +
+    SPEEDS.map(x => `<button class="lp${sp === x.ms ? ' on' : ''}" data-ms="${x.ms}">${x.label}</button>`).join('');
+  $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
+  $('#slopts').querySelectorAll('[data-ms]').forEach(b => b.onclick = () => { P.slideSpeed = +b.dataset.ms; save(); renderSlideOpts(); });
+}
+function startSlides(){
+  SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
+  renderSlideOpts(); show('s-slide'); step(true);
+}
+function restartHub(){ if (!SLIDE) return; clearSlideTimers(); SLIDE.ei = -1; step(true); }
+function curHubOf(){ return HUBS[SLIDE.order[SLIDE.hi % SLIDE.order.length]]; }
+function step(intro){
+  if (!SLIDE) return;
+  clearSlideTimers();
+  const h = curHubOf(), es = entriesFor(h);
+  SLIDE.entries = es;
+  SLIDE.token = (SLIDE.token || 0) + 1;
+  const token = SLIDE.token;
+  if (intro) {
+    try { speechSynthesis.cancel(); } catch(e) {}
+    $('#sl-kanji').textContent = h.ch;
+    $('#sl-kanji').classList.remove('in'); void $('#sl-kanji').offsetWidth; $('#sl-kanji').classList.add('in');
+    $('#sl-mean').innerHTML = `${h.mn} <span class="lestag">L${h.lesson}</span>`;
+    $('#sl-card').classList.remove('in'); $('#sl-card').innerHTML = '';
+    $('#sl-dots').innerHTML = es.map(() => '<i></i>').join('');
+    SLIDE.ei = 0;
+    if (!SLIDE.paused) SLIDE.timers.push(setTimeout(() => { if (SLIDE && SLIDE.token === token) step(false); }, 2400));
+    return;
+  }
+  const e = es[SLIDE.ei];
+  if (!e) { SLIDE.hi++; SLIDE.ei = -1; return step(true); }
+  const t = byChar[e.hub] && byChar[e.hub].on.includes(e.hr) ? 'on' : 'kun';
+  const meaning = e.m.replace(/;/g, ' or ');
+  const card = $('#sl-card');
+  card.classList.remove('in'); void card.offsetWidth;
+  card.innerHTML = `<div class="rd kj ${t}r">${t === 'on' ? '▶' : '▷'} ${e.hr}</div>
+    <div class="as">as in <span class="kj">${[...e.w].map(c => c === e.hub ? `<b>${c}</b>` : c).join('')}</span> <span class="rr kj">${e.r}</span></div>
+    <div class="mn">which means <b>${meaning}</b></div>`;
+  card.classList.add('in');
+  $('#sl-dots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === SLIDE.ei));
+  const pace = P.slideSpeed || 4500;
+  let moved = false;
+  const go = () => {
+    if (moved || !SLIDE || SLIDE.token !== token || SLIDE.paused) return;
+    moved = true; SLIDE.ei++; step(false);
+  };
+  speakSequence([
+    {t: e.hr, lang: 'ja-JP', rate: 0.8},
+    {t: 'as in', lang: 'en-US', rate: 0.95},
+    {t: e.r, lang: 'ja-JP', rate: 0.8},
+    {t: 'which means ' + meaning, lang: 'en-US', rate: 1}
+  ], token, spoke => {
+    if (!SLIDE || SLIDE.token !== token || SLIDE.paused) return;
+    SLIDE.timers.push(setTimeout(go, spoke ? slideDwell() : pace));
+  });
+  SLIDE.timers.push(setTimeout(go, pace + 9000));
+}
+function slidePause(on){
+  if (!SLIDE) return;
+  SLIDE.paused = on;
+  $('#sl-play').textContent = on ? '▶ Play' : '⏸ Pause';
+  if (on) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} }
+  else step(false);
+}
+function stopSlides(){ clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; renderHome(); show('s-home'); }
+$('#btn-slides').onclick = startSlides;
+$('#sl-close').onclick = stopSlides;
+$('#sl-play').onclick = () => slidePause(!SLIDE.paused);
+$('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); };
+$('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); };
+
+/* ================= SUMMARY ================= */
+function finishRound(){
+  const n = R.results.length, c = R.results.filter(r => r.ok).length; const pct = n ? Math.round(100 * c / n) : 0;
+  $('#sum-families').innerHTML = ''; $('#sum-missed').innerHTML = '';
+  $('#sum-title').textContent = R.title || (R.hub ? `Drill ${R.hub.ch}` : {words:'Read words', sentences:'Read sentences', cloze:'Sound cloze', build:'Build a word', sort:'On or kun?', type:'Type the reading', story:'Story time', fill:'Write the readings'}[R.mode] || 'Round');
+  $('#sum-score').innerHTML = `${pct}% <small>${c} of ${n}</small>`;
+  $('#sum-hub').style.display = R.hub ? '' : 'none';
+  $('#sum-again').textContent = R.endless ? 'Keep going' : 'Play again';
+  let note = '';
+  if (R.hub) {
+    const hp = hubPct(R.hub);
+    note = hp >= 80 ? `${R.hub.ch} is cleared (${hp}% of its words solid).` : `${hp}% of ${R.hub.ch}'s words are solid. 80% clears it.`;
+    const fam = {}; R.hub.words.forEach(w => (fam[w.hr] = fam[w.hr] || []).push(w));
+    $('#sum-families').innerHTML = `<h2 style="margin-top:18px">How ${R.hub.ch} sounds</h2>` + Object.entries(fam).map(([r, ws]) => `<div class="family"><div class="rh kj">${r}<i>${R.hub.on.includes(r) ? "▶ on'yomi" : "▷ kun'yomi"}</i></div><div class="ws">${ws.map(w => `<span class="kj">${hubMark(w)}<small>${w.r}</small></span>`).join('')}</div></div>`).join('');
+  } else {
+    note = n >= 10 ? `${n} read. Words you missed come back sooner.` : 'Words you missed come back sooner.';
+  }
+  $('#sum-note').textContent = note;
+  const missed = [...new Map(R.results.filter(r => !r.ok).map(r => [r.a.written, r.a])).values()];
+  if (missed.length) $('#sum-missed').innerHTML = `<h2>Missed</h2>` + missed.map(a => `<div class="w kj">${hubMark({w: a.written}, a.hub)}<small>${a.r} — ${a.m}</small> <button data-say="${a.r}">🔊</button></div>`).join('');
+  $('#sum-missed').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+  show('s-sum');
+}
+$('#sum-again').onclick = () => { if (R.endless) startEndless(R.mode, R.pool === UNIQUE_WORDS ? null : R.pool, R.title); else startDrill(R.hub); };
+$('#sum-hub').onclick = () => openHub(R.hub.ch);
+$('#sum-home').onclick = () => { renderHome(); show('s-home'); };
+
+/* ================= REVIEW / MISC ================= */
+$('#btn-review').onclick = () => { const ws = UNIQUE_WORDS.filter(w => wstat(w).m > wstat(w).c); if (ws.length) startEndless('words', ws, 'Review misses'); };
+$('#btn-test').onclick = () => speak('おんがく。おんよみと、くんよみ。');
+$('#btn-reset').onclick = () => { if (confirm('Erase all progress for this lesson?')) { P = {words:{}, hubs:{}, lessons: LESSONS_ON}; save(); renderHome(); toast('Progress reset'); } };
+if (Array.isArray(P.lessons) && P.lessons.length) LESSONS_ON = P.lessons.filter(n => ALL_LESSONS.includes(n));
+if (!LESSONS_ON.length) LESSONS_ON = ALL_LESSONS.slice();
+buildModel();
+renderHome();
+</script>
+</body>
+</html>
