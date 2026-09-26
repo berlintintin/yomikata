@@ -254,6 +254,13 @@ header .right{display:flex;align-items:center;gap:10px}
 .slopts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .slopts .lp{padding:5px 11px;font-size:13px}
 .slopts .lp small{font-size:9.5px}
+.pacewrap{display:inline-flex;align-items:center;gap:8px;margin-left:6px}
+.pacewrap input[type=range]{-webkit-appearance:none;appearance:none;width:104px;height:4px;border-radius:999px;background:var(--line);outline:none}
+.pacewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
+.pacewrap input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
+.pacewrap input[type=range]:focus-visible{outline:3px solid var(--hi);outline-offset:4px}
+.pacenum{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;min-width:78px}
+.pacenum i{font-style:normal;font-weight:500;color:var(--muted)}
 .stage{text-align:center;padding:26px 0 10px;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
 .stage-k{font-size:clamp(110px,30vw,190px);line-height:1;font-weight:600}
 .stage-k.in{animation:kin .5s ease-out}
@@ -814,7 +821,7 @@ function lessonLabel(){
 
 /* ================= PROGRESS ================= */
 const KEY = 'yomikata-v3';
-let P = {words:{}, hubs:{}, lessons:null, hl:null, slideScope:'hl', slideSpeed:4500};
+let P = {words:{}, hubs:{}, lessons:null, hl:null, slideScope:'hl', voiceRate:1, slidePace:1};
 try { const s = localStorage.getItem(KEY); if (s) P = Object.assign(P, JSON.parse(s)); } catch(e) {}
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(P)); } catch(e) {} }
 function wstat(w){ return P.words[w.w] || (P.words[w.w] = {c:0, m:0}); }
@@ -824,6 +831,30 @@ function hubPct(h){ return Math.round(100 * h.words.filter(solid).length / h.wor
 /* ================= AUDIO (GameVoice, shared with the other Heinze games) ================= */
 function speak(text, rate){ try { speechSynthesis.cancel(); } catch(e) {} GameVoice.speak(text, {rate: rate || 0.9}); }
 GameVoice.bindToggle(document.getElementById('btnSound'));
+
+/* iOS (and therefore every browser on iPhone/iPad) only lets speechSynthesis start
+   from inside a real user gesture. Anything fired later on a timer is silently
+   dropped, and speech stays locked for the rest of the page. So the first tap
+   anywhere primes it with a silent utterance; everything after that is allowed. */
+let speechPrimed = false;
+function primeSpeech(){
+  if (speechPrimed || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.resume();
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; u.rate = 1; u.lang = 'ja-JP';
+    speechSynthesis.speak(u);
+    speechPrimed = true;
+  } catch(e) {}
+}
+['touchend', 'pointerdown', 'mousedown', 'keydown'].forEach(ev =>
+  window.addEventListener(ev, primeSpeech, {passive: true}));
+/* iOS also suspends speech when the tab goes to the background and can leave the
+   queue paused; nudge it awake whenever we come back. */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (SLIDE && !SLIDE.paused) slidePause(true); }
+  else { try { speechSynthesis.resume(); } catch(e) {} }
+});
 
 /* ================= HELPERS ================= */
 const $ = s => document.querySelector(s);
@@ -1470,7 +1501,25 @@ document.addEventListener('keydown', e => {
 
 /* ================= PRONUNCIATIONS (passive slideshow) ================= */
 let SLIDE = null;
-const SPEEDS = [{k: 'slow', ms: 6000, label: 'Slow'}, {k: 'normal', ms: 4500, label: 'Normal'}, {k: 'fast', ms: 3200, label: 'Fast'}];
+/* Two independent dials: how fast the voice reads, and how long each card holds
+   once it has finished speaking. Either can be slow while the other is quick. */
+const SPEED_MIN = 0.55, SPEED_MAX = 2.0;
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+function migrateSpeed(){
+  if (typeof P.slideSpeed === 'number' && isFinite(P.slideSpeed)) {
+    const v = P.slideSpeed > 10 ? 4500 / P.slideSpeed : P.slideSpeed;   // old ms setting
+    if (typeof P.voiceRate !== 'number') P.voiceRate = v;
+    if (typeof P.slidePace !== 'number') P.slidePace = v;
+    P.slideSpeed = null;
+  }
+}
+function voiceSpeed(){ migrateSpeed(); const v = P.voiceRate; return (typeof v === 'number' && isFinite(v)) ? clamp(v, SPEED_MIN, SPEED_MAX) : 1; }
+function pageSpeed(){  migrateSpeed(); const v = P.slidePace; return (typeof v === 'number' && isFinite(v)) ? clamp(v, SPEED_MIN, SPEED_MAX) : 1; }
+const jaRate  = () => clamp(0.85 * voiceSpeed(), 0.45, 1.9);
+const enRate  = () => clamp(1.00 * voiceSpeed(), 0.5, 2);
+const introMs = () => clamp(2400 / pageSpeed(), 700, 5200);
+const voiceLabel = () => { const v = voiceSpeed(); return v < 0.8 ? 'deliberate' : v > 1.45 ? 'quick' : v > 1.1 ? 'brisk' : 'natural'; };
+
 function entriesFor(h){
   const scope = P.slideScope || 'hl';
   let ws = scope === 'hl' ? h.words.filter(isHL) : h.words.slice();
@@ -1493,6 +1542,7 @@ function speakSequence(parts, token, onDone){
   try { speechSynthesis.cancel(); } catch(e) {}
   SLIDE.timers.push(setTimeout(() => {
     if (!SLIDE || SLIDE.paused || SLIDE.token !== token) return;
+    try { speechSynthesis.resume(); } catch(e) {}
     let last = null, spoke = false;
     parts.forEach(pp => {
       try {
@@ -1507,17 +1557,25 @@ function speakSequence(parts, token, onDone){
     if (!spoke) onDone(false);
   }, 160));
 }
-function slideDwell(){ return {6000: 2200, 4500: 1400, 3200: 900}[P.slideSpeed || 4500] || 1400; }
+function slideDwell(){ return clamp(1500 / pageSpeed(), 220, 4200); }
 function renderSlideOpts(){
-  const sp = P.slideSpeed || 4500;
   $('#slopts').innerHTML =
     `<span class="lp-label">Words</span>
      <button class="lp${(P.slideScope || 'hl') === 'hl' ? ' on' : ''}" data-scope="hl">Highlighted<small>tested on</small></button>
      <button class="lp${P.slideScope === 'all' ? ' on' : ''}" data-scope="all">All<small>every word</small></button>
-     <span class="lp-label" style="margin-left:8px">Pace</span>` +
-    SPEEDS.map(x => `<button class="lp${sp === x.ms ? ' on' : ''}" data-ms="${x.ms}">${x.label}</button>`).join('');
+     <label class="pacewrap"><span class="lp-label">Voice</span>
+       <input type="range" id="slvoice" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${voiceSpeed()}" aria-label="voice speed">
+       <span class="pacenum" id="slvoicenum">${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i></span>
+     </label>
+     <label class="pacewrap"><span class="lp-label">Slides</span>
+       <input type="range" id="slpace" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${pageSpeed()}" aria-label="time between slides">
+       <span class="pacenum" id="slpacenum">${(slideDwell() / 1000).toFixed(1)}s <i>hold</i></span>
+     </label>`;
   $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
-  $('#slopts').querySelectorAll('[data-ms]').forEach(b => b.onclick = () => { P.slideSpeed = +b.dataset.ms; save(); renderSlideOpts(); });
+  const v = $('#slvoice'), g = $('#slpace');
+  v.oninput = () => { P.voiceRate = +v.value; $('#slvoicenum').innerHTML = `${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i>`; };
+  g.oninput = () => { P.slidePace = +g.value; $('#slpacenum').innerHTML = `${(slideDwell() / 1000).toFixed(1)}s <i>hold</i>`; };
+  v.onchange = g.onchange = () => save();
 }
 function startSlides(){
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
@@ -1540,13 +1598,13 @@ function step(intro){
     $('#sl-card').classList.remove('in'); $('#sl-card').innerHTML = '';
     $('#sl-dots').innerHTML = es.map(() => '<i></i>').join('');
     SLIDE.ei = 0;
-    if (!SLIDE.paused) SLIDE.timers.push(setTimeout(() => { if (SLIDE && SLIDE.token === token) step(false); }, 2400));
+    if (!SLIDE.paused) SLIDE.timers.push(setTimeout(() => { if (SLIDE && SLIDE.token === token) step(false); }, introMs()));
     return;
   }
   const e = es[SLIDE.ei];
   if (!e) { SLIDE.hi++; SLIDE.ei = -1; return step(true); }
   const t = byChar[e.hub] && byChar[e.hub].on.includes(e.hr) ? 'on' : 'kun';
-  const meaning = e.m.replace(/;/g, ' or ');
+  const meaning = e.m.replace(/;\s*/g, ' or ');
   const card = $('#sl-card');
   card.classList.remove('in'); void card.offsetWidth;
   card.innerHTML = `<div class="rd kj ${t}r">${t === 'on' ? '▶' : '▷'} ${e.hr}</div>
@@ -1554,22 +1612,27 @@ function step(intro){
     <div class="mn">which means <b>${meaning}</b></div>`;
   card.classList.add('in');
   $('#sl-dots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === SLIDE.ei));
-  const pace = P.slideSpeed || 4500;
+  const pace = clamp(4200 / pageSpeed(), 1200, 9000);
   let moved = false;
   const go = () => {
     if (moved || !SLIDE || SLIDE.token !== token || SLIDE.paused) return;
     moved = true; SLIDE.ei++; step(false);
   };
   speakSequence([
-    {t: e.hr, lang: 'ja-JP', rate: 0.8},
-    {t: 'as in', lang: 'en-US', rate: 0.95},
-    {t: e.r, lang: 'ja-JP', rate: 0.8},
-    {t: 'which means ' + meaning, lang: 'en-US', rate: 1}
+    {t: e.hr, lang: 'ja-JP', rate: jaRate()},
+    {t: 'as in', lang: 'en-US', rate: enRate() * 0.95},
+    {t: e.r, lang: 'ja-JP', rate: jaRate()},
+    {t: 'which means ' + meaning, lang: 'en-US', rate: enRate()}
   ], token, spoke => {
     if (!SLIDE || SLIDE.token !== token || SLIDE.paused) return;
     SLIDE.timers.push(setTimeout(go, spoke ? slideDwell() : pace));
   });
-  SLIDE.timers.push(setTimeout(go, pace + 9000));
+  /* onend is unreliable on iOS, so the safety net is an estimate of how long the
+     line takes to say rather than a flat wait that would stall the slideshow. */
+  const vs = voiceSpeed();
+  const est = [e.hr, 'as in', e.r, 'which means ' + meaning]
+    .reduce((a, t, i) => a + Math.max(300, t.length * (i % 2 ? 72 : 96) / vs), 0);
+  SLIDE.timers.push(setTimeout(go, est + slideDwell() + 1500));
 }
 function slidePause(on){
   if (!SLIDE) return;
