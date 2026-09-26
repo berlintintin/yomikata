@@ -250,16 +250,21 @@ header .right{display:flex;align-items:center;gap:10px}
   .app.wide #s-round.two-col .storyhead{text-align:left}
   .app.wide #s-round.two-col .q .instr{text-align:left}
 }
-.slidebar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
-.slopts{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.slidebar{padding-bottom:10px;border-bottom:1.5px solid var(--line)}
+.slidebar > .btn{margin-bottom:8px}
+#sl-sound{margin-left:8px;border-color:var(--bad);color:var(--bad);font-weight:700}
+.slopts{display:grid;gap:7px}
+.slrow{display:grid;grid-template-columns:52px 18px minmax(90px,150px) 18px 1fr;align-items:center;gap:7px}
+.sllab{font-size:12.5px;color:var(--muted);text-align:right}
+.slend{font-size:14px;text-align:center;line-height:1;user-select:none}
+.slwords{grid-column:2 / -1;display:flex;gap:7px;flex-wrap:wrap}
 .slopts .lp{padding:5px 11px;font-size:13px}
 .slopts .lp small{font-size:9.5px}
-.pacewrap{display:inline-flex;align-items:center;gap:8px;margin-left:6px}
-.pacewrap input[type=range]{-webkit-appearance:none;appearance:none;width:104px;height:4px;border-radius:999px;background:var(--line);outline:none}
-.pacewrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
-.pacewrap input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
-.pacewrap input[type=range]:focus-visible{outline:3px solid var(--hi);outline-offset:4px}
-.pacenum{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;min-width:78px}
+.slrow input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:999px;background:var(--line);outline:none}
+.slrow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
+.slrow input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--hi);border:2px solid var(--ink);cursor:pointer}
+.slrow input[type=range]:focus-visible{outline:3px solid var(--hi);outline-offset:4px}
+.pacenum{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
 .pacenum i{font-style:normal;font-weight:500;color:var(--muted)}
 .stage{text-align:center;padding:26px 0 10px;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
 .stage-k{font-size:clamp(110px,30vw,190px);line-height:1;font-weight:600}
@@ -372,6 +377,7 @@ header .right{display:flex;align-items:center;gap:10px}
 <section class="screen" id="s-slide">
   <div class="slidebar">
     <button class="btn quiet" id="sl-close" style="padding:6px 12px">✕ Close</button>
+    <button class="btn" id="sl-sound" style="display:none;padding:6px 12px">🔊 Tap to enable sound</button>
     <div class="slopts" id="slopts"></div>
   </div>
   <div class="stage" id="stage">
@@ -836,18 +842,21 @@ GameVoice.bindToggle(document.getElementById('btnSound'));
    from inside a real user gesture. Anything fired later on a timer is silently
    dropped, and speech stays locked for the rest of the page. So the first tap
    anywhere primes it with a silent utterance; everything after that is allowed. */
-let speechPrimed = false;
+let speechPrimed = false, speechOK = false;
 function primeSpeech(){
   if (speechPrimed || !('speechSynthesis' in window)) return;
   try {
     speechSynthesis.resume();
+    /* A space makes no sound, but iOS counts it as a real utterance and unlocks
+       the synth. A volume-0 utterance does NOT count, which is why this failed. */
     const u = new SpeechSynthesisUtterance(' ');
-    u.volume = 0; u.rate = 1; u.lang = 'ja-JP';
+    u.rate = 1; u.lang = 'ja-JP';
+    u.onstart = () => { speechOK = true; };
     speechSynthesis.speak(u);
     speechPrimed = true;
   } catch(e) {}
 }
-['touchend', 'pointerdown', 'mousedown', 'keydown'].forEach(ev =>
+['touchend', 'click', 'pointerdown', 'mousedown', 'keydown'].forEach(ev =>
   window.addEventListener(ev, primeSpeech, {passive: true}));
 /* iOS also suspends speech when the tab goes to the background and can leave the
    queue paused; nudge it awake whenever we come back. */
@@ -1537,47 +1546,87 @@ function pickSlideVoice(){
         slVoiceJa = vs.find(v => /Kyoko|O-ren|Google 日本語|Nanami|Ayumi|Haruka/i.test(v.name)) || vs[0] || null; } catch(e) {}
 }
 if ('speechSynthesis' in window) { pickSlideVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickSlideVoice); } catch(e) {} }
+function safeCancel(){
+  try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); } catch(e) {}
+}
 function speakSequence(parts, token, onDone){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) { onDone(false); return; }
-  try { speechSynthesis.cancel(); } catch(e) {}
+  safeCancel();
   SLIDE.timers.push(setTimeout(() => {
     if (!SLIDE || SLIDE.paused || SLIDE.token !== token) return;
     try { speechSynthesis.resume(); } catch(e) {}
     let last = null, spoke = false;
-    parts.forEach(pp => {
+    parts.forEach((pp, i) => {
       try {
         const u = new SpeechSynthesisUtterance(pp.t);
         u.lang = pp.lang; u.rate = pp.rate || 0.9;
         if (pp.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
+        if (i === 0) u.onstart = () => { speechOK = true; hideSoundNag(); };
         last = u; spoke = true;
         speechSynthesis.speak(u);
       } catch(e) {}
     });
+    /* If nothing has actually been heard yet, offer a tap that speaks from inside
+       the gesture — the one thing iOS always allows. */
+    SLIDE.timers.push(setTimeout(() => { if (SLIDE && !speechOK && GameVoice.enabled) showSoundNag(); }, 1800));
     if (last) last.onend = () => { if (SLIDE && SLIDE.token === token && !SLIDE.paused) onDone(true); };
     if (!spoke) onDone(false);
   }, 160));
 }
-function slideDwell(){ return clamp(1500 / pageSpeed(), 220, 4200); }
+function showSoundNag(){ const el = $('#sl-sound'); if (el) el.style.display = ''; }
+function hideSoundNag(){ const el = $('#sl-sound'); if (el) el.style.display = 'none'; }
+function tapToSpeak(){
+  /* Called straight from a tap, so iOS lets it through. */
+  const e = SLIDE && SLIDE.entries && SLIDE.entries[SLIDE.ei];
+  if (!e) return;
+  try {
+    speechSynthesis.resume();
+    const meaning = e.m.replace(/;\s*/g, ' or ');
+    [[e.hr, 'ja-JP', jaRate()], ['as in', 'en-US', enRate() * 0.95],
+     [e.r, 'ja-JP', jaRate()], ['which means ' + meaning, 'en-US', enRate()]].forEach(([t, lang, rate], i) => {
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = lang; u.rate = rate;
+      if (lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
+      if (i === 0) u.onstart = () => { speechOK = true; hideSoundNag(); };
+      speechSynthesis.speak(u);
+    });
+  } catch(err) {}
+}
+function slideDwell(){ return clamp(1100 / pageSpeed(), 200, 3000); }
+/* How long a card is on screen, start to start. The voice finishing early just
+   means a longer quiet beat — it never yanks the next reading up. */
+function cardMs(){ return clamp(5200 / pageSpeed(), 1500, 12000); }
 function renderSlideOpts(){
   $('#slopts').innerHTML =
-    `<span class="lp-label">Words</span>
-     <button class="lp${(P.slideScope || 'hl') === 'hl' ? ' on' : ''}" data-scope="hl">Highlighted<small>tested on</small></button>
-     <button class="lp${P.slideScope === 'all' ? ' on' : ''}" data-scope="all">All<small>every word</small></button>
-     <label class="pacewrap"><span class="lp-label">Voice</span>
+    `<div class="slrow">
+       <span class="sllab">Words</span>
+       <div class="slwords">
+         <button class="lp${(P.slideScope || 'hl') === 'hl' ? ' on' : ''}" data-scope="hl">Highlighted<small>tested on</small></button>
+         <button class="lp${P.slideScope === 'all' ? ' on' : ''}" data-scope="all">All<small>every word</small></button>
+       </div>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Voice</span>
+       <span class="slend">🐢</span>
        <input type="range" id="slvoice" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${voiceSpeed()}" aria-label="voice speed">
+       <span class="slend">🐇</span>
        <span class="pacenum" id="slvoicenum">${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i></span>
-     </label>
-     <label class="pacewrap"><span class="lp-label">Slides</span>
-       <input type="range" id="slpace" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${pageSpeed()}" aria-label="time between slides">
-       <span class="pacenum" id="slpacenum">${(slideDwell() / 1000).toFixed(1)}s <i>hold</i></span>
-     </label>`;
+     </div>
+     <div class="slrow">
+       <span class="sllab">Slides</span>
+       <span class="slend">🐢</span>
+       <input type="range" id="slpace" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${pageSpeed()}" aria-label="time on each card">
+       <span class="slend">🐇</span>
+       <span class="pacenum" id="slpacenum">${(cardMs() / 1000).toFixed(1)}s <i>per card</i></span>
+     </div>`;
   $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
   const v = $('#slvoice'), g = $('#slpace');
   v.oninput = () => { P.voiceRate = +v.value; $('#slvoicenum').innerHTML = `${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i>`; };
-  g.oninput = () => { P.slidePace = +g.value; $('#slpacenum').innerHTML = `${(slideDwell() / 1000).toFixed(1)}s <i>hold</i>`; };
+  g.oninput = () => { P.slidePace = +g.value; $('#slpacenum').innerHTML = `${(cardMs() / 1000).toFixed(1)}s <i>per card</i>`; };
   v.onchange = g.onchange = () => save();
 }
 function startSlides(){
+  hideSoundNag();
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
   renderSlideOpts(); show('s-slide'); step(true);
 }
@@ -1612,11 +1661,16 @@ function step(intro){
     <div class="mn">which means <b>${meaning}</b></div>`;
   card.classList.add('in');
   $('#sl-dots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === SLIDE.ei));
-  const pace = clamp(4200 / pageSpeed(), 1200, 9000);
+  const shownAt = Date.now(), floor = cardMs();
   let moved = false;
   const go = () => {
     if (moved || !SLIDE || SLIDE.token !== token || SLIDE.paused) return;
     moved = true; SLIDE.ei++; step(false);
+  };
+  /* Wait out whatever is left of the card's own time, on top of the voice. */
+  const goAfterFloor = extra => {
+    const left = Math.max(extra, floor - (Date.now() - shownAt));
+    SLIDE.timers.push(setTimeout(go, left));
   };
   speakSequence([
     {t: e.hr, lang: 'ja-JP', rate: jaRate()},
@@ -1625,14 +1679,14 @@ function step(intro){
     {t: 'which means ' + meaning, lang: 'en-US', rate: enRate()}
   ], token, spoke => {
     if (!SLIDE || SLIDE.token !== token || SLIDE.paused) return;
-    SLIDE.timers.push(setTimeout(go, spoke ? slideDwell() : pace));
+    goAfterFloor(spoke ? slideDwell() : 0);
   });
   /* onend is unreliable on iOS, so the safety net is an estimate of how long the
      line takes to say rather than a flat wait that would stall the slideshow. */
   const vs = voiceSpeed();
   const est = [e.hr, 'as in', e.r, 'which means ' + meaning]
     .reduce((a, t, i) => a + Math.max(300, t.length * (i % 2 ? 72 : 96) / vs), 0);
-  SLIDE.timers.push(setTimeout(go, est + slideDwell() + 1500));
+  SLIDE.timers.push(setTimeout(go, Math.max(floor, est + slideDwell()) + 1500));
 }
 function slidePause(on){
   if (!SLIDE) return;
@@ -1644,6 +1698,7 @@ function slidePause(on){
 function stopSlides(){ clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; renderHome(); show('s-home'); }
 $('#btn-slides').onclick = startSlides;
 $('#sl-close').onclick = stopSlides;
+$('#sl-sound').onclick = tapToSpeak;
 $('#sl-play').onclick = () => slidePause(!SLIDE.paused);
 $('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); };
 $('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); };
