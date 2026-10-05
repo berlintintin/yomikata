@@ -288,6 +288,21 @@ header .right{display:flex;align-items:center;gap:10px}
 .star{font-size:17px;color:var(--muted)}
 .star.on{color:var(--hi)}
 .lessonpick{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px}
+.rangecard{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px 8px;margin:0 0 18px}
+.rangeread{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+.rangeread .what{font-size:13px;color:var(--muted)}
+.rangeread .which{font-size:17px;font-weight:700}
+.rangeread .which b{color:var(--bad)}
+.rangeread .howmany{font-size:12px;color:var(--muted)}
+.dual{position:relative;height:34px}
+.dual .track,.dual .fill{position:absolute;top:14px;height:6px;border-radius:3px;pointer-events:none}
+.dual .track{left:0;right:0;background:var(--line)}
+.dual .fill{background:var(--hi)}
+.dual input[type=range]{position:absolute;left:0;right:0;top:0;width:100%;height:34px;margin:0;-webkit-appearance:none;appearance:none;background:transparent;pointer-events:none}
+.dual input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:24px;height:24px;border-radius:50%;background:var(--card);border:3px solid var(--ink);cursor:grab}
+.dual input[type=range]::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border-radius:50%;background:var(--card);border:3px solid var(--ink);cursor:grab}
+.ticks{display:flex;justify-content:space-between;padding:0 4px;font-size:11.5px;font-weight:700;color:var(--muted)}
+.ticks span{min-width:1.6em;text-align:center}
 .lp-label{font-size:13px;color:var(--muted);margin-right:2px}
 .lp{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;padding:6px 14px;border:1.5px solid var(--line);border-radius:999px;font-weight:700;background:var(--card)}
 .lp small{font-size:10.5px;font-weight:500;color:var(--muted)}
@@ -328,7 +343,20 @@ header .right{display:flex;align-items:center;gap:10px}
 <section class="screen active" id="s-home">
   <h2>Read</h2>
   <p class="lede">A word comes up; you say how it sounds. Tap any kanji you don't know for a hint. No timer, stop whenever.</p>
-  <div class="lessonpick" id="lessonpick"></div>
+  <div class="rangecard" id="rangecard">
+    <div class="rangeread">
+      <span class="what">Quiz me on</span>
+      <span class="which" id="rangewhich"></span>
+      <span class="howmany" id="rangehowmany"></span>
+    </div>
+    <div class="dual" id="rangedual">
+      <div class="track"></div>
+      <div class="fill" id="rangefill"></div>
+      <input type="range" id="lessonLow" min="0" max="0" step="1" value="0" aria-label="First lesson">
+      <input type="range" id="lessonHigh" min="0" max="0" step="1" value="0" aria-label="Last lesson">
+    </div>
+    <div class="ticks" id="ticks"></div>
+  </div>
   <div class="modes">
     <button class="mode" data-mode="words"><span class="ic">📖</span><span class="d"><b>Read words</b><span>Random words from the lesson, pick the full reading</span></span><em></em></button>
     <button class="mode" data-mode="sentences"><span class="ic">📝</span><span class="d"><b>Read sentences</b><span>Keep reading through a sentence; one compound is the stop</span></span><em></em></button>
@@ -933,19 +961,63 @@ function renderHome(){
 }
 document.querySelectorAll('#s-home .mode').forEach(b => b.onclick = () => { if (!b.disabled) startEndless(b.dataset.mode); });
 
-/* ================= LESSON RANGE ================= */
+/* ================= LESSON RANGE =================
+   A two-thumb slider. The thumbs move over positions in ALL_LESSONS (0, 1, 2 …),
+   so it still works if the content file ever skips a lesson number.
+   Dragging only updates the readout; letting go rebuilds the word list. */
+const lessonLowSlider = $('#lessonLow'), lessonHighSlider = $('#lessonHigh');
+const lessonsBetween = (lowIndex, highIndex) => ALL_LESSONS.slice(lowIndex, highIndex + 1);
+
+function thumbPositions(){
+  return [Number(lessonLowSlider.value), Number(lessonHighSlider.value)];
+}
+function drawRangeSlider(){
+  const [lowIndex, highIndex] = thumbPositions();
+  const lastIndex = Math.max(1, ALL_LESSONS.length - 1);
+  const firstLesson = ALL_LESSONS[lowIndex], lastLesson = ALL_LESSONS[highIndex];
+  $('#rangewhich').innerHTML = firstLesson === lastLesson
+    ? `Lesson <b>${firstLesson}</b>`
+    : `Lessons <b>${firstLesson}</b> – <b>${lastLesson}</b>`;
+  const kanjiCount = lessonsBetween(lowIndex, highIndex).reduce((sum, n) => sum + (window.KANJI_LESSONS[n] || []).length, 0);
+  $('#rangehowmany').textContent = `${kanjiCount} kanji`;
+  $('#rangefill').style.left = (lowIndex / lastIndex * 100) + '%';
+  $('#rangefill').style.right = (100 - highIndex / lastIndex * 100) + '%';
+}
+function onThumbMoved(whichThumb){
+  let [lowIndex, highIndex] = thumbPositions();
+  // Thumbs can't cross: the one being dragged pushes the other along.
+  if (lowIndex > highIndex) {
+    if (whichThumb === 'low') highIndex = lowIndex; else lowIndex = highIndex;
+    lessonLowSlider.value = lowIndex; lessonHighSlider.value = highIndex;
+  }
+  drawRangeSlider();
+}
+function onThumbReleased(){
+  const [lowIndex, highIndex] = thumbPositions();
+  const chosen = lessonsBetween(lowIndex, highIndex);
+  if (chosen.join() !== LESSONS_ON.join()) setLessons(chosen);
+}
+lessonLowSlider.addEventListener('input', () => onThumbMoved('low'));
+lessonHighSlider.addEventListener('input', () => onThumbMoved('high'));
+lessonLowSlider.addEventListener('change', onThumbReleased);
+lessonHighSlider.addEventListener('change', onThumbReleased);
+
+// Size the slider to the lessons in the content file (once, at start-up).
+(function setUpRangeSlider(){
+  const lastIndex = ALL_LESSONS.length - 1;
+  [lessonLowSlider, lessonHighSlider].forEach(slider => { slider.min = 0; slider.max = lastIndex; });
+  $('#ticks').innerHTML = ALL_LESSONS.map(n => `<span>${n}</span>`).join('');
+  // With only one lesson there's nothing to slide — just show which lesson it is.
+  if (ALL_LESSONS.length < 2) { $('#rangedual').style.display = 'none'; $('#ticks').style.display = 'none'; }
+})();
+
+// Called from renderHome(): put the thumbs where LESSONS_ON says.
 function renderLessons(){
-  const el = $('#lessonpick');
-  el.innerHTML = `<span class="lp-label">Quiz me on</span>` +
-    ALL_LESSONS.map(n => `<button class="lp${LESSONS_ON.includes(n) ? ' on' : ''}" data-n="${n}">L${n}<small>${(window.KANJI_LESSONS[n] || []).length} kanji</small></button>`).join('') +
-    `<button class="lp alt" id="lp-all">${LESSONS_ON.length === ALL_LESSONS.length ? 'Only the latest' : 'All lessons'}</button>`;
-  el.querySelectorAll('.lp[data-n]').forEach(b => b.onclick = () => {
-    const n = +b.dataset.n;
-    const next = LESSONS_ON.includes(n) ? LESSONS_ON.filter(x => x !== n) : [...LESSONS_ON, n].sort((a, c) => a - c);
-    if (!next.length) return toast('Keep at least one lesson on.');
-    setLessons(next);
-  });
-  $('#lp-all').onclick = () => setLessons(LESSONS_ON.length === ALL_LESSONS.length ? [ALL_LESSONS[ALL_LESSONS.length - 1]] : ALL_LESSONS.slice());
+  const lowIndex = Math.max(0, ALL_LESSONS.indexOf(LESSONS_ON[0]));
+  const highIndex = Math.max(lowIndex, ALL_LESSONS.indexOf(LESSONS_ON[LESSONS_ON.length - 1]));
+  lessonLowSlider.value = lowIndex;
+  lessonHighSlider.value = highIndex;
+  drawRangeSlider();
   $('#lessonlabel').textContent = lessonLabel();
 }
 function setLessons(list){
@@ -1747,8 +1819,21 @@ $('#sum-home').onclick = () => { renderHome(); show('s-home'); };
 $('#btn-review').onclick = () => { const ws = UNIQUE_WORDS.filter(w => wstat(w).m > wstat(w).c); if (ws.length) startEndless('words', ws, 'Review misses'); };
 $('#btn-test').onclick = () => speak('おんがく。おんよみと、くんよみ。');
 $('#btn-reset').onclick = () => { if (confirm('Erase all progress for this lesson?')) { P = {words:{}, hubs:{}, lessons: LESSONS_ON}; save(); renderHome(); toast('Progress reset'); } };
-if (Array.isArray(P.lessons) && P.lessons.length) LESSONS_ON = P.lessons.filter(n => ALL_LESSONS.includes(n));
-if (!LESSONS_ON.length) LESSONS_ON = ALL_LESSONS.slice();
+(function startingLessonRange(){
+  const newest = ALL_LESSONS[ALL_LESSONS.length - 1];
+  const saved = Array.isArray(P.lessons) ? P.lessons.filter(n => ALL_LESSONS.includes(n)) : [];
+  if (!saved.length) { LESSONS_ON = ALL_LESSONS.slice(); }
+  else {
+    // The slider picks a continuous range, so fill any gaps in an older pick.
+    let first = Math.min(...saved), last = Math.max(...saved);
+    // If the range ended at the newest lesson last time and lessons have been
+    // added to the content file since, stretch it to include them.
+    const previousNewest = P.newestLessonSeen || last;
+    if (last >= previousNewest) last = newest;
+    LESSONS_ON = ALL_LESSONS.filter(n => n >= first && n <= last);
+  }
+  P.lessons = LESSONS_ON; P.newestLessonSeen = newest; save();
+})();
 buildModel();
 renderHome();
 </script>
