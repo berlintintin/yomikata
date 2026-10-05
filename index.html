@@ -1529,11 +1529,11 @@ function migrateSpeed(){
   }
 }
 function voiceSpeed(){ migrateSpeed(); const v = P.voiceRate; return (typeof v === 'number' && isFinite(v)) ? clamp(v, SPEED_MIN, SPEED_MAX) : 1; }
-function slideWaitSeconds(){ const s = P.slideWait; return (typeof s === 'number' && isFinite(s)) ? clamp(s, WAIT_MIN_SECONDS, WAIT_MAX_SECONDS) : 2; }
+function slideWaitSeconds(){ const s = P.slideWait; return (typeof s === 'number' && isFinite(s)) ? clamp(Math.round(s), WAIT_MIN_SECONDS, WAIT_MAX_SECONDS) : 2; }
 const jaRate  = () => clamp(0.85 * voiceSpeed(), 0.3, 1.9);
 const enRate  = () => clamp(1.00 * voiceSpeed(), 0.35, 2);
 const voiceLabel = () => { const v = voiceSpeed(); return v < 0.55 ? 'very slow' : v < 0.8 ? 'deliberate' : v > 1.45 ? 'quick' : v > 1.1 ? 'brisk' : 'natural'; };
-const waitLabel  = () => `${slideWaitSeconds().toFixed(1)}s <i>after voice</i>`;
+const waitLabel  = () => `${slideWaitSeconds()}s <i>after voice</i>`;
 
 function entriesFor(h){
   const scope = P.slideScope || 'hl';
@@ -1634,7 +1634,7 @@ function renderSlideOpts(){
      <div class="slrow">
        <span class="sllab">Slides</span>
        <span class="slend slsec">0s</span>
-       <input type="range" id="slpace" min="${WAIT_MIN_SECONDS}" max="${WAIT_MAX_SECONDS}" step="0.5" value="${slideWaitSeconds()}" aria-label="seconds to wait after the voice before the next card">
+       <input type="range" id="slpace" min="${WAIT_MIN_SECONDS}" max="${WAIT_MAX_SECONDS}" step="1" value="${slideWaitSeconds()}" aria-label="seconds to wait after the voice before the next card">
        <span class="slend slsec">10s</span>
        <span class="pacenum" id="slpacenum">${waitLabel()}</span>
      </div>`;
