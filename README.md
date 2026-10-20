@@ -1,6 +1,6 @@
 # 読み方 Yomikata
 
-A kanji **readings** trainer for Genki, lessons 9–16. Most kanji apps teach one
+A kanji **readings** trainer for Genki, lessons 9–19. Most kanji apps teach one
 meaning per character; this one drills the thing that actually stops you mid-sentence —
 which reading fires in which compound, and why.
 
@@ -35,6 +35,9 @@ you play on. Audio uses the browser's Japanese voice.
 
     index.html            the whole app — engine, styles, sound, artwork
     yomikata-content.js   every lesson: kanji, words, sentences, stories
+    yomikata-notes.js     optional mini-lessons: how each kanji is built, a
+                          memory hook, and an example sentence (💡 / 📝 in the
+                          slideshow, and on each kanji's lookup page)
 
 No build step, no dependencies, no server. Open `index.html` and it runs.
 Only Google Fonts is fetched from the network; it falls back to system fonts offline.
@@ -45,7 +48,7 @@ Everything Genki-specific lives in `yomikata-content.js` — `index.html` never 
 editing. Add a block:
 
 ```js
-lessons[17] = [
+lessons[20] = [
   {ch:'漢', mn:'meaning', on:['オン'], kun:['くん'], words:[
     ['漢字', 'かん.じ', 'kanji'],
     ['漢の国', 'かん.の.くに', 'the land of Han', true]

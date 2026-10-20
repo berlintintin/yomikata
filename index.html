@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>読み方 — Yomikata · Genki L14</title>
+<title>読み方 — Yomikata · Genki</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
@@ -31,7 +31,9 @@ body{font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;fo
 .kj{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
-.app{max-width:640px;margin:0 auto;padding:16px 16px 48px;min-height:100vh}
+.app{max-width:640px;margin:0 auto;padding:16px 16px 48px;min-height:100vh;background:var(--paper)}
+/* On wider screens the app sits on a solid card, with the line-art scenery around it. */
+@media (min-width:700px){.app{margin:20px auto;min-height:auto;border:1.5px solid var(--line);border-radius:20px;box-shadow:0 6px 30px rgba(0,0,0,.12)}}
 header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0 18px;border-bottom:2px solid var(--ink)}
 header .brand{font-size:26px;font-weight:900;letter-spacing:.02em}
 header .brand small{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:500;font-size:13px;color:var(--muted);margin-left:8px}
@@ -151,6 +153,10 @@ ruby.rv rt{visibility:visible}
 
 #bgArt{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.18}
 #bgArt svg{width:100%;height:100%;display:block}
+/* The scenes were drawn with fixed paper/ink colors; follow the theme instead, so dark mode
+   doesn't get pale gray blocks. */
+#bgArt [fill="#f7f3e8"]{fill:var(--paper)}
+#bgArt [stroke="#2b3a67"]{stroke:var(--ink)}
 .app{position:relative;z-index:1}
 header .right{display:flex;align-items:center;gap:10px}
 #btnSound{font-size:13px;font-weight:700;border:1.5px solid var(--line);border-radius:8px;padding:4px 9px;background:var(--card)}
@@ -160,6 +166,8 @@ header .right{display:flex;align-items:center;gap:10px}
 .logo b{font-weight:900}
 .logo small{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.72;margin-top:2px}
 .sig .yr{font-size:12px;font-weight:600;color:var(--muted)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo{background:transparent}}
+:root[data-theme="dark"] .logo{background:transparent}
 /* sort mode */
 .zones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 @media (max-width:460px){.zones{grid-template-columns:1fr}}
@@ -250,9 +258,15 @@ header .right{display:flex;align-items:center;gap:10px}
   .app.wide #s-round.two-col .storyhead{text-align:left}
   .app.wide #s-round.two-col .q .instr{text-align:left}
 }
-.slidebar{padding-bottom:10px;border-bottom:1.5px solid var(--line)}
-.slidebar > .btn{margin-bottom:8px}
-#sl-sound{margin-left:8px;border-color:var(--bad);color:var(--bad);font-weight:700}
+.slidebar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-bottom:8px;border-bottom:1.5px solid var(--line)}
+.slidebar .slopts{flex-basis:100%}
+.slopts[hidden]{display:none}
+.slrow select{grid-column:2 / -1;font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:4px 6px;max-width:100%}
+.slhint{grid-column:2 / -1;font-size:12px;color:var(--muted);line-height:1.4}
+.slextras{display:flex;gap:6px;flex-wrap:wrap}
+.slextras .lp{padding:5px 11px;font-size:13px}
+.slextras .warn{font-size:12.5px;color:var(--bad);border:1.5px dashed var(--bad);border-radius:999px;padding:4px 10px}
+#sl-sound{border-color:var(--bad);color:var(--bad);font-weight:700}
 .slopts{display:grid;gap:7px}
 .slrow{display:grid;grid-template-columns:52px 24px minmax(90px,150px) 24px 1fr;align-items:center;gap:7px}
 .slend.slsec{font-size:11.5px;font-weight:700;color:var(--muted)}
@@ -267,8 +281,8 @@ header .right{display:flex;align-items:center;gap:10px}
 .slrow input[type=range]:focus-visible{outline:3px solid var(--hi);outline-offset:4px}
 .pacenum{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
 .pacenum i{font-style:normal;font-weight:500;color:var(--muted)}
-.stage{text-align:center;padding:26px 0 10px;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
-.stage-k{font-size:clamp(110px,30vw,190px);line-height:1;font-weight:600}
+.stage{text-align:center;padding:6px 0 10px;min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.stage-k{font-size:clamp(96px,26vw,160px);line-height:1;font-weight:600}
 .stage-k.in{animation:kin .5s ease-out}
 @keyframes kin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .stage-m{color:var(--muted);margin-top:6px;font-size:17px}
@@ -278,9 +292,9 @@ header .right{display:flex;align-items:center;gap:10px}
 .dots i.on{background:var(--hi);transform:scale(1.3)}
 .stage .card{margin-top:10px;min-height:150px;opacity:0;transition:opacity .45s ease}
 .stage .card.in{opacity:1}
-.stage .card .rd{font-size:clamp(40px,11vw,64px);font-weight:700;line-height:1.1}
-.stage .card .as{margin-top:10px;font-size:19px;color:var(--muted)}
-.stage .card .as .kj{font-size:34px;color:var(--ink)}
+.stage .card .rd{font-size:clamp(26px,7vw,38px);font-weight:700;line-height:1.1}
+.stage .card .as{margin-top:6px;font-size:18px;color:var(--muted)}
+.stage .card .as .kj{font-size:clamp(44px,13vw,68px);color:var(--ink);vertical-align:-.12em}
 .stage .card .as .kj b{background:linear-gradient(transparent 52%,var(--hi-soft) 52%);font-weight:600}
 .stage .card .as .rr{font-size:22px;color:var(--muted);margin-left:4px}
 .stage .card .mn{margin-top:6px;font-size:18px}
@@ -329,6 +343,22 @@ header .right{display:flex;align-items:center;gap:10px}
 .fillrow .fres .kj{font-size:19px;margin-right:2px}
 .fb .bd b.onr,.fb .bd b.kunr{font-size:19px}
 .sortnote{margin-top:10px;font-size:14px;color:var(--muted);text-align:center;min-height:20px}
+/* mini-lessons and example sentences (from yomikata-notes.js) */
+.lessonbox{max-width:560px;margin:0 auto;text-align:left;font-size:16.5px;line-height:1.7}
+.lessonbox .bulb{margin-right:4px}
+.lessonbox .jp{color:var(--bad);font-weight:700;font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
+.seg{border-radius:4px;transition:background .2s}
+.seg.now{background:var(--hi-soft)}
+.exbox{max-width:560px;margin:16px auto 0;text-align:left;padding:10px 16px 12px;border-left:4px solid var(--hi);background:var(--hi-soft);border-radius:0 12px 12px 0}
+.exbox .exja{font-size:23px;line-height:2.1}
+.exbox ruby rt{visibility:visible}
+.exbox ruby.tg{color:var(--bad);font-weight:700}
+.exbox .exen{font-size:14px;color:var(--muted);display:inline-block}
+.exbox .seg.now{background:var(--card)}
+.hubnote{margin:0 0 20px;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px}
+.hubnote .hnhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.hubnote .hnhead b{font-size:15px}
+.hubnote .listen-btn{font-size:13px;font-weight:700;padding:5px 12px;border:1.5px solid var(--line);border-radius:999px;background:var(--paper)}
 </style>
 </head>
 <body>
@@ -384,6 +414,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <div class="readings kun" id="hub-kun"></div>
   </div>
   <p class="meaning" id="hub-mn"></p>
+  <div class="hubnote" id="hub-note" style="display:none"></div>
   <div class="modes" id="modes"></div>
   <div class="wordlist" id="hub-words"></div>
 </section>
@@ -406,8 +437,10 @@ header .right{display:flex;align-items:center;gap:10px}
 <section class="screen" id="s-slide">
   <div class="slidebar">
     <button class="btn quiet" id="sl-close" style="padding:6px 12px">✕ Close</button>
+    <button class="btn quiet" id="sl-settings" style="padding:6px 12px" aria-expanded="false" aria-controls="slopts">⚙ Settings ▾</button>
+    <span class="slextras" id="sl-extras"></span>
     <button class="btn" id="sl-sound" style="display:none;padding:6px 12px">🔊 Tap to enable sound</button>
-    <div class="slopts" id="slopts"></div>
+    <div class="slopts" id="slopts" hidden></div>
   </div>
   <div class="stage" id="stage">
     <div class="stage-k kj" id="sl-kanji"></div>
@@ -770,6 +803,9 @@ setScene(false);
 </script>
 
 <script src="yomikata-content.js"></script>
+<!-- Optional: mini-lessons and example sentences for each kanji. If this file
+     is missing, everything still works, just without the extras. -->
+<script src="yomikata-notes.js"></script>
 <script>
 /* ================= DATA: Genki II Lesson 14 kanji (読み書き編 pp.281-282) =================
    word: [written, reading segmented per character with '.', meaning, exception?]
@@ -818,6 +854,16 @@ function yomikataCheck(){
     });
   });
   (C.sentences || []).forEach(s => { if (!/\|\*\]/.test(s[0])) problems.push(`sentence has no |* target: ${s[0].slice(0, 24)}…`); });
+  // yomikata-notes.js (optional): every kanji gets a mini-lesson, markup must be tidy
+  const notes = window.YOMIKATA_NOTES;
+  if (notes) Object.values(C.lessons).flat().forEach(h => {
+    const n = notes[h.ch];
+    if (!n) return problems.push(`notes: no mini-lesson for ${h.ch} yet`);
+    if ((n.explain.match(/「/g) || []).length !== (n.explain.match(/」/g) || []).length) problems.push(`notes ${h.ch}: a 「 has no matching 」`);
+    const target = n.ja && n.ja.match(/\[([^|\]]+)\|[^|\]]+\|\*\]/);
+    if (n.ja && !target) problems.push(`notes ${h.ch}: example has no [word|reading|*] target`);
+    else if (target && !target[1].includes(h.ch)) problems.push(`notes ${h.ch}: the example's target word doesn't contain ${h.ch}`);
+  });
   (C.stories || []).forEach(s => { if (!/\|\*\]/.test(s.s)) problems.push(`story "${s.t}" has no blanks`); });
   const kanji = Object.values(C.lessons).flat().length;
   const words = Object.values(C.lessons).flat().reduce((a, h) => a + h.words.length, 0);
@@ -856,7 +902,7 @@ function lessonLabel(){
 
 /* ================= PROGRESS ================= */
 const KEY = 'yomikata-v3';
-let P = {words:{}, hubs:{}, lessons:null, hl:null, slideScope:'hl', voiceRate:1, slideWait:2};
+let P = {words:{}, hubs:{}, lessons:null, hl:null, slideScope:'hl', voiceRate:1, slideWait:2, slideLesson:true, slideExample:true};
 try { const s = localStorage.getItem(KEY); if (s) P = Object.assign(P, JSON.parse(s)); } catch(e) {}
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(P)); } catch(e) {} }
 function wstat(w){ return P.words[w.w] || (P.words[w.w] = {c:0, m:0}); }
@@ -898,7 +944,8 @@ document.addEventListener('visibilitychange', () => {
 const $ = s => document.querySelector(s);
 const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
 const pick = (a, n) => shuffle(a).slice(0, n);
-function show(id){ if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; }
+function show(id){ if (id !== 's-hub' && hubSpeaking) stopHubSpeech();
+  if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; }
   if (id !== 's-round') { document.querySelector('.app').classList.remove('wide'); $('#s-round').classList.remove('two-col'); }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); $('#'+id).classList.add('active'); window.scrollTo(0,0); }
 function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 1600); }
@@ -1031,6 +1078,7 @@ let curHub = null;
 function openHub(ch){
   curHub = byChar[ch];
   $('#hub-ch').textContent = ch; $('#hub-mn').textContent = curHub.mn;
+  renderHubNote(curHub);
   const rd = (arr, lab) => `<span class="lab">${lab}</span>` + (arr.length ? arr.map(r => `<span class="r kj">${r}</span>`).join('') : `<span class="lab">none</span>`);
   $('#hub-on').innerHTML = rd(curHub.on, "▶ on'yomi"); $('#hub-kun').innerHTML = rd(curHub.kun, "▷ kun'yomi");
   $('#modes').innerHTML = `<button class="mode" id="drill"><span class="ic">🎯</span><span class="d"><b>Drill ${ch}</b><span>All its words, pick how ${ch} sounds in each</span></span><em>${curHub.words.length} words</em></button>`;
@@ -1581,6 +1629,144 @@ document.addEventListener('keydown', e => {
   if (/^[1-5]$/.test(e.key) && e.target.tagName !== 'INPUT' && $('#nextrow').style.display === 'none') { const b = $('#answers').querySelectorAll('button')[+e.key - 1]; if (b) b.click(); }
 });
 
+/* ================= MINI-LESSONS (yomikata-notes.js) =================
+   Optional extra file. Each kanji can have:
+     explain: English with Japanese in 「」, written 「漢字|かな」 (shown as the
+              kanji, spoken as the kana) or just 「かな」
+     ja / en: an example sentence in the same [chunk|reading] markup as the
+              sentences mode, with [chunk|reading|*] on the word to highlight
+   They appear in the Pronunciations slideshow (💡 before a kanji's words,
+   📝 after them) and on each kanji's lookup page. */
+const NOTES = window.YOMIKATA_NOTES || {};
+const hasNotes = Object.keys(NOTES).length > 0;
+if (!hasNotes) console.warn('Yomikata: yomikata-notes.js did not load, so mini-lessons and example sentences are off. Put it next to index.html.');
+const noteFor = ch => NOTES[ch] || null;
+const escHtml = text => String(text).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const reducedMotion = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e) { return false; } };
+
+/* Turns an explain string into HTML plus the list of things to say, in order.
+   English is cut at sentence ends so each utterance stays short (long ones get
+   cut off mid-sentence in some browsers). Every spoken piece is wrapped in a
+   <span class="seg" data-p="N">, so the screen can highlight what's being read. */
+function explainParts(text, firstIndex){
+  const parts = [];
+  let html = '';
+  const indexNow = () => (firstIndex || 0) + parts.length;
+  text.split(/(「[^」]*」)/).forEach(chunk => {
+    if (!chunk) return;
+    if (chunk.startsWith('「') && chunk.endsWith('」')) {
+      const [shown, said] = chunk.slice(1, -1).split('|');
+      html += `<span class="seg jp" data-p="${indexNow()}">${escHtml(shown)}</span>`;
+      parts.push({t: said || shown, lang: 'ja-JP', rate: jaRate(), p: [indexNow()]});
+      return;
+    }
+    // a sentence ends at . ! or ? followed by a space (so "A.M." stays whole)
+    (chunk.match(/[\s\S]*?[.!?]+(?=\s|$)\s*|[\s\S]+$/g) || []).forEach(piece => {
+      if (!/[A-Za-z0-9]/.test(piece)) { html += escHtml(piece); return; }   // stray punctuation
+      html += `<span class="seg" data-p="${indexNow()}">${escHtml(piece)}</span>`;
+      // After a Japanese bit, the English often starts ", the opposite is…".
+      // Trim leading commas/dashes/colons so the voice doesn't say "comma".
+      const said = piece.trim().replace(/^[,;:.\-–—]+\s*/, '');
+      parts.push({t: said, lang: 'en-US', rate: enRate(), p: [indexNow()]});
+    });
+  });
+  return {html, parts};
+}
+
+/* The example sentence: furigana on every word, the target word in vermilion.
+   Spoken once in Japanese, then once in English. */
+function exampleParts(note, firstIndex){
+  const toks = parseSentence(note.ja);
+  const sentence = toks.map(t => t.r
+    ? `<ruby class="${t.target ? 'tg' : ''}">${escHtml(t.t)}<rt>${escHtml(t.r)}</rt></ruby>`
+    : escHtml(t.t)).join('');
+  const i = firstIndex || 0;
+  return {
+    html: `<div class="exbox"><div class="exja kj"><span class="seg" data-p="${i}">📝 ${sentence}</span></div>
+             <div><span class="exen seg" data-p="${i + 1}">${escHtml(note.en)}</span></div></div>`,
+    parts: [{t: toks.map(t => t.r || t.t).join(''), lang: 'ja-JP', rate: jaRate(), p: [i]},
+            {t: note.en, lang: 'en-US', rate: enRate(), p: [i + 1]}]
+  };
+}
+
+/* What the slideshow shows for one kanji, in order: hear it in use first,
+   then learn why. Each reading/word card → 📝 example sentence → 💡 mini-lesson. */
+function slideItems(h){
+  const note = noteFor(h.ch);
+  const items = entriesFor(h).slice();
+  if (note && note.ja && P.slideExample !== false) items.push({kind: 'example', note});
+  if (note && note.explain && P.slideLesson !== false) items.push({kind: 'lesson', note});
+  return items;
+}
+
+/* One card: its HTML, what to say, and (with sound off) how long to leave it up. */
+function slideView(e){
+  if (e.kind === 'lesson') {
+    const lesson = explainParts(e.note.explain);
+    return {html: `<div class="lessonbox"><span class="bulb" aria-hidden="true">💡</span>${lesson.html}</div>`,
+            parts: lesson.parts,
+            readMs: Math.max(SOUND_OFF_READ_MS, e.note.explain.split(/\s+/).length * 300)};
+  }
+  if (e.kind === 'example') {
+    const example = exampleParts(e.note);
+    return {html: example.html, parts: example.parts, readMs: 6000};
+  }
+  // a reading card: "▶ ご, as in 午後 ごご, which means P.M."
+  const t = byChar[e.hub] && byChar[e.hub].on.includes(e.hr) ? 'on' : 'kun';
+  const meaning = e.m.replace(/;\s*/g, ' or ');
+  return {
+    html: `<div class="rd kj ${t}r">${t === 'on' ? '▶' : '▷'} ${e.hr}</div>
+      <div class="as">as in <span class="kj">${[...e.w].map(c => c === e.hub ? `<b>${c}</b>` : c).join('')}</span> <span class="rr kj">${e.r}</span></div>
+      <div class="mn">which means <b>${meaning}</b></div>`,
+    parts: [{t: e.hr, lang: 'ja-JP', rate: jaRate()},
+            {t: 'as in', lang: 'en-US', rate: enRate() * 0.95},
+            {t: e.r, lang: 'ja-JP', rate: jaRate()},
+            {t: 'which means ' + meaning, lang: 'en-US', rate: enRate()}],
+    readMs: SOUND_OFF_READ_MS
+  };
+}
+
+/* ---- the same mini-lesson on a kanji's lookup page, with a Listen button ---- */
+var hubSpeaking = false;   // var (not let) so show() can check it safely at any time
+function stopHubSpeech(){
+  hubSpeaking = false;
+  try { speechSynthesis.cancel(); } catch(e) {}
+  const button = $('#hub-listen');
+  if (button) button.textContent = '🔊 Listen';
+  document.querySelectorAll('#hub-note .seg.now').forEach(s => s.classList.remove('now'));
+}
+function speakHubNote(parts){
+  if (!('speechSynthesis' in window) || !GameVoice.enabled) { toast('Sound is off'); return; }
+  stopHubSpeech();
+  hubSpeaking = true;
+  $('#hub-listen').textContent = '⏹ Stop';
+  const segs = [...document.querySelectorAll('#hub-note .seg')];
+  setTimeout(() => {   // a short gap after cancel(), or Chrome drops the first line
+    if (!hubSpeaking) return;
+    try { speechSynthesis.resume(); } catch(e) {}
+    const planned = voicePlan(parts);
+    planned.forEach((part, i) => {
+      const u = makeUtterance(part);
+      u.onstart = () => { if (hubSpeaking) segs.forEach(s => s.classList.toggle('now', (part.p || []).includes(+s.dataset.p))); };
+      if (i === planned.length - 1) u.onend = () => { if (hubSpeaking) stopHubSpeech(); };
+      try { speechSynthesis.speak(u); } catch(e) {}
+    });
+  }, 150);
+}
+function renderHubNote(h){
+  const box = $('#hub-note');
+  if (hubSpeaking) stopHubSpeech();
+  const note = noteFor(h.ch);
+  if (!note) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const lesson = explainParts(note.explain || '');
+  const example = note.ja ? exampleParts(note, lesson.parts.length) : null;
+  const parts = lesson.parts.concat(example ? example.parts : []);
+  box.style.display = '';
+  box.innerHTML = `<div class="hnhead"><b>💡 Mini-lesson</b><button class="listen-btn" id="hub-listen">🔊 Listen</button></div>
+    <div class="lessonbox">${lesson.html}</div>${example ? example.html : ''}`;
+  $('#hub-listen').onclick = () => hubSpeaking ? stopHubSpeech() : speakHubNote(parts);
+}
+
 /* ================= PRONUNCIATIONS (passive slideshow) ================= */
 let SLIDE = null;
 /* Two independent dials:
@@ -1618,12 +1804,76 @@ function clearSlideTimers(){ if (!SLIDE) return; SLIDE.timers.forEach(clearTimeo
 /* One queued utterance run per slide: the reading, "as in", the word, "which means ...".
    Each language gets its own voice, nothing is cancelled mid-run, and the slide advances
    when the last utterance actually finishes — with a timer only as a fallback. */
-let slVoiceJa = null;
-function pickSlideVoice(){
-  try { const vs = speechSynthesis.getVoices().filter(v => /^ja/i.test(v.lang));
-        slVoiceJa = vs.find(v => /Kyoko|O-ren|Google 日本語|Nanami|Ayumi|Haruka/i.test(v.name)) || vs[0] || null; } catch(e) {}
+/* ---- Choosing voices ----
+   The pause when English hands over to Japanese comes from switching voices:
+   each change starts a fresh utterance, and "online" voices (like Chrome's
+   Google voices) also wait on the network every time. Two fixes:
+   1. Prefer voices that live on the device — they switch much faster.
+   2. If the browser has a "Multilingual" voice (Microsoft Edge does), read the
+      mixed sentences with that ONE voice, a whole sentence per utterance —
+      no hand-off at all.
+   Both voices can be changed under ⚙ Settings; the choice is remembered. */
+let slVoiceJa = null, enVoice = null;
+const isLocalVoice = v => v.localService !== false;
+const isMultilingual = v => !!v && /multilingual/i.test(v.name);
+function voicesFor(prefix){
+  try { return speechSynthesis.getVoices().filter(v => (v.lang || '').toLowerCase().startsWith(prefix)); } catch(e) { return []; }
 }
-if ('speechSynthesis' in window) { pickSlideVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickSlideVoice); } catch(e) {} }
+function pickSlideVoices(){
+  const ja = voicesFor('ja'), en = voicesFor('en');
+  slVoiceJa = ja.find(v => v.name === P.jaVoiceName)
+    || ja.find(v => isLocalVoice(v) && /Kyoko|O-ren|Otoya|Haruka|Ayumi|Ichiro|Sayaka|Nanami/i.test(v.name))
+    || ja.find(isLocalVoice) || ja[0] || null;
+  enVoice = en.find(v => v.name === P.enVoiceName)
+    || en.find(isMultilingual)
+    || en.find(v => isLocalVoice(v) && v.default)
+    || en.find(v => isLocalVoice(v) && /Samantha|Alex|Ava|Allison|Susan|Zira|David|Mark|Aria|Jenny|Guy|Karen|Daniel|Moira|Tessa/i.test(v.name))
+    || en.find(v => isLocalVoice(v) && /^en-US/i.test(v.lang)) || en.find(isLocalVoice) || en[0] || null;
+  if (SLIDE && !$('#slopts').hidden) fillVoiceChoices();
+}
+if ('speechSynthesis' in window) { pickSlideVoices(); try { speechSynthesis.addEventListener('voiceschanged', pickSlideVoices); } catch(e) {} }
+const oneVoice = () => isMultilingual(enVoice);
+
+/* With one bilingual voice, join the pieces of each sentence back together
+   ("So ご came to mean noon.") so it's read in one smooth breath. Otherwise the
+   parts go out as they are, each in its own language's voice. */
+function voicePlan(parts){
+  if (!oneVoice()) return parts;
+  const planned = [];
+  let current = null;
+  parts.forEach(part => {
+    if (!current) current = {t: '', lang: enVoice.lang, rate: enRate(), p: [], onstart: part.onstart};
+    current.t += (current.t ? ' ' : '') + part.t;
+    current.p.push(...(part.p || []));
+    if (/[.!?。！？]$/.test(part.t)) { planned.push(current); current = null; }
+  });
+  if (current) planned.push(current);
+  return planned;
+}
+function makeUtterance(part){
+  const u = new SpeechSynthesisUtterance(part.t);
+  u.lang = part.lang; u.rate = part.rate || 0.9;
+  if (part.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
+  else if (/^en/i.test(part.lang) && enVoice) u.voice = enVoice;
+  return u;
+}
+/* The two voice menus in ⚙ Settings. */
+function fillVoiceChoices(){
+  const fill = (select, list, chosenName, auto) => {
+    if (!select) return;
+    select.innerHTML = `<option value="">Auto${auto ? ` (${escHtml(auto.name)})` : ''}</option>` + list.map(v =>
+      `<option value="${escHtml(v.name)}"${v.name === chosenName ? ' selected' : ''}>${escHtml(v.name)}${isMultilingual(v) ? ' ⭐ speaks Japanese too' : ''}${isLocalVoice(v) ? '' : ' · online, slower'}</option>`).join('');
+  };
+  fill($('#slenvoice'), voicesFor('en'), P.enVoiceName, enVoice);
+  fill($('#sljavoice'), voicesFor('ja'), P.jaVoiceName, slVoiceJa);
+  const hint = $('#slvoicehint');
+  if (hint) hint.textContent = oneVoice()
+    ? 'Using one voice for English and Japanese, so there is no hand-off pause.'
+    : (voicesFor('en').some(isMultilingual)
+        ? 'Pick a ⭐ voice to read both languages in one voice.'
+        : 'Voices marked “online” pause longer between languages. Microsoft Edge has “Multilingual” voices that read both languages in one voice.');
+  if ($('#sljavoice')) $('#sljavoice').disabled = oneVoice();
+}
 function safeCancel(){
   try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); } catch(e) {}
 }
@@ -1636,10 +1886,11 @@ function speakSequence(parts, token, onDone){
     let last = null, spoke = false;
     parts.forEach((pp, i) => {
       try {
-        const u = new SpeechSynthesisUtterance(pp.t);
-        u.lang = pp.lang; u.rate = pp.rate || 0.9;
-        if (pp.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
-        if (i === 0) u.onstart = () => { speechOK = true; hideSoundNag(); };
+        const u = makeUtterance(pp);
+        u.onstart = () => {
+          if (i === 0) { speechOK = true; hideSoundNag(); }
+          if (pp.onstart) pp.onstart();
+        };
         last = u; spoke = true;
         speechSynthesis.speak(u);
       } catch(e) {}
@@ -1676,12 +1927,8 @@ function tapToSpeak(){
   if (!e) return;
   try {
     speechSynthesis.resume();
-    const meaning = e.m.replace(/;\s*/g, ' or ');
-    [[e.hr, 'ja-JP', jaRate()], ['as in', 'en-US', enRate() * 0.95],
-     [e.r, 'ja-JP', jaRate()], ['which means ' + meaning, 'en-US', enRate()]].forEach(([t, lang, rate], i) => {
-      const u = new SpeechSynthesisUtterance(t);
-      u.lang = lang; u.rate = rate;
-      if (lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
+    voicePlan(slideView(e).parts).forEach((part, i) => {
+      const u = makeUtterance(part);
       if (i === 0) u.onstart = () => { speechOK = true; hideSoundNag(); };
       speechSynthesis.speak(u);
     });
@@ -1709,24 +1956,64 @@ function renderSlideOpts(){
        <input type="range" id="slpace" min="${WAIT_MIN_SECONDS}" max="${WAIT_MAX_SECONDS}" step="1" value="${slideWaitSeconds()}" aria-label="seconds to wait after the voice before the next card">
        <span class="slend slsec">10s</span>
        <span class="pacenum" id="slpacenum">${waitLabel()}</span>
-     </div>`;
+     </div>
+     <div class="slrow">
+       <span class="sllab">English</span>
+       <select id="slenvoice" aria-label="English voice"></select>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Japanese</span>
+       <select id="sljavoice" aria-label="Japanese voice"></select>
+       <span class="slhint" id="slvoicehint"></span>
+     </div>
+     `;
+  renderExtrasBar();
   $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
   const v = $('#slvoice'), g = $('#slpace');
   v.oninput = () => { P.voiceRate = +v.value; $('#slvoicenum').innerHTML = `${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i>`; };
   g.oninput = () => { P.slideWait = +g.value; $('#slpacenum').innerHTML = waitLabel(); };
   v.onchange = g.onchange = () => save();
+  fillVoiceChoices();
+  $('#slenvoice').onchange = e => { P.enVoiceName = e.target.value || null; save(); pickSlideVoices(); fillVoiceChoices(); };
+  $('#sljavoice').onchange = e => { P.jaVoiceName = e.target.value || null; save(); pickSlideVoices(); fillVoiceChoices(); };
 }
+/* 💡 / 📝 switches in the top bar, always in view. If yomikata-notes.js didn't load
+   (for example it wasn't uploaded next to index.html), say so instead of hiding them. */
+function renderExtrasBar(){
+  const bar = $('#sl-extras');
+  if (!hasNotes) {
+    bar.innerHTML = `<span class="warn" title="Put yomikata-notes.js in the same folder as index.html">⚠ Mini-lessons file not found</span>`;
+    return;
+  }
+  bar.innerHTML =
+    `<button class="lp${P.slideExample !== false ? ' on' : ''}" data-extra="slideExample" aria-pressed="${P.slideExample !== false}">📝 Example</button>
+     <button class="lp${P.slideLesson !== false ? ' on' : ''}" data-extra="slideLesson" aria-pressed="${P.slideLesson !== false}">💡 Mini-lesson</button>`;
+  bar.querySelectorAll('[data-extra]').forEach(button => button.onclick = () => {
+    const key = button.dataset.extra;
+    P[key] = P[key] === false;   // flip it (missing counts as on)
+    save(); renderExtrasBar(); restartHub();
+  });
+}
+/* Settings stay folded away unless opened, to leave room for the kanji. */
+function showSlideSettings(open){
+  P.slideOptsOpen = open; save();
+  $('#slopts').hidden = !open;
+  $('#sl-settings').textContent = open ? '⚙ Settings ▴' : '⚙ Settings ▾';
+  $('#sl-settings').setAttribute('aria-expanded', String(open));
+  if (open) fillVoiceChoices();
+}
+$('#sl-settings').onclick = () => showSlideSettings($('#slopts').hidden);
 function startSlides(){
   hideSoundNag();
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
-  renderSlideOpts(); show('s-slide'); step(true);
+  renderSlideOpts(); showSlideSettings(!!P.slideOptsOpen); show('s-slide'); step(true);
 }
 function restartHub(){ if (!SLIDE) return; clearSlideTimers(); SLIDE.ei = -1; step(true); }
 function curHubOf(){ return HUBS[SLIDE.order[SLIDE.hi % SLIDE.order.length]]; }
 function step(intro){
   if (!SLIDE) return;
   clearSlideTimers();
-  const h = curHubOf(), es = entriesFor(h);
+  const h = curHubOf(), es = slideItems(h);
   SLIDE.entries = es;
   SLIDE.token = (SLIDE.token || 0) + 1;
   const token = SLIDE.token;
@@ -1743,13 +2030,10 @@ function step(intro){
   }
   const e = es[SLIDE.ei];
   if (!e) { SLIDE.hi++; SLIDE.ei = -1; return step(true); }
-  const t = byChar[e.hub] && byChar[e.hub].on.includes(e.hr) ? 'on' : 'kun';
-  const meaning = e.m.replace(/;\s*/g, ' or ');
+  const view = slideView(e);
   const card = $('#sl-card');
   card.classList.remove('in'); void card.offsetWidth;
-  card.innerHTML = `<div class="rd kj ${t}r">${t === 'on' ? '▶' : '▷'} ${e.hr}</div>
-    <div class="as">as in <span class="kj">${[...e.w].map(c => c === e.hub ? `<b>${c}</b>` : c).join('')}</span> <span class="rr kj">${e.r}</span></div>
-    <div class="mn">which means <b>${meaning}</b></div>`;
+  card.innerHTML = view.html;
   card.classList.add('in');
   $('#sl-dots').querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', i === SLIDE.ei));
   let moved = false;
@@ -1763,15 +2047,19 @@ function step(intro){
   const whenVoiceFinishes = spoke => {
     if (finished || !SLIDE || SLIDE.token !== token || SLIDE.paused) return;
     finished = true;
-    const readFirst = spoke ? 0 : SOUND_OFF_READ_MS;
+    const readFirst = spoke ? 0 : view.readMs;
     SLIDE.timers.push(setTimeout(go, readFirst + slideWaitSeconds() * 1000));
   };
-  speakSequence([
-    {t: e.hr, lang: 'ja-JP', rate: jaRate()},
-    {t: 'as in', lang: 'en-US', rate: enRate() * 0.95},
-    {t: e.r, lang: 'ja-JP', rate: jaRate()},
-    {t: 'which means ' + meaning, lang: 'en-US', rate: enRate()}
-  ], token, whenVoiceFinishes);
+  /* Mini-lessons and examples light up each piece as it's read aloud. */
+  const segs = [...card.querySelectorAll('.seg')];
+  const markSpoken = pieces => {
+    if (!SLIDE || SLIDE.token !== token) return;
+    segs.forEach(s => s.classList.toggle('now', pieces.includes(+s.dataset.p)));
+    const now = segs.find(s => pieces.includes(+s.dataset.p));
+    if (now) now.scrollIntoView({block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth'});
+  };
+  speakSequence(voicePlan(view.parts).map(part => Object.assign({}, part, {onstart: segs.length && part.p ? () => markSpoken(part.p) : null})),
+    token, whenVoiceFinishes);
 }
 function slidePause(on){
   if (!SLIDE) return;

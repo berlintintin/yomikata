@@ -6,7 +6,7 @@
    ---------------------------------------------------------------------------
    ADDING A LESSON
    ---------------------------------------------------------------------------
-   1. Add a block below:  lessons[17] = [ …kanji… ];
+   1. Add a block below:  lessons[20] = [ …kanji… ];
       The lesson picker builds itself from whatever keys exist here.
    2. Each kanji:
         {ch:'漢', mn:'meaning', on:['オン…'], kun:['くん…'], words:[ …words… ]}
@@ -186,11 +186,70 @@ window.YOMIKATA_CONTENT = (function () {
  {ch:'者',mn:'person',on:['しゃ','じゃ'],kun:['もの'],words:[['医者','い.しゃ','doctor'],['学者','がく.しゃ','scholar'],['読者','どく.しゃ','reader'],['若者','わか.もの','young people',true],['忍者','にん.じゃ','ninja',true]]}
 ];
 
+  /* ---------- Lesson 17 (読み書き編 pp.299–300) ---------- */
+  lessons[17] = [
+  {ch:'野',mn:'field',on:['や'],kun:['の'],words:[['分野','ぶん.や','realm; field'],['小野さん','お.の.さ.ん','Mr./Ms. Ono',true],['長野','なが.の','Nagano'],['野球','や.きゅう','baseball'],['野菜','や.さい','vegetable']]},
+  {ch:'習',mn:'to learn',on:['しゅう'],kun:['なら'],words:[['習う','なら.う','to learn'],['習字','しゅう.じ','calligraphy'],['練習','れん.しゅう','practice'],['習慣','しゅう.かん','habit; custom']]},
+  {ch:'主',mn:'main; lord',on:['しゅ'],kun:['おも','ぬし'],words:[['主に','おも.に','mainly'],['ご主人','ご.しゅ.じん','husband'],['主婦','しゅ.ふ','housewife'],['主語','しゅ.ご','subject of a sentence'],['持ち主','も.ち.ぬし','owner',true]]},
+  {ch:'歳',mn:'year; age',on:['さい','せい'],kun:[],words:[['二十五歳','に.じゅう.ご.さい','twenty-five years old'],['お歳暮','お.せい.ぼ','year-end gift',true]]},
+  {ch:'集',mn:'to gather',on:['しゅう'],kun:['あつ'],words:[['集める','あつ.め.る','to collect'],['特集','とく.しゅう','(magazine) feature'],['集中する','しゅう.ちゅう.す.る','to concentrate']]},
+  {ch:'発',mn:'to start; to reveal',on:['はっ','はつ','ぱつ'],kun:[],words:[['発表する','はっ.ぴょう.す.る','to make public; to give a presentation'],['発音','はつ.おん','pronunciation'],['出発','しゅっ.ぱつ','departure',true],['発明','はつ.めい','invention']]},
+  {ch:'表',mn:'to express; surface',on:['ぴょう','ひょう'],kun:['あらわ','おもて'],words:[['発表する','はっ.ぴょう.す.る','to make public; to give a presentation',true],['表紙','ひょう.し','cover page'],['表現','ひょう.げん','expression'],['表す','あらわ.す','to express'],['表','おもて','the front']]},
+  {ch:'品',mn:'goods; refinement',on:['ひん'],kun:['じな','しな'],words:[['作品','さく.ひん','work (of art, etc.)'],['上品な','じょう.ひん.な','elegant'],['手品','て.じな','magic',true],['品物','しな.もの','article of merchandise']]},
+  {ch:'写',mn:'to copy',on:['しゃ'],kun:['うつ'],words:[['写真','しゃ.しん','photograph'],['写す','うつ.す','to copy'],['写生','しゃ.せい','sketch'],['描写する','びょう.しゃ.す.る','to describe']]},
+  {ch:'真',mn:'true; reality',on:['しん'],kun:['ま'],words:[['写真','しゃ.しん','photograph'],['真ん中','ま.ん.なか','center'],['真上','ま.うえ','right above'],['真夜中','ま.よ.なか','midnight']]},
+  {ch:'字',mn:'letter; character',on:['じ'],kun:[],words:[['文字','も.じ','letter; character',true],['赤字','あか.じ','deficit'],['名字','みょう.じ','family name'],['大文字','おお.も.じ','uppercase letters'],['漢字','かん.じ','Chinese character']]},
+  {ch:'活',mn:'lively',on:['かつ','かっ'],kun:[],words:[['活動','かつ.どう','activity'],['生活','せい.かつ','life; living'],['活発な','かっ.ぱつ.な','active'],['活用','かつ.よう','conjugation'],['活気','かっ.き','liveliness']]},
+  {ch:'結',mn:'to tie; to join',on:['けっ','けつ'],kun:['むす'],words:[['結婚する','けっ.こん.す.る','to get married'],['結果','けっ.か','result'],['結論','けつ.ろん','conclusion'],['結ぶ','むす.ぶ','to tie a knot']]},
+  {ch:'婚',mn:'marriage',on:['こん'],kun:[],words:[['結婚する','けっ.こん.す.る','to get married'],['離婚','り.こん','divorce'],['婚約者','こん.やく.しゃ','fiancé(e)'],['新婚','しん.こん','newlywed'],['未婚','み.こん','unmarried']]},
+  {ch:'歩',mn:'to walk',on:['ほ','ぽ'],kun:['ある'],words:[['歩く','ある.く','to walk'],['歩道','ほ.どう','sidewalk'],['散歩する','さん.ぽ.す.る','to stroll'],['一歩','いっ.ぽ','one step'],['進歩','しん.ぽ','progress']]}
+  ];
+
+  /* ---------- Lesson 18 (読み書き編 pp.306–307) ---------- */
+  lessons[18] = [
+  {ch:'目',mn:'eye',on:['もく'],kun:['め'],words:[['目的','もく.てき','purpose'],['目','め','eyes'],['目薬','め.ぐすり','eye drops'],['二番目','に.ばん.め','the second',true],['目上の人','め.うえ.の.ひと',"one's superiors"]]},
+  {ch:'的',mn:'target; -ish',on:['てき'],kun:['まと'],words:[['目的','もく.てき','purpose'],['現代的','げん.だい.てき','modern'],['社会的','しゃ.かい.てき','social'],['的','まと','target']]},
+  {ch:'洋',mn:'ocean; overseas',on:['よう'],kun:[],words:[['洋服','よう.ふく','(Western) clothes'],['東洋','とう.よう','the East'],['洋食','よう.しょく','Western food'],['大西洋','たい.せい.よう','the Atlantic']]},
+  {ch:'服',mn:'clothes',on:['ふく'],kun:[],words:[['服','ふく','clothes'],['洋服','よう.ふく','(Western) clothes'],['制服','せい.ふく','uniform'],['和服','わ.ふく','Japanese clothes']]},
+  {ch:'堂',mn:'hall',on:['どう'],kun:[],words:[['食堂','しょく.どう','cafeteria'],['公会堂','こう.かい.どう','public hall'],['堂々とした','どう.どう.と.し.た','dignified; imposing']]},
+  {ch:'力',mn:'power',on:['りょく','りき'],kun:['ちから'],words:[['力仕事','ちから.し.ごと','physical labor'],['協力','きょう.りょく','cooperation'],['努力','ど.りょく','endeavor'],['力士','りき.し','sumo wrestler',true]]},
+  {ch:'授',mn:'to instruct',on:['じゅ'],kun:['さず'],words:[['授業','じゅ.ぎょう','class'],['教授','きょう.じゅ','professor'],['授かる','さず.か.る','to be given']]},
+  {ch:'業',mn:'business; vocation',on:['ぎょう'],kun:[],words:[['授業','じゅ.ぎょう','class'],['職業','しょく.ぎょう','occupation'],['産業','さん.ぎょう','industry']]},
+  {ch:'試',mn:'test; to try',on:['し'],kun:['こころ'],words:[['試験','し.けん','exam'],['試合','し.あい','game; match'],['入試','にゅう.し','entrance exam'],['試みる','こころ.み.る','to try']]},
+  {ch:'験',mn:'to examine',on:['けん'],kun:[],words:[['試験','し.けん','exam'],['実験','じっ.けん','experiment'],['経験','けい.けん','experience'],['受験','じゅ.けん','taking an examination']]},
+  {ch:'貸',mn:'to lend; loan',on:['たい'],kun:['か'],words:[['貸す','か.す','to lend'],['貸し出し','か.し.だ.し','lending'],['賃貸','ちん.たい','renting out']]},
+  {ch:'図',mn:'drawing; to devise',on:['と','ず'],kun:['はか'],words:[['図書館','と.しょ.かん','library'],['地図','ち.ず','map'],['図','ず','figure'],['合図','あい.ず','signal'],['図る','はか.る','to attempt']]},
+  {ch:'館',mn:'building; hall',on:['かん'],kun:[],words:[['図書館','と.しょ.かん','library'],['旅館','りょ.かん','Japanese inn'],['映画館','えい.が.かん','movie theater'],['大使館','たい.し.かん','embassy']]},
+  {ch:'終',mn:'end',on:['しゅう'],kun:['お'],words:[['終わる','お.わ.る','to come to an end'],['終わり','お.わ.り','end'],['終点','しゅう.てん','last stop'],['最終','さい.しゅう','the last']]},
+  {ch:'宿',mn:'inn; to lodge in',on:['しゅく'],kun:['やど'],words:[['宿題','しゅく.だい','homework'],['下宿','げ.しゅく','boardinghouse'],['宿泊','しゅく.はく','lodging'],['宿','やど','inn']]},
+  {ch:'題',mn:'title; topic',on:['だい'],kun:[],words:[['宿題','しゅく.だい','homework'],['問題','もん.だい','problem; question'],['題','だい','title'],['話題','わ.だい','topic of conversation']]}
+  ];
+
+  /* ---------- Lesson 19 (読み書き編 pp.313–314) ---------- */
+  lessons[19] = [
+  {ch:'春',mn:'spring',on:['しゅん'],kun:['はる'],words:[['春','はる','spring'],['春巻','はる.まき','spring roll'],['春分','しゅん.ぶん','vernal equinox'],['青春','せい.しゅん','youth']]},
+  {ch:'秋',mn:'autumn',on:['しゅう'],kun:['あき'],words:[['秋','あき','autumn'],['秋学期','あき.がっ.き','fall semester'],['秋分','しゅう.ぶん','autumnal equinox']]},
+  {ch:'冬',mn:'winter',on:['とう'],kun:['ふゆ'],words:[['冬','ふゆ','winter'],['冬休み','ふゆ.やす.み','winter vacation'],['暖冬','だん.とう','warm winter'],['春夏秋冬','しゅん.か.しゅう.とう','four seasons']]},
+  {ch:'花',mn:'flower',on:['か'],kun:['はな','ばな'],words:[['花','はな','flower'],['花見','はな.み','flower viewing'],['花火','はな.び','fireworks'],['花粉症','か.ふん.しょう','hay fever'],['生け花','い.け.ばな','flower arrangement',true]]},
+  {ch:'様',mn:'Mr.; Ms.; condition',on:['よう'],kun:['さま'],words:[['お客様','お.きゃく.さま','customer (respectful)'],['皆様','みな.さま','everyone'],['様子','よう.す','manner']]},
+  {ch:'不',mn:'negative; non-',on:['ふ','ぶ'],kun:[],words:[['不安な','ふ.あん.な','anxious; worried'],['不景気','ふ.けい.き','recession'],['不便','ふ.べん','inconvenience'],['水不足','みず.ぶ.そく','lack of water',true]]},
+  {ch:'姉',mn:'older sister',on:['し'],kun:['あね','ねえ'],words:[['姉','あね','older sister'],['お姉さん','お.ねえ.さ.ん','older sister'],['姉妹','し.まい','sisters'],['姉妹都市','し.まい.と.し','sister city']]},
+  {ch:'兄',mn:'older brother',on:['きょう'],kun:['あに','にい'],words:[['兄','あに','older brother'],['お兄さん','お.にい.さ.ん','older brother'],['兄弟','きょう.だい','brothers']]},
+  {ch:'漢',mn:'China',on:['かん'],kun:[],words:[['漢字','かん.じ','Chinese character'],['漢方薬','かん.ぽう.やく','Chinese herbal medicine'],['漢和辞典','かん.わ.じ.てん','kanji dictionary']]},
+  {ch:'卒',mn:'to graduate',on:['そつ'],kun:[],words:[['卒業する','そつ.ぎょう.す.る','to graduate'],['卒業式','そつ.ぎょう.しき','graduation ceremony'],['大卒','だい.そつ','university graduate']]},
+  {ch:'工',mn:'craft; construction',on:['こう','く'],kun:[],words:[['工学','こう.がく','engineering'],['工事','こう.じ','construction'],['工場','こう.じょう','factory'],['大工','だい.く','carpenter',true]]},
+  {ch:'研',mn:'to polish; study',on:['けん'],kun:['と'],words:[['研究','けん.きゅう','research'],['研究者','けん.きゅう.しゃ','researcher'],['研修','けん.しゅう','training'],['研ぐ','と.ぐ','to sharpen']]},
+  {ch:'究',mn:'research',on:['きゅう'],kun:['きわ'],words:[['研究','けん.きゅう','research'],['探究','たん.きゅう','inquiry'],['究める','きわ.め.る','to investigate thoroughly']]},
+  {ch:'質',mn:'quality; matter',on:['しつ','しち'],kun:[],words:[['質問','しつ.もん','question'],['質がいい','しつ.が.い.い','good quality'],['素質','そ.しつ','aptitude'],['質屋','しち.や','pawn shop',true]]},
+  {ch:'問',mn:'question',on:['もん'],kun:['と'],words:[['質問','しつ.もん','question'],['問題','もん.だい','problem; question'],['訪問','ほう.もん','visit'],['問う','と.う','to question']]},
+  {ch:'多',mn:'many; much',on:['た'],kun:['おお'],words:[['多い','おお.い','many'],['多分','た.ぶん','probably'],['多くの','おお.く.の','many'],['多数決','た.すう.けつ','decision by majority']]}
+  ];
+
   /* Meanings for the "other" kanji inside lesson words, so hints work on every character. */
-  const other = {時:'time; hour',電:'electricity',気:'spirit; mood',年:'year',学:'study',生:'life; student',家:'house',水:'water',館:'building; hall',王:'king',父:'father',母:'mother',友:'friend',両:'both',大:'big',符:'tag; sign',手:'hand',語:'language; word',国:'country',会:'meet',話:'talk',雄:'male; hero',員:'member',売:'sell',書:'write',長:'long; chief',過:'pass; exceed',消:'erase; extinguish',行:'go',特:'special',物:'thing',車:'car; vehicle',馬:'horse',本:'origin; book',弁:'speech; lunchbox',発:'emit; depart',器:'vessel; tool',歯:'tooth',院:'institution',読:'read',若:'young',忍:'stealth; endure',民:'people',守:'protect; keep',氏:'clan; Mr.',女:'woman',九:'nine',十:'ten',食:'eat',飲:'drink',買:'buy',動:'move',価:'value; price',焼:'grill; burn',白:'white',金:'money; gold',授:'grant; teach',業:'work; business',給:'supply; pay',由:'reason; origin',地:'ground; earth',無:'nothing; without',別:'separate',徴:'sign; trait',全:'whole; all',心:'heart; mind',不:'not; un-',朝:'morning',晩:'evening',牛:'cow',豚:'pig',屋:'shop; roof',筋:'muscle; sinew',最:'most',魔:'demon',重:'heavy; weight',操:'handle; exercise',僚:'colleague',級:'class; grade',阪:'Osaka (place)',神:'god',戸:'door; house',寝:'sleep',休:'rest',外:'outside',岸:'shore',北:'north',道:'road; way',分:'minute; part',少:'few; little',公:'public',園:'garden',近:'near',町:'town',青:'blue',教:'teach',住:'live; reside',夏:'summer',魚:'fish',多:'many',思:'think',調:'tune; check',秋:'autumn',刺:'card; stab',氏:'clan; Mr.',字:'character; letter',紙:'paper',期:'period',辞:'word; resign',科:'subject; course',図:'diagram; plan',情:'feeling',作:'make',賃:'fee; wages',移:'move; shift',解:'untie; solve',販:'sell',社:'company; shrine',柔:'soft; gentle',新:'new',私:'private; I',高:'high; tall',校:'school',由:'origin; reason',品:'goods; article',和:'harmony; Japanese',表:'surface; chart',折:'fold',容:'form; contain',美:'beautiful',館:'building; hall',計:'measure; plan',漫:'random; cartoon',詞:'words; poetry',役:'role; service',台:'stand; platform',勤:'work; serve',券:'ticket',乳:'milk',労:'labor',差:'difference',温:'warm',態:'condition; attitude',信:'trust; signal',号:'number; sign',景:'scenery',必:'certain; must',趣:'taste; interest',興:'interest; rise',噌:'miso',見:'see',用:'use',文:'sentence; writing',初:'first; beginning',金:'money; gold',禅:'Zen',島:'island',告:'announce',鉄:'iron',球:'ball; sphere',震:'quake',脱:'escape; remove',駐:'park (a car)',合:'fit; join',工:'craft; work',提:'present; offer',視:'look at',政:'government',限:'limit',発:'emit; depart',末:'end',参:'refer; visit',究:'investigate',待:'wait',研:'polish; study',命:'life; order',詞:'word',雄:'male; hero',説:'explain',重:'heavy',急:'hurry',容:'form',転:'roll'};
+  const other = {小:'small',菜:'greens; vegetable',練:'practice; train',慣:'get used to',人:'person',婦:'woman; wife',二:'two',五:'five',暮:'year-end; live',中:'middle; inside',出:'go out; take out',現:'present; appear',上:'up; above',描:'draw; depict',果:'fruit; result',論:'argument; theory',離:'separate',約:'promise; about',未:'not yet',散:'scatter; stroll',一:'one',進:'advance',薬:'medicine',番:'number; turn',東:'east',西:'west',制:'system; control',仕:'serve; do',事:'thing; matter',協:'cooperate',努:'strive',士:'gentleman; specialist',職:'job; employment',産:'produce; birth',入:'enter',実:'real; fruit',経:'pass through; manage',受:'receive',点:'point',下:'down; below',泊:'stay overnight',巻:'roll; volume',暖:'warm',火:'fire',粉:'powder',症:'illness; symptom',客:'guest; customer',皆:'all; everyone',子:'child; (small thing)',便:'convenience; mail',妹:'younger sister',都:'capital; city',弟:'younger brother',典:'rule; text',式:'ceremony; style',修:'study; master',探:'search',素:'element; plain',訪:'visit',数:'number',決:'decide',時:'time; hour',電:'electricity',気:'spirit; mood',年:'year',学:'study',生:'life; student',家:'house',水:'water',館:'building; hall',王:'king',父:'father',母:'mother',友:'friend',両:'both',大:'big',符:'tag; sign',手:'hand',語:'language; word',国:'country',会:'meet',話:'talk',雄:'male; hero',員:'member',売:'sell',書:'write',長:'long; chief',過:'pass; exceed',消:'erase; extinguish',行:'go',特:'special',物:'thing',車:'car; vehicle',馬:'horse',本:'origin; book',弁:'speech; lunchbox',発:'emit; depart',器:'vessel; tool',歯:'tooth',院:'institution',読:'read',若:'young',忍:'stealth; endure',民:'people',守:'protect; keep',氏:'clan; Mr.',女:'woman',九:'nine',十:'ten',食:'eat',飲:'drink',買:'buy',動:'move',価:'value; price',焼:'grill; burn',白:'white',金:'money; gold',授:'grant; teach',業:'work; business',給:'supply; pay',由:'reason; origin',地:'ground; earth',無:'nothing; without',別:'separate',徴:'sign; trait',全:'whole; all',心:'heart; mind',不:'not; un-',朝:'morning',晩:'evening',牛:'cow',豚:'pig',屋:'shop; roof',筋:'muscle; sinew',最:'most',魔:'demon',重:'heavy; weight',操:'handle; exercise',僚:'colleague',級:'class; grade',阪:'Osaka (place)',神:'god',戸:'door; house',寝:'sleep',休:'rest',外:'outside',岸:'shore',北:'north',道:'road; way',分:'minute; part',少:'few; little',公:'public',園:'garden',近:'near',町:'town',青:'blue',教:'teach',住:'live; reside',夏:'summer',魚:'fish',多:'many',思:'think',調:'tune; check',秋:'autumn',刺:'card; stab',氏:'clan; Mr.',字:'character; letter',紙:'paper',期:'period',辞:'word; resign',科:'subject; course',図:'diagram; plan',情:'feeling',作:'make',賃:'fee; wages',移:'move; shift',解:'untie; solve',販:'sell',社:'company; shrine',柔:'soft; gentle',新:'new',私:'private; I',高:'high; tall',校:'school',由:'origin; reason',品:'goods; article',和:'harmony; Japanese',表:'surface; chart',折:'fold',容:'form; contain',美:'beautiful',館:'building; hall',計:'measure; plan',漫:'random; cartoon',詞:'words; poetry',役:'role; service',台:'stand; platform',勤:'work; serve',券:'ticket',乳:'milk',労:'labor',差:'difference',温:'warm',態:'condition; attitude',信:'trust; signal',号:'number; sign',景:'scenery',必:'certain; must',趣:'taste; interest',興:'interest; rise',噌:'miso',見:'see',用:'use',文:'sentence; writing',初:'first; beginning',金:'money; gold',禅:'Zen',島:'island',告:'announce',鉄:'iron',球:'ball; sphere',震:'quake',脱:'escape; remove',駐:'park (a car)',合:'fit; join',工:'craft; work',提:'present; offer',視:'look at',政:'government',限:'limit',発:'emit; depart',末:'end',参:'refer; visit',究:'investigate',待:'wait',研:'polish; study',命:'life; order',詞:'word',雄:'male; hero',説:'explain',重:'heavy',急:'hurry',容:'form',転:'roll'};
 
   /* Non-lesson kanji whose reading in a lesson word is kun'yomi; everything else reads as on'yomi. */
-  const otherKun = ['父ちち','母はは','手て','物もの','歯は','若わか'];
+  const otherKun = ['父ちち','母はは','手て','物もの','歯は','若わか','小お','中なか','上うえ','人ひと','出だ','薬ぐすり','事ごと','合あい','見み','火び','生い','皆みな','巻まき','休やす','水みず','文も','子す'];
 
   /* Why these kanji make this word — one short line each. */
   const why = {
@@ -229,7 +288,7 @@ window.YOMIKATA_CONTENT = (function () {
 };
 
   /* Words highlighted in the textbook. Editable in-app: tap ☆ in a kanji's word list. */
-  const highlighted = ['食べ物','飲み物','物','買い物','鳥','料理','特に','安い','ご飯','朝ご飯','昼ご飯','肉','悪い','気分が悪い','体','同じ','着く','着る','着物','水着','空港','昼','海',
+  const highlighted = ['分野','小野さん','習う','主に','ご主人','二十五歳','集める','発表する','作品','写真','写す','文字','活動','生活','結婚する','歩く','目的','目','洋服','服','食堂','力仕事','授業','試験','貸す','図書館','地図','旅館','映画館','終わる','宿題','春','秋','冬','冬休み','花','不安な','姉','お姉さん','兄','お兄さん','漢字','卒業する','工学','研究','質問','多い','食べ物','飲み物','物','買い物','鳥','料理','特に','安い','ご飯','朝ご飯','昼ご飯','肉','悪い','気分が悪い','体','同じ','着く','着る','着物','水着','空港','昼','海',
  '彼','彼女','時代','留学生','留学する','家族','父親','親切な','切る','英語','店','去年','急に','急ぐ','乗る','本当に','音楽','楽しい','医者',
  /* L9 */ '午前','午後','午前中','正午','後で','後ろ','最後に','前','名前','有名な','白い','白','白鳥','雨','書く','辞書','教科書','図書館','友だち','親友','友人','時間','二時間','間','人間','一週間','家','家族','作家','家事','話す','話','電話','会話','少し','少ない','少々','少女','少年','古い','中古','古代','知る','知人','知り合い','来る','来ます','来ない','来週','来日',
  /* L10 */ '住む','住所','お正月','正しい','三年生','来年','今年','年','売る','売店','買う','買い物','売買','町','長い','道','雪','新雪','雪だるま','立つ','自分','自動車','自転車','自由','夜','夜中','今夜','夜明け','朝','朝食','毎朝','持つ','持ってくる','気持ち',
