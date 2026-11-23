@@ -31,7 +31,7 @@ body{font-family:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;fo
 .kj{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
-.app{max-width:640px;margin:0 auto;padding:16px 16px 48px;min-height:100vh;background:var(--paper)}
+.app{max-width:1100px;margin:0 auto;padding:16px 16px 48px;min-height:100vh;background:var(--paper)}
 /* On wider screens the app sits on a solid card, with the line-art scenery around it. */
 @media (min-width:700px){.app{margin:20px auto;min-height:auto;border:1.5px solid var(--line);border-radius:20px;box-shadow:0 6px 30px rgba(0,0,0,.12)}}
 header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0 18px;border-bottom:2px solid var(--ink)}
@@ -43,9 +43,11 @@ header .lesson{color:var(--muted);font-size:14px}
 h2{font-size:18px;font-weight:700;margin:0 0 4px}
 .lede{color:var(--muted);margin:0 0 18px}
 /* hub map */
-.map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* As many kanji cards per row as fit (at least ~110px each). min-width:0 stops a long
+   meaning like "drawing; to devise" from forcing every column wider than the page. */
+.map{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
 @media (max-width:420px){.map{grid-template-columns:repeat(4,1fr);gap:8px}}
-.node{position:relative;aspect-ratio:1;background:var(--card);border:1.5px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .12s}
+.node{position:relative;min-width:0;aspect-ratio:1;background:var(--card);border:1.5px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .12s}
 .node:active{transform:scale(.96)}
 .node .ch{font-size:44px;font-weight:600;line-height:1}
 .node .mn{font-size:11px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
@@ -69,7 +71,7 @@ h2{font-size:18px;font-weight:700;margin:0 0 4px}
 .readings.on .r{color:var(--on)} .readings.kun .r{color:var(--kun)}
 .readings .lab{font-size:12px;color:var(--muted);padding:0 4px}
 .meaning{text-align:center;color:var(--muted);margin:0 0 20px}
-.modes{display:grid;gap:10px}
+.modes{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
 .mode{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;text-align:left;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px}
 .mode .ic{font-size:28px;width:38px;text-align:center}
 .mode b{display:block}
@@ -245,7 +247,6 @@ header .right{display:flex;align-items:center;gap:10px}
 .fb .formnote .kj{font-size:20px}
 .blank-row.wrong{border-color:var(--bad);background:var(--bad-soft)}
 @media (min-width:900px){
-  .app.wide{max-width:1080px}
   .app.wide #s-round.two-col{display:grid;grid-template-columns:1.1fr .9fr;column-gap:30px;align-items:start;
     grid-template-areas:"top top" "q ans" "hint ans" "fb ans" "next next"}
   .app.wide #s-round.two-col .topbar{grid-area:top}
@@ -264,6 +265,17 @@ header .right{display:flex;align-items:center;gap:10px}
 .slrow select{grid-column:2 / -1;font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:4px 6px;max-width:100%}
 .slhint{grid-column:2 / -1;font-size:12px;color:var(--muted);line-height:1.4}
 .slextras{display:flex;gap:6px;flex-wrap:wrap}
+/* 📚 Words slideshow: the word big, then its reading, then its meaning */
+.wstage{padding-top:10px}
+.wtag{font-size:12px;color:var(--muted);letter-spacing:.04em;min-height:16px}
+.wword{font-weight:600;line-height:1.15;white-space:nowrap;margin-top:6px;font-size:min(128px, calc((min(100vw, 640px) - 90px) / var(--len, 2)))}
+.wword.in{animation:kin .5s ease-out}
+.wreading{margin-top:10px;font-size:clamp(28px,7.5vw,40px);font-weight:700;color:var(--muted);min-height:1.3em;visibility:hidden}
+.wmeaning{margin-top:6px;font-size:clamp(20px,5vw,26px);font-weight:700;min-height:1.4em;visibility:hidden}
+.wreading.show,.wmeaning.show{visibility:visible;animation:kin .4s ease-out}
+#ws-extra{width:100%}
+#ws-extra .lessonbox{margin-top:16px}
+.wcount{text-align:center;color:var(--muted);font-size:13px;margin:4px 0 0}
 .slextras .lp{padding:5px 11px;font-size:13px}
 .slextras .warn{font-size:12.5px;color:var(--bad);border:1.5px dashed var(--bad);border-radius:999px;padding:4px 10px}
 #sl-sound{border-color:var(--bad);color:var(--bad);font-weight:700}
@@ -398,6 +410,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="mode" data-mode="sort"><span class="ic">🗂</span><span class="d"><b>On or kun?</b><span>Drag a kanji's real readings into the right box; leave the impostors</span></span><em></em></button>
   </div>
   <div class="row"><button class="btn quiet" id="btn-review">Review misses</button><button class="btn quiet" id="btn-slides">🎧 Pronunciations — passive slideshow</button></div>
+  <div class="row" style="margin-top:10px"><button class="btn primary" id="btn-words">📚 Words — see it, hear the reading, then the meaning</button></div>
   <div class="stats" id="stats"></div>
   <h2 style="margin-top:30px">Look up a kanji</h2>
   <p class="lede">Every reading and every word it appears in, plus a focused drill.</p>
@@ -452,6 +465,30 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn" id="sl-prev">‹ Kanji</button>
     <button class="btn primary" id="sl-play">⏸ Pause</button>
     <button class="btn" id="sl-next">Kanji ›</button>
+  </div>
+</section>
+
+<!-- WORDS (passive word slideshow) -->
+<section class="screen" id="s-words">
+  <div class="slidebar">
+    <button class="btn quiet" id="ws-close" style="padding:6px 12px">✕ Close</button>
+    <button class="btn quiet" id="ws-settings" style="padding:6px 12px" aria-expanded="false" aria-controls="ws-opts">⚙ Settings ▾</button>
+    <span class="slextras" id="ws-extras"></span>
+    <button class="btn" id="ws-sound" style="display:none;padding:6px 12px">🔊 Tap to turn on sound</button>
+    <div class="slopts" id="ws-opts" hidden></div>
+  </div>
+  <div class="stage wstage">
+    <div class="wtag" id="ws-tag"></div>
+    <div class="wword kj" id="ws-word"></div>
+    <div class="wreading kj" id="ws-reading"></div>
+    <div class="wmeaning" id="ws-meaning"></div>
+    <div id="ws-extra"></div>
+  </div>
+  <div class="wcount" id="ws-count"></div>
+  <div class="slidefoot">
+    <button class="btn" id="ws-prev">‹ Back</button>
+    <button class="btn primary" id="ws-play">⏸ Pause</button>
+    <button class="btn" id="ws-next">Next ›</button>
   </div>
 </section>
 
@@ -806,6 +843,9 @@ setScene(false);
 <!-- Optional: mini-lessons and example sentences for each kanji. If this file
      is missing, everything still works, just without the extras. -->
 <script src="yomikata-notes.js"></script>
+<!-- Optional: why each highlighted word uses its kanji, plus an example sentence,
+     used by the 📚 Words slideshow. -->
+<script src="yomikata-words.js"></script>
 <script>
 /* ================= DATA: Genki II Lesson 14 kanji (読み書き編 pp.281-282) =================
    word: [written, reading segmented per character with '.', meaning, exception?]
@@ -864,6 +904,17 @@ function yomikataCheck(){
     if (n.ja && !target) problems.push(`notes ${h.ch}: example has no [word|reading|*] target`);
     else if (target && !target[1].includes(h.ch)) problems.push(`notes ${h.ch}: the example's target word doesn't contain ${h.ch}`);
   });
+  // yomikata-words.js (optional): explanations are keyed by the word exactly as written in the lessons
+  const wordNotes = window.YOMIKATA_WORDS;
+  if (wordNotes) {
+    const allWords = new Set(Object.values(C.lessons).flat().flatMap(h => h.words.map(w => w[0])));
+    Object.entries(wordNotes).forEach(([word, n]) => {
+      if (!allWords.has(word)) problems.push(`words: "${word}" isn't a word in any lesson (check the spelling)`);
+      if (n.why && (n.why.match(/「/g) || []).length !== (n.why.match(/」/g) || []).length) problems.push(`words ${word}: a 「 has no matching 」`);
+      if (n.ja && !/\[[^|\]]+\|[^|\]]+\|\*\]/.test(n.ja)) problems.push(`words ${word}: example has no [word|reading|*] target`);
+    });
+    (C.highlighted || []).forEach(word => { if (allWords.has(word) && !wordNotes[word]) problems.push(`words: no explanation for ${word} yet`); });
+  }
   (C.stories || []).forEach(s => { if (!/\|\*\]/.test(s.s)) problems.push(`story "${s.t}" has no blanks`); });
   const kanji = Object.values(C.lessons).flat().length;
   const words = Object.values(C.lessons).flat().reduce((a, h) => a + h.words.length, 0);
@@ -945,6 +996,7 @@ const $ = s => document.querySelector(s);
 const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
 const pick = (a, n) => shuffle(a).slice(0, n);
 function show(id){ if (id !== 's-hub' && hubSpeaking) stopHubSpeech();
+  if (id !== 's-words' && WORDS) stopWordShow();
   if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; }
   if (id !== 's-round') { document.querySelector('.app').classList.remove('wide'); $('#s-round').classList.remove('two-col'); }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); $('#'+id).classList.add('active'); window.scrollTo(0,0); }
@@ -1829,7 +1881,9 @@ function pickSlideVoices(){
     || en.find(v => isLocalVoice(v) && v.default)
     || en.find(v => isLocalVoice(v) && /Samantha|Alex|Ava|Allison|Susan|Zira|David|Mark|Aria|Jenny|Guy|Karen|Daniel|Moira|Tessa/i.test(v.name))
     || en.find(v => isLocalVoice(v) && /^en-US/i.test(v.lang)) || en.find(isLocalVoice) || en[0] || null;
-  if (SLIDE && !$('#slopts').hidden) fillVoiceChoices();
+  // Refresh any voice menus on screen (voices load late in some browsers).
+  // At start-up there are none yet, and fillVoiceChoices isn't ready, so skip it then.
+  if (document.querySelector('select[data-voice]')) fillVoiceChoices();
 }
 if ('speechSynthesis' in window) { pickSlideVoices(); try { speechSynthesis.addEventListener('voiceschanged', pickSlideVoices); } catch(e) {} }
 const oneVoice = () => isMultilingual(enVoice);
@@ -1864,15 +1918,26 @@ function fillVoiceChoices(){
     select.innerHTML = `<option value="">Auto${auto ? ` (${escHtml(auto.name)})` : ''}</option>` + list.map(v =>
       `<option value="${escHtml(v.name)}"${v.name === chosenName ? ' selected' : ''}>${escHtml(v.name)}${isMultilingual(v) ? ' ⭐ speaks Japanese too' : ''}${isLocalVoice(v) ? '' : ' · online, slower'}</option>`).join('');
   };
-  fill($('#slenvoice'), voicesFor('en'), P.enVoiceName, enVoice);
-  fill($('#sljavoice'), voicesFor('ja'), P.jaVoiceName, slVoiceJa);
-  const hint = $('#slvoicehint');
-  if (hint) hint.textContent = oneVoice()
+  // Both slideshows have these menus; they share one choice.
+  document.querySelectorAll('select[data-voice="en"]').forEach(select => fill(select, voicesFor('en'), P.enVoiceName, enVoice));
+  document.querySelectorAll('select[data-voice="ja"]').forEach(select => {
+    fill(select, voicesFor('ja'), P.jaVoiceName, slVoiceJa);
+    select.disabled = oneVoice();
+  });
+  const hintText = oneVoice()
     ? 'Using one voice for English and Japanese, so there is no hand-off pause.'
     : (voicesFor('en').some(isMultilingual)
         ? 'Pick a ⭐ voice to read both languages in one voice.'
         : 'Voices marked “online” pause longer between languages. Microsoft Edge has “Multilingual” voices that read both languages in one voice.');
-  if ($('#sljavoice')) $('#sljavoice').disabled = oneVoice();
+  document.querySelectorAll('.voicehint').forEach(hint => { hint.textContent = hintText; });
+}
+/* Hook up the voice menus inside a settings panel. */
+function bindVoiceMenus(panel){
+  panel.querySelectorAll('select[data-voice]').forEach(select => select.onchange = () => {
+    const key = select.dataset.voice === 'en' ? 'enVoiceName' : 'jaVoiceName';
+    P[key] = select.value || null;
+    save(); pickSlideVoices(); fillVoiceChoices();
+  });
 }
 function safeCancel(){
   try { if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel(); } catch(e) {}
@@ -1959,12 +2024,12 @@ function renderSlideOpts(){
      </div>
      <div class="slrow">
        <span class="sllab">English</span>
-       <select id="slenvoice" aria-label="English voice"></select>
+       <select id="slenvoice" data-voice="en" aria-label="English voice"></select>
      </div>
      <div class="slrow">
        <span class="sllab">Japanese</span>
-       <select id="sljavoice" aria-label="Japanese voice"></select>
-       <span class="slhint" id="slvoicehint"></span>
+       <select id="sljavoice" data-voice="ja" aria-label="Japanese voice"></select>
+       <span class="slhint voicehint" id="slvoicehint"></span>
      </div>
      `;
   renderExtrasBar();
@@ -1974,8 +2039,7 @@ function renderSlideOpts(){
   g.oninput = () => { P.slideWait = +g.value; $('#slpacenum').innerHTML = waitLabel(); };
   v.onchange = g.onchange = () => save();
   fillVoiceChoices();
-  $('#slenvoice').onchange = e => { P.enVoiceName = e.target.value || null; save(); pickSlideVoices(); fillVoiceChoices(); };
-  $('#sljavoice').onchange = e => { P.jaVoiceName = e.target.value || null; save(); pickSlideVoices(); fillVoiceChoices(); };
+  bindVoiceMenus($('#slopts'));
 }
 /* 💡 / 📝 switches in the top bar, always in view. If yomikata-notes.js didn't load
    (for example it wasn't uploaded next to index.html), say so instead of hiding them. */
@@ -2075,6 +2139,276 @@ $('#sl-sound').onclick = tapToSpeak;
 $('#sl-play').onclick = () => slidePause(!SLIDE.paused);
 $('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); };
 $('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); };
+
+/* ================= 📚 WORDS (passive word slideshow) =================
+   One word per slide. Every word from the chosen lessons (the book's highlighted
+   ones, or all of them) is shuffled into one deck, and the show walks through it:
+     show the word in kanji → (think time) → say its reading →
+     (pause) → say its meaning → 📝 example sentence → 💡 why these kanji →
+     (wait) → next word.
+   The three waits are sliders under ⚙ Settings. The 💡 explanations (what each
+   kanji means and how they add up to the word) and the examples come from
+   yomikata-words.js; words without one just skip those steps. */
+const WORD_NOTES = window.YOMIKATA_WORDS || {};
+const hasWordNotes = Object.keys(WORD_NOTES).length > 0;
+if (!hasWordNotes) console.warn('Yomikata: yomikata-words.js did not load, so the Words slideshow has no kanji explanations or examples. Put it next to index.html.');
+var WORDS = null;   // the running show; var (not let) so show() can check it at any time
+
+const secondsSetting = (key, fallback) => {
+  const value = P[key];
+  return (typeof value === 'number' && isFinite(value)) ? clamp(Math.round(value), 0, 10) : fallback;
+};
+const thinkSeconds      = () => secondsSetting('wordThink', 3);   // word alone, before the reading
+const meaningGapSeconds = () => secondsSetting('wordGap', 2);     // after the reading, before the meaning
+const nextWaitSeconds   = () => secondsSetting('wordWait', 2);    // after everything, before the next word
+/* "(Western) clothes" → "Western clothes"; "realm; field" → "realm, or field" */
+const spokenMeaning = meaning => meaning.replace(/\(([^)]*)\)/g, '$1').replace(/;\s*/g, ', or ');
+
+function wordDeck(){
+  const pool = P.wordScope === 'all' ? UNIQUE_WORDS : UNIQUE_WORDS.filter(isHL);
+  return shuffle(pool.length ? pool : UNIQUE_WORDS);
+}
+function clearWordTimers(){ if (WORDS) { WORDS.timers.forEach(clearTimeout); WORDS.timers = []; } }
+function wordWait(ms){ return new Promise(resolve => { if (WORDS) WORDS.timers.push(setTimeout(resolve, ms)); }); }
+
+/* Speak a list of parts and wait until the voice has finished.
+   Resolves true if something was heard, false if sound is off or blocked.
+   Pieces inside `box` light up as they're read. */
+function sayParts(parts, token, box){
+  return new Promise(resolve => {
+    if (!GameVoice.enabled || !('speechSynthesis' in window) || !parts.length) return resolve(false);
+    let finished = false;
+    const finish = spoke => { if (!finished) { finished = true; resolve(spoke); } };
+    const segs = box ? [...box.querySelectorAll('.seg')] : [];
+    const planned = voicePlan(parts);
+    try { speechSynthesis.resume(); } catch(e) {}
+    planned.forEach((part, i) => {
+      const u = makeUtterance(part);
+      u.onstart = () => {
+        speechOK = true; $('#ws-sound').style.display = 'none';
+        if (!segs.length || !part.p) return;
+        segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
+        const now = segs.find(s => part.p.includes(+s.dataset.p));
+        if (now) now.scrollIntoView({block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth'});
+      };
+      if (i === planned.length - 1) u.onend = u.onerror = () => finish(true);
+      try { speechSynthesis.speak(u); } catch(e) {}
+    });
+    /* onend doesn't always fire (iOS), so also watch whether the voice is still talking.
+       If nothing has started after 4 seconds, speech is probably blocked: offer a tap. */
+    const startedAt = Date.now();
+    let heardTalking = false;
+    const watch = () => {
+      if (finished) return;
+      if (!WORDS || WORDS.token !== token) return finish(false);
+      const talking = speechSynthesis.speaking || speechSynthesis.pending;
+      if (talking) heardTalking = true;
+      if (heardTalking && !talking) return finish(true);
+      if (!heardTalking && Date.now() - startedAt > 4000) {
+        if (!speechOK) $('#ws-sound').style.display = '';
+        return finish(false);
+      }
+      WORDS.timers.push(setTimeout(watch, 250));
+    };
+    WORDS.timers.push(setTimeout(watch, 400));
+  });
+}
+
+/* The 📝 / 💡 boxes under the meaning. Each returns its box and what to say. */
+function addExampleBox(note){
+  const example = exampleParts(note);
+  const box = document.createElement('div');
+  box.innerHTML = example.html;
+  $('#ws-extra').appendChild(box);
+  return {box, parts: example.parts};
+}
+function addWhyBox(note){
+  const why = explainParts(note.why);
+  const box = document.createElement('div');
+  box.className = 'lessonbox';
+  box.innerHTML = `<span class="bulb" aria-hidden="true">💡</span>${why.html}`;
+  $('#ws-extra').appendChild(box);
+  return {box, parts: why.parts};
+}
+
+/* One slide, start to finish. Every await is followed by a check, so pressing
+   Next, Back, Pause or Close cleanly abandons the old slide. */
+async function runWordSlide(){
+  if (!WORDS) return;
+  clearWordTimers();
+  safeCancel();
+  if (WORDS.index >= WORDS.deck.length) { WORDS.deck = wordDeck(); WORDS.index = 0; }   // end of the deck: reshuffle
+  if (WORDS.index < 0) WORDS.index = WORDS.deck.length - 1;
+  const word = WORDS.deck[WORDS.index];
+  const note = WORD_NOTES[word.w] || null;
+  const token = ++WORDS.token;
+  const stale = () => !WORDS || WORDS.token !== token || WORDS.paused;
+  const wantExample = !!(note && note.ja && P.wordExample !== false);
+  const wantWhy = !!(note && note.why && P.wordWhy !== false);
+
+  // Draw the word alone; the reading and meaning hold their space but stay hidden.
+  const wordEl = $('#ws-word');
+  wordEl.style.setProperty('--len', Math.max([...word.w].length, 2));
+  wordEl.textContent = word.w;
+  wordEl.classList.remove('in'); void wordEl.offsetWidth; wordEl.classList.add('in');
+  $('#ws-reading').textContent = word.r;
+  $('#ws-meaning').textContent = word.m;
+  $('#ws-reading').classList.remove('show');
+  $('#ws-meaning').classList.remove('show');
+  $('#ws-extra').innerHTML = '';
+  $('#ws-tag').textContent = `L${word.lesson}${isHL(word) ? ' · ★ in your book' : ''}`;
+  $('#ws-count').textContent = `${WORDS.index + 1} / ${WORDS.deck.length}`;
+
+  if (WORDS.paused) {   // paused: show everything at once, silently, to read at your own pace
+    $('#ws-reading').classList.add('show');
+    $('#ws-meaning').classList.add('show');
+    if (wantExample) addExampleBox(note);
+    if (wantWhy) addWhyBox(note);
+    return;
+  }
+
+  await wordWait(thinkSeconds() * 1000);              if (stale()) return;
+  $('#ws-reading').classList.add('show');
+  let spoke = await sayParts([{t: word.r, lang: 'ja-JP', rate: jaRate(), p: []}], token);
+  if (stale()) return;
+  if (!spoke) { await wordWait(1000);                if (stale()) return; }
+
+  await wordWait(meaningGapSeconds() * 1000);         if (stale()) return;
+  $('#ws-meaning').classList.add('show');
+  spoke = await sayParts([{t: spokenMeaning(word.m), lang: 'en-US', rate: enRate(), p: []}], token);
+  if (stale()) return;
+  if (!spoke) { await wordWait(1400);                if (stale()) return; }
+
+  if (wantExample) {
+    await wordWait(600);                              if (stale()) return;
+    const example = addExampleBox(note);
+    spoke = await sayParts(example.parts, token, example.box);
+    if (stale()) return;
+    if (!spoke) { await wordWait(5000);              if (stale()) return; }
+  }
+  if (wantWhy) {
+    await wordWait(600);                              if (stale()) return;
+    const why = addWhyBox(note);
+    spoke = await sayParts(why.parts, token, why.box);
+    if (stale()) return;
+    if (!spoke) { await wordWait(Math.max(3000, note.why.split(/\s+/).length * 300)); if (stale()) return; }
+  }
+
+  await wordWait(nextWaitSeconds() * 1000);           if (stale()) return;
+  WORDS.index++;
+  runWordSlide();
+}
+
+/* ⚙ Settings for the Words slideshow. */
+function renderWordOpts(){
+  const scope = P.wordScope === 'all' ? 'all' : 'hl';
+  const secondsRow = (id, label, value, after) => `
+     <div class="slrow">
+       <span class="sllab">${label}</span>
+       <span class="slend slsec">0s</span>
+       <input type="range" id="${id}" min="0" max="10" step="1" value="${value}" aria-label="${label} — seconds ${after}">
+       <span class="slend slsec">10s</span>
+       <span class="pacenum" id="${id}-num">${value}s <i>${after}</i></span>
+     </div>`;
+  $('#ws-opts').innerHTML = `
+     <div class="slrow">
+       <span class="sllab">Words</span>
+       <div class="slwords">
+         <button class="lp${scope === 'hl' ? ' on' : ''}" data-wscope="hl">Highlighted<small>tested on</small></button>
+         <button class="lp${scope === 'all' ? ' on' : ''}" data-wscope="all">All<small>every word</small></button>
+       </div>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Voice</span>
+       <span class="slend">🐢</span>
+       <input type="range" id="wsvoice" min="${SPEED_MIN}" max="${SPEED_MAX}" step="0.05" value="${voiceSpeed()}" aria-label="voice speed">
+       <span class="slend">🐇</span>
+       <span class="pacenum" id="wsvoice-num">${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i></span>
+     </div>
+     ${secondsRow('wsthink', 'Think', thinkSeconds(), 'before the reading')}
+     ${secondsRow('wsgap', 'Meaning', meaningGapSeconds(), 'before the meaning')}
+     ${secondsRow('wswait', 'Next', nextWaitSeconds(), 'before the next word')}
+     <div class="slrow">
+       <span class="sllab">English</span>
+       <select data-voice="en" aria-label="English voice"></select>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Japanese</span>
+       <select data-voice="ja" aria-label="Japanese voice"></select>
+       <span class="slhint voicehint"></span>
+     </div>`;
+  $('#ws-opts').querySelectorAll('[data-wscope]').forEach(button => button.onclick = () => {
+    P.wordScope = button.dataset.wscope; save();
+    WORDS.deck = wordDeck(); WORDS.index = 0;
+    renderWordOpts(); runWordSlide();
+  });
+  const voice = $('#wsvoice');
+  voice.oninput = () => { P.voiceRate = +voice.value; $('#wsvoice-num').innerHTML = `${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i>`; };
+  voice.onchange = () => save();
+  [['wsthink', 'wordThink', 'before the reading'], ['wsgap', 'wordGap', 'before the meaning'], ['wswait', 'wordWait', 'before the next word']]
+    .forEach(([id, key, after]) => {
+      const slider = $('#' + id);
+      slider.oninput = () => { P[key] = +slider.value; $('#' + id + '-num').innerHTML = `${slider.value}s <i>${after}</i>`; };
+      slider.onchange = () => save();
+    });
+  bindVoiceMenus($('#ws-opts'));
+  fillVoiceChoices();
+}
+/* 📝 Example / 💡 Why these kanji switches in the top bar. */
+function renderWordExtras(){
+  const bar = $('#ws-extras');
+  if (!hasWordNotes) {
+    bar.innerHTML = `<span class="warn" title="Put yomikata-words.js in the same folder as index.html">⚠ Word explanations file not found</span>`;
+    return;
+  }
+  bar.innerHTML =
+    `<button class="lp${P.wordExample !== false ? ' on' : ''}" data-wextra="wordExample" aria-pressed="${P.wordExample !== false}">📝 Example</button>
+     <button class="lp${P.wordWhy !== false ? ' on' : ''}" data-wextra="wordWhy" aria-pressed="${P.wordWhy !== false}">💡 Why these kanji</button>`;
+  bar.querySelectorAll('[data-wextra]').forEach(button => button.onclick = () => {
+    const key = button.dataset.wextra;
+    P[key] = P[key] === false;   // flip it (missing counts as on)
+    save(); renderWordExtras(); runWordSlide();
+  });
+}
+function showWordSettings(open){
+  P.wordOptsOpen = open; save();
+  $('#ws-opts').hidden = !open;
+  $('#ws-settings').textContent = open ? '⚙ Settings ▴' : '⚙ Settings ▾';
+  $('#ws-settings').setAttribute('aria-expanded', String(open));
+  if (open) fillVoiceChoices();
+}
+function pauseWordShow(paused){
+  if (!WORDS) return;
+  WORDS.paused = paused;
+  $('#ws-play').textContent = paused ? '▶ Play' : '⏸ Pause';
+  runWordSlide();   // paused: shows everything for this word; playing: starts the word over
+}
+function startWordShow(){
+  WORDS = {deck: wordDeck(), index: 0, token: 0, timers: [], paused: false};
+  $('#ws-play').textContent = '⏸ Pause';
+  $('#ws-sound').style.display = 'none';
+  renderWordOpts(); renderWordExtras(); showWordSettings(!!P.wordOptsOpen);
+  show('s-words');
+  runWordSlide();
+}
+function stopWordShow(){
+  clearWordTimers();
+  try { speechSynthesis.cancel(); } catch(e) {}
+  WORDS = null;
+}
+$('#btn-words').onclick = startWordShow;
+$('#ws-close').onclick = () => { stopWordShow(); renderHome(); show('s-home'); };
+$('#ws-settings').onclick = () => showWordSettings($('#ws-opts').hidden);
+$('#ws-play').onclick = () => pauseWordShow(!WORDS.paused);
+$('#ws-next').onclick = () => { if (!WORDS) return; WORDS.index++; runWordSlide(); };
+$('#ws-prev').onclick = () => { if (!WORDS) return; WORDS.index--; runWordSlide(); };
+$('#ws-sound').onclick = () => {
+  // Called straight from a tap, which iOS always lets speak; then start the word over.
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(' '); u.lang = 'ja-JP'; speechSynthesis.speak(u); } catch(e) {}
+  $('#ws-sound').style.display = 'none';
+  if (WORDS) { WORDS.paused = false; $('#ws-play').textContent = '⏸ Pause'; runWordSlide(); }
+};
+document.addEventListener('visibilitychange', () => { if (document.hidden && WORDS && !WORDS.paused) pauseWordShow(true); });
 
 /* ================= SUMMARY ================= */
 function finishRound(){
