@@ -516,7 +516,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25d</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25e</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -984,10 +984,14 @@ let speechPrimed = false, speechOK = false;
    browser on these devices runs on Safari's engine, so they share its rules. */
 const isAppleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-/* speechSynthesis.resume() helps Chrome on a computer recover a stuck queue, but
-   GameVoice (which does work on iPhone) never calls it, and on iOS it may do
-   more harm than good. So it's skipped there. */
-function nudgeSpeech(){ if (!isAppleTouchDevice) { try { speechSynthesis.resume(); } catch(e) {} } }
+/* speechSynthesis.resume() wakes a paused or stuck speech queue. Computers get
+   it every time. On iPhone/iPad it's only called when the engine says it's
+   paused, since GameVoice (which works there) never calls it otherwise. */
+function nudgeSpeech(){
+  try {
+    if (!isAppleTouchDevice || speechSynthesis.paused) speechSynthesis.resume();
+  } catch(e) {}
+}
 function primeSpeech(){
   if (speechPrimed || !('speechSynthesis' in window)) return;
   try {
@@ -1015,10 +1019,6 @@ function primeSpeech(){
 function unlockSpeechFromTap(sayHello){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
   try { GameVoice.unlock(); } catch(e) {}   // wakes the sound-effects side too, as GameVoice does
-  try {
-    // Safari 17+: play sound like a media app, even with the side switch on silent.
-    if (navigator.audioSession) navigator.audioSession.type = 'playback';
-  } catch(e) {}
   try {
     nudgeSpeech();
     const u = new SpeechSynthesisUtterance(sayHello ? 'はじめます' : ' ');
@@ -1990,43 +1990,68 @@ function fillVoiceChoices(){
         : 'Voices marked “online” pause longer between languages. Microsoft Edge has “Multilingual” voices that read both languages in one voice.');
   document.querySelectorAll('.voicehint').forEach(hint => { hint.textContent = hintText; });
 }
-/* 🔊 Test sound (in both ⚙ Settings panels). Speaks a short Japanese and English
-   line straight from the tap, then reports what happened and which voices are
-   in use, so a silent phone can be diagnosed. If nothing plays with a chosen
-   voice, it switches to the system voices and tries again. */
+/* 🔊 Test sound (in both ⚙ Settings panels). Tries up to three ways to speak a
+   short test line and reports exactly what the browser said happened, so a
+   silent phone can be diagnosed from one screenshot:
+     A. speak straight from the tap, exactly as the slideshow does;
+     B. if A never starts: clear the speech queue, wake it, and try again
+        (fixes a queue stuck behind an earlier phrase, or a paused engine);
+     C. if B never starts either: speak through GameVoice, the same code your
+        other games use.
+   "Started" means the engine really began speaking. If a step started but you
+   heard nothing, the problem is volume or the ring/silent switch, not the code.
+   If a way works, the slideshows switch to it for the rest of the visit. */
+let speechFix = null;   // null, or 'reset' if clearing and waking the queue made speech work
+function speechStateText(){
+  try { return `speaking ${speechSynthesis.speaking ? 'yes' : 'no'}, waiting ${speechSynthesis.pending ? 'yes' : 'no'}, paused ${speechSynthesis.paused ? 'yes' : 'no'}`; }
+  catch(e) { return 'unknown'; }
+}
 function soundTest(statusEl){
-  if (!('speechSynthesis' in window)) { statusEl.textContent = 'This browser has no speech.'; return; }
+  if (!('speechSynthesis' in window)) { statusEl.textContent = 'This browser has no speech engine.'; return; }
   if (!GameVoice.enabled) { statusEl.textContent = 'Sound is off: tap ♪ at the top to turn it on.'; return; }
-  let heard = false;
-  const sayTest = () => {
-    [{t: 'テストです。', lang: 'ja-JP', rate: jaRate()}, {t: 'This is a test.', lang: 'en-US', rate: enRate()}].forEach(part => {
-      const u = makeUtterance(part);
-      u.onstart = () => { heard = true; speechOK = true; };
-      try { speechSynthesis.speak(u); } catch(e) {}
-    });
+  const report = [`Before: ${speechStateText()}.`];
+  const show = extra => { statusEl.textContent = report.concat(extra ? [extra] : []).join(' '); };
+  let startedBy = null;
+  const sayTest = label => {
+    const u = makeUtterance({t: 'テストです。', lang: 'ja-JP', rate: jaRate()});
+    u.onstart = () => { if (!startedBy) startedBy = label; speechOK = true; report.push(`${label}: started.`); };
+    u.onerror = e => report.push(`${label}: error "${(e && e.error) || 'unknown'}".`);
+    try { speechSynthesis.speak(u); } catch(err) { report.push(`${label}: speak() threw ${err.name}.`); }
   };
-  nudgeSpeech();
-  sayTest();   // spoken inside the tap, so iOS allows it
-  statusEl.textContent = 'Speaking…';
-  const describe = () => {
+  const voiceInfo = () => {
     const jaName = voiceTrouble || !slVoiceJa ? 'system default' : slVoiceJa.name;
-    const enName = voiceTrouble || !enVoice ? 'system default' : enVoice.name;
-    return `Japanese voice: ${jaName} · English voice: ${enName} · ${voicesFor('ja').length} Japanese and ${voicesFor('en').length} English voices found`;
+    return `Voice: ${jaName}. ${voicesFor('ja').length} Japanese, ${voicesFor('en').length} English voices. ${isAppleTouchDevice ? 'iPhone/iPad.' : 'Not iPhone/iPad.'}`;
   };
+  const success = () => show(`✓ Speech started (way ${startedBy}). If you heard nothing, check the volume and the ring/silent switch. ${voiceInfo()}`);
+
+  // A: inside the tap, no clearing first (like the slideshow start)
+  nudgeSpeech();
+  sayTest('A');
+  show('Trying way A…');
   setTimeout(() => {
-    if (heard) { statusEl.textContent = `✓ Sound is working. ${describe()}`; return; }
-    if (!voiceTrouble && (slVoiceJa || enVoice)) {
-      voiceTrouble = true;
-      try { speechSynthesis.cancel(); } catch(e) {}
-      setTimeout(sayTest, 150);
+    if (startedBy) return success();
+    report.push(`A never started (now: ${speechStateText()}).`);
+    // B: clear whatever is queued, wake the engine, try again
+    try { speechSynthesis.cancel(); } catch(e) {}
+    try { speechSynthesis.resume(); } catch(e) {}
+    setTimeout(() => {
+      sayTest('B');
+      show('Trying way B…');
       setTimeout(() => {
-        statusEl.textContent = heard
-          ? `✓ Working now, using the system voices (the chosen voice was silent). ${describe()}`
-          : `✗ Still nothing. On iPhone/iPad, check the ring/silent switch is on ring and the volume is up. ${describe()}`;
+        if (startedBy) { speechFix = 'reset'; return success(); }
+        report.push(`B never started (now: ${speechStateText()}).`);
+        // C: the GameVoice way
+        try { speechSynthesis.cancel(); } catch(e) {}
+        setTimeout(() => {
+          try { GameVoice.speak('テストです。', {rate: 1}); } catch(err) { report.push(`C: threw ${err.name}.`); }
+          setTimeout(() => {
+            const talking = speechSynthesis.speaking;
+            report.push(talking ? 'C (GameVoice): speaking.' : `C (GameVoice): nothing (now: ${speechStateText()}).`);
+            show(`${talking ? '✓' : '✗'} ${voiceInfo()}`);
+          }, 1500);
+        }, 200);
       }, 2500);
-      return;
-    }
-    statusEl.textContent = `✗ Nothing played. On iPhone/iPad, check the ring/silent switch is on ring and the volume is up. ${describe()}`;
+    }, 200);
   }, 2500);
 }
 /* Text size for the example and explanation (both slideshows share it). */
@@ -2422,6 +2447,7 @@ async function runWordSlide(options = {}){
   if (!WORDS) return;
   clearWordTimers();
   if (!options.keepQueue) safeCancel();   // stop the previous word (not on the very first, see startWordShow)
+  if (speechFix === 'reset') { try { speechSynthesis.resume(); } catch(e) {} }
   if (WORDS.index >= WORDS.deck.length) { WORDS.deck = wordDeck(); WORDS.index = 0; }   // end of the deck: reshuffle
   if (WORDS.index < 0) WORDS.index = WORDS.deck.length - 1;
   const word = WORDS.deck[WORDS.index];
