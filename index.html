@@ -168,6 +168,7 @@ header .right{display:flex;align-items:center;gap:10px}
 .logo b{font-weight:900}
 .logo small{font-size:8px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.72;margin-top:2px}
 .sig .yr{font-size:12px;font-weight:600;color:var(--muted)}
+.sig .build{font-size:11px;color:var(--muted);opacity:.7;margin-left:6px}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo{background:transparent}}
 :root[data-theme="dark"] .logo{background:transparent}
 /* sort mode */
@@ -358,6 +359,15 @@ header .right{display:flex;align-items:center;gap:10px}
 .sortnote{margin-top:10px;font-size:14px;color:var(--muted);text-align:center;min-height:20px}
 /* mini-lessons and example sentences (from yomikata-notes.js) */
 .lessonbox{max-width:560px;margin:0 auto;text-align:left;font-size:16.5px;line-height:1.7}
+/* In the slideshows, the 📝 example and 💡/📖 explanation follow the Text slider
+   (--read-scale, 0.8–2). Kanji inside the explanation are a bit bigger than the
+   English around them so they're easy to make out. */
+:root{--read-scale:1}
+.stage .lessonbox{font-size:calc(16.5px * var(--read-scale));max-width:calc(560px * max(1, var(--read-scale)))}
+.stage .lessonbox .jp{font-size:1.3em;line-height:1}
+.stage .exbox{max-width:calc(560px * max(1, var(--read-scale)))}
+.stage .exbox .exja{font-size:calc(23px * var(--read-scale))}
+.stage .exbox .exen{font-size:calc(14px * var(--read-scale))}
 .lessonbox .bulb{margin-right:4px}
 .lessonbox .jp{color:var(--bad);font-weight:700;font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
 .seg{border-radius:4px;transition:background .2s}
@@ -506,7 +516,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25c</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -970,10 +980,18 @@ GameVoice.bindToggle(document.getElementById('btnSound'));
    dropped, and speech stays locked for the rest of the page. So the first tap
    anywhere primes it with a silent utterance; everything after that is allowed. */
 let speechPrimed = false, speechOK = false;
+/* iPhone, iPad (including iPads that report as a Mac). Chrome and every other
+   browser on these devices runs on Safari's engine, so they share its rules. */
+const isAppleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+/* speechSynthesis.resume() helps Chrome on a computer recover a stuck queue, but
+   GameVoice (which does work on iPhone) never calls it, and on iOS it may do
+   more harm than good. So it's skipped there. */
+function nudgeSpeech(){ if (!isAppleTouchDevice) { try { speechSynthesis.resume(); } catch(e) {} } }
 function primeSpeech(){
   if (speechPrimed || !('speechSynthesis' in window)) return;
   try {
-    speechSynthesis.resume();
+    nudgeSpeech();
     /* A space makes no sound, but iOS counts it as a real utterance and unlocks
        the synth. A volume-0 utterance does NOT count, which is why this failed. */
     const u = new SpeechSynthesisUtterance(' ');
@@ -989,13 +1007,22 @@ function primeSpeech(){
    slideshow IS that tap (mute with ♪ if you want quiet). The start buttons call
    this first thing, and then leave the speech queue alone, because clearing the
    queue (or speaking right after a clear) in the same tap undoes the unlock on
-   iOS. Other buttons (Next, Back, Play) call it too, just in case. */
-function unlockSpeechFromTap(){
+   iOS. Other buttons (Next, Back, Play) call it too, just in case.
+   The start buttons pass sayHello: they say 「はじめます」 (let's begin) out
+   loud. That's the same thing GameVoice does in your other games: speak real
+   words straight from a tap. A blank, silent utterance (what this used before)
+   is skipped entirely by newer iOS, so it never unlocked anything. */
+function unlockSpeechFromTap(sayHello){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
+  try { GameVoice.unlock(); } catch(e) {}   // wakes the sound-effects side too, as GameVoice does
   try {
-    speechSynthesis.resume();
-    const u = new SpeechSynthesisUtterance(' ');
-    u.lang = 'ja-JP';
+    // Safari 17+: play sound like a media app, even with the side switch on silent.
+    if (navigator.audioSession) navigator.audioSession.type = 'playback';
+  } catch(e) {}
+  try {
+    nudgeSpeech();
+    const u = new SpeechSynthesisUtterance(sayHello ? 'はじめます' : ' ');
+    u.lang = 'ja-JP'; u.rate = 1; u.pitch = 1;
     u.onstart = () => { speechOK = true; };
     speechSynthesis.speak(u);
     speechPrimed = true;
@@ -1005,7 +1032,7 @@ function unlockSpeechFromTap(){
    queue paused; nudge it awake whenever we come back. */
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { if (SLIDE && !SLIDE.paused) slidePause(true); }
-  else { try { speechSynthesis.resume(); } catch(e) {} }
+  else { nudgeSpeech(); }
 });
 
 /* ================= HELPERS ================= */
@@ -1812,7 +1839,7 @@ function speakHubNote(parts){
   const segs = [...document.querySelectorAll('#hub-note .seg')];
   setTimeout(() => {   // a short gap after cancel(), or Chrome drops the first line
     if (!hubSpeaking) return;
-    try { speechSynthesis.resume(); } catch(e) {}
+    nudgeSpeech();
     const planned = voicePlan(parts);
     planned.forEach((part, i) => {
       const u = makeUtterance(part);
@@ -1893,8 +1920,6 @@ function voicesFor(prefix){
    jam the queue. So there, "Auto" doesn't pick a voice at all: we only set the
    language and iOS uses its own default voice, which is always installed. A
    voice you choose yourself in ⚙ Settings is still used. */
-const isAppleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);   // iPads that report as a Mac
 /* If a chosen voice turns out to be silent, this flips on and from then on
    everything is spoken with the system's default voices. */
 let voiceTrouble = false;
@@ -1939,7 +1964,7 @@ function voicePlan(parts){
 }
 function makeUtterance(part){
   const u = new SpeechSynthesisUtterance(part.t);
-  u.lang = part.lang; u.rate = part.rate || 0.9;
+  u.lang = part.lang; u.rate = part.rate || 0.9; u.pitch = 1;
   if (voiceTrouble) return u;   // a chosen voice was silent: let the system pick by language
   if (part.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
   else if (/^en/i.test(part.lang) && enVoice) u.voice = enVoice;
@@ -1980,7 +2005,7 @@ function soundTest(statusEl){
       try { speechSynthesis.speak(u); } catch(e) {}
     });
   };
-  try { speechSynthesis.resume(); } catch(e) {}
+  nudgeSpeech();
   sayTest();   // spoken inside the tap, so iOS allows it
   statusEl.textContent = 'Speaking…';
   const describe = () => {
@@ -2004,8 +2029,27 @@ function soundTest(statusEl){
     statusEl.textContent = `✗ Nothing played. On iPhone/iPad, check the ring/silent switch is on ring and the volume is up. ${describe()}`;
   }, 2500);
 }
+/* Text size for the example and explanation (both slideshows share it). */
+const textScale = () => (typeof P.textScale === 'number' && isFinite(P.textScale)) ? clamp(P.textScale, 0.8, 2) : 1;
+function applyTextScale(){ document.documentElement.style.setProperty('--read-scale', textScale()); }
+const textSizeRow = () => `
+     <div class="slrow">
+       <span class="sllab">Text</span>
+       <span class="slend" style="font-size:11px">A</span>
+       <input type="range" data-textsize min="0.8" max="2" step="0.1" value="${textScale()}" aria-label="text size of the example and explanation">
+       <span class="slend" style="font-size:17px">A</span>
+       <span class="pacenum" data-textsizenum>${Math.round(textScale() * 100)}% <i>example &amp; explanation</i></span>
+     </div>`;
 /* Hook up the voice menus inside a settings panel. */
 function bindVoiceMenus(panel){
+  const sizeSlider = panel.querySelector('[data-textsize]');
+  if (sizeSlider) {
+    sizeSlider.oninput = () => {
+      P.textScale = +sizeSlider.value; applyTextScale();
+      panel.querySelector('[data-textsizenum]').innerHTML = `${Math.round(textScale() * 100)}% <i>example &amp; explanation</i>`;
+    };
+    sizeSlider.onchange = () => save();
+  }
   const testButton = panel.querySelector('[data-soundtest]');
   if (testButton) testButton.onclick = () => soundTest(panel.querySelector('[data-soundstatus]'));
   panel.querySelectorAll('select[data-voice]').forEach(select => select.onchange = () => {
@@ -2022,7 +2066,7 @@ function speakSequence(parts, token, onDone){
   if (SLIDE.keepQueueOnce) SLIDE.keepQueueOnce = false; else safeCancel();
   SLIDE.timers.push(setTimeout(() => {
     if (!SLIDE || SLIDE.paused || SLIDE.token !== token) return;
-    try { speechSynthesis.resume(); } catch(e) {}
+    nudgeSpeech();
     let last = null, spoke = false;
     parts.forEach((pp, i) => {
       try {
@@ -2070,7 +2114,7 @@ function tapToSpeak(){
   const e = SLIDE && SLIDE.entries && SLIDE.entries[SLIDE.ei];
   if (!e) return;
   try {
-    speechSynthesis.resume();
+    nudgeSpeech();
     voicePlan(slideView(e).parts).forEach((part, i) => {
       const u = makeUtterance(part);
       if (i === 0) u.onstart = () => { speechOK = true; hideSoundNag(); };
@@ -2101,6 +2145,7 @@ function renderSlideOpts(){
        <span class="slend slsec">10s</span>
        <span class="pacenum" id="slpacenum">${waitLabel()}</span>
      </div>
+     ${textSizeRow()}
      <div class="slrow">
        <span class="sllab">English</span>
        <select id="slenvoice" data-voice="en" aria-label="English voice"></select>
@@ -2152,7 +2197,7 @@ function showSlideSettings(open){
 }
 $('#sl-settings').onclick = () => showSlideSettings($('#slopts').hidden);
 function startSlides(){
-  unlockSpeechFromTap();   // first, inside the tap, before anything can clear the queue
+  unlockSpeechFromTap(true);   // first, inside the tap: says はじめます, which unlocks the voice on iPhone
   hideSoundNag();
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
   SLIDE.keepQueueOnce = true;   // the first card must not clear the queue (see unlockSpeechFromTap)
@@ -2269,7 +2314,7 @@ function sayParts(parts, token, box){
     const finish = spoke => { if (!finished) { finished = true; resolve(spoke); } };
     const segs = box ? [...box.querySelectorAll('.seg')] : [];
     const planned = voicePlan(parts);
-    try { speechSynthesis.resume(); } catch(e) {}
+    nudgeSpeech();
 
     let started = false, retried = false;
     let attempt = 0;   // bumped on a retry, so the cancelled first try can't count as finished
@@ -2442,6 +2487,7 @@ function renderWordOpts(){
      ${secondsRow('wsthink', 'Think', thinkSeconds(), 'before the reading')}
      ${secondsRow('wsgap', 'Meaning', meaningGapSeconds(), 'before the meaning')}
      ${secondsRow('wswait', 'Next', nextWaitSeconds(), 'before the next word')}
+     ${textSizeRow()}
      <div class="slrow">
        <span class="sllab">English</span>
        <select data-voice="en" aria-label="English voice"></select>
@@ -2510,7 +2556,7 @@ function pauseWordShow(paused){
   updateWakeLock();
 }
 function startWordShow(){
-  unlockSpeechFromTap();   // first, inside the tap, before anything can clear the queue
+  unlockSpeechFromTap(true);   // first, inside the tap: says はじめます, which unlocks the voice on iPhone
   WORDS = {deck: wordDeck(), index: 0, token: 0, timers: [], paused: false};
   $('#ws-play').textContent = '⏸ Pause';
   $('#ws-sound').style.display = 'none';
@@ -2549,6 +2595,7 @@ async function updateWakeLock(){
 }
 document.addEventListener('visibilitychange', updateWakeLock);
 
+applyTextScale();
 $('#btn-words').onclick = startWordShow;
 $('#ws-close').onclick = () => { stopWordShow(); renderHome(); show('s-home'); };
 $('#ws-settings').onclick = () => showWordSettings($('#ws-opts').hidden);
