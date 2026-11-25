@@ -267,7 +267,7 @@ header .right{display:flex;align-items:center;gap:10px}
 .slhint{grid-column:2 / -1;font-size:12px;color:var(--muted);line-height:1.4}
 .slextras{display:flex;gap:6px;flex-wrap:wrap}
 .slrow [data-soundtest]{grid-column:2 / -1;justify-self:start;white-space:nowrap;padding:5px 12px}
-/* 📚 Words slideshow: the word big, then its reading, then its meaning */
+/* 💥 Kanji Super-Combo! Words slideshow: the word big, then its reading, then its meaning */
 .wstage{padding-top:10px}
 .wtag{font-size:12px;color:var(--muted);letter-spacing:.04em;min-height:16px}
 .wword{font-weight:600;line-height:1.15;white-space:nowrap;margin-top:6px;font-size:min(128px, calc((min(100vw, 640px) - 90px) / var(--len, 2)))}
@@ -421,7 +421,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="mode" data-mode="sort"><span class="ic">🗂</span><span class="d"><b>On or kun?</b><span>Drag a kanji's real readings into the right box; leave the impostors</span></span><em></em></button>
   </div>
   <div class="row"><button class="btn quiet" id="btn-review">Review misses</button><button class="btn quiet" id="btn-slides">🎧 Pronunciations — passive slideshow</button></div>
-  <div class="row" style="margin-top:10px"><button class="btn primary" id="btn-words">📚 Words — see it, hear the reading, then the meaning</button></div>
+  <div class="row" style="margin-top:10px"><button class="btn primary" id="btn-words">💥 Kanji Super-Combo! Words — see it, hear the reading, then the meaning</button></div>
   <div class="stats" id="stats"></div>
   <h2 style="margin-top:30px">Look up a kanji</h2>
   <p class="lede">Every reading and every word it appears in, plus a focused drill.</p>
@@ -516,7 +516,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25c</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25d</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -855,7 +855,7 @@ setScene(false);
      is missing, everything still works, just without the extras. -->
 <script src="yomikata-notes.js"></script>
 <!-- Optional: why each highlighted word uses its kanji, plus an example sentence,
-     used by the 📚 Words slideshow. -->
+     used by the 💥 Kanji Super-Combo! Words slideshow. -->
 <script src="yomikata-words.js"></script>
 <script>
 /* ================= DATA: Genki II Lesson 14 kanji (読み書き編 pp.281-282) =================
@@ -2273,7 +2273,7 @@ $('#sl-play').onclick = () => { slidePause(!SLIDE.paused); unlockSpeechFromTap()
 $('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); unlockSpeechFromTap(); };
 $('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); unlockSpeechFromTap(); };
 
-/* ================= 📚 WORDS (passive word slideshow) =================
+/* ================= 💥 KANJI SUPER-COMBO! WORDS (passive word slideshow) =================
    One word per slide. Every word from the chosen lessons (the book's highlighted
    ones, or all of them) is shuffled into one deck, and the show walks through it:
      show the word in kanji → (think time) → say its reading →
@@ -2284,7 +2284,7 @@ $('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi
    yomikata-words.js; words without one just skip those steps. */
 const WORD_NOTES = window.YOMIKATA_WORDS || {};
 const hasWordNotes = Object.keys(WORD_NOTES).length > 0;
-if (!hasWordNotes) console.warn('Yomikata: yomikata-words.js did not load, so the Words slideshow has no kanji explanations or examples. Put it next to index.html.');
+if (!hasWordNotes) console.warn('Yomikata: yomikata-words.js did not load, so Kanji Super-Combo! Words has no kanji explanations or examples. Put it next to index.html.');
 var WORDS = null;   // the running show; var (not let) so show() can check it at any time
 
 const secondsSetting = (key, fallback) => {
@@ -2327,7 +2327,7 @@ function sayParts(parts, token, box){
           if (!segs.length || !part.p) return;
           segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
           const now = segs.find(s => part.p.includes(+s.dataset.p));
-          if (now) now.scrollIntoView({block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth'});
+          keepOnScreen(now);
         };
         if (i === planned.length - 1) u.onend = () => { if (thisAttempt === attempt) finish(true); };
         try { speechSynthesis.speak(u); } catch(e) {}
@@ -2366,6 +2366,32 @@ function sayParts(parts, token, box){
 }
 
 /* The 📝 / 💡 boxes under the meaning. Each returns its box and what to say. */
+/* ---- Keeping the part being read on screen (mostly for phones) ----
+   The big word can push the example and explanation below the bottom of a
+   phone screen. As each piece is read, bring it into view; at the start of the
+   next word, scroll back up. On phones the browser's toolbar covers the bottom
+   of the page, so leave a margin there. */
+const SCROLL_MARGIN_TOP = 12, SCROLL_MARGIN_BOTTOM = 110;
+function scrollBehavior(){ return reducedMotion() ? 'auto' : 'smooth'; }
+function keepOnScreen(element){
+  if (!element) return;
+  const box = element.getBoundingClientRect();
+  const screenHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const visibleBottom = screenHeight - SCROLL_MARGIN_BOTTOM;
+  if (box.top >= SCROLL_MARGIN_TOP && box.bottom <= visibleBottom) return;   // already fully visible
+  // Too low: scroll just enough to show its bottom, but never past its top.
+  // Too high: scroll up so its top shows.
+  let scrollBy = box.bottom > visibleBottom ? box.bottom - visibleBottom : box.top - SCROLL_MARGIN_TOP;
+  if (box.top - scrollBy < SCROLL_MARGIN_TOP) scrollBy = box.top - SCROLL_MARGIN_TOP;
+  window.scrollBy({top: scrollBy, behavior: scrollBehavior()});
+}
+/* New word: back to the top. With ⚙ Settings open, stop at the word instead,
+   so the settings don't push the word off the screen. */
+function scrollToWordTop(){
+  const settingsOpen = !$('#ws-opts').hidden;
+  const target = settingsOpen ? $('#ws-tag').getBoundingClientRect().top + window.scrollY - SCROLL_MARGIN_TOP : 0;
+  window.scrollTo({top: Math.max(0, target), behavior: scrollBehavior()});
+}
 function addExampleBox(note){
   const example = exampleParts(note);
   const box = document.createElement('div');
@@ -2417,6 +2443,7 @@ async function runWordSlide(options = {}){
   $('#ws-extra').innerHTML = '';
   $('#ws-tag').textContent = `L${word.lesson}${isHL(word) ? ' · ★ in your book' : ''}`;
   $('#ws-count').textContent = `${WORDS.index + 1} / ${WORDS.deck.length}`;
+  if (!options.keepScroll) scrollToWordTop();
 
   if (WORDS.paused) {   // paused: show everything at once, silently, to read at your own pace
     $('#ws-reading').classList.add('show');
@@ -2428,12 +2455,14 @@ async function runWordSlide(options = {}){
 
   await wordWait(thinkSeconds() * 1000);              if (stale()) return;
   $('#ws-reading').classList.add('show');
+  keepOnScreen($('#ws-reading'));
   let spoke = await sayParts([{t: word.r, lang: 'ja-JP', rate: jaRate(), p: []}], token);
   if (stale()) return;
   if (!spoke) { await wordWait(1000);                if (stale()) return; }
 
   await wordWait(meaningGapSeconds() * 1000);         if (stale()) return;
   $('#ws-meaning').classList.add('show');
+  keepOnScreen($('#ws-meaning'));
   spoke = await sayParts([{t: spokenMeaning(word.m), lang: 'en-US', rate: enRate(), p: []}], token);
   if (stale()) return;
   if (!spoke) { await wordWait(1400);                if (stale()) return; }
@@ -2441,6 +2470,7 @@ async function runWordSlide(options = {}){
   if (wantExample) {
     await wordWait(600);                              if (stale()) return;
     const example = addExampleBox(note);
+    keepOnScreen(example.box);
     spoke = await sayParts(example.parts, token, example.box);
     if (stale()) return;
     if (!spoke) { await wordWait(5000);              if (stale()) return; }
@@ -2448,6 +2478,7 @@ async function runWordSlide(options = {}){
   if (wantWhy) {
     await wordWait(600);                              if (stale()) return;
     const why = addWhyBox(note);
+    keepOnScreen(why.box.firstElementChild || why.box);   // its first line; the rest follows as it's read
     spoke = await sayParts(why.parts, token, why.box);
     if (stale()) return;
     if (!spoke) { await wordWait(Math.max(3000, whyTextFor(note).split(/\s+/).length * 300)); if (stale()) return; }

@@ -1,5 +1,5 @@
 /* =======================================================================
-   yomikata-words.js — for the 📚 Words slideshow (Genki lessons 9–19, the
+   yomikata-words.js — for the 💥 Kanji Super-Combo! Words slideshow (Genki lessons 9–19, the
    words your book highlights): why each word is written with its kanji (a
    short and a long version), and an example sentence. Optional: if this
    file is missing, the slideshow still shows each word, its reading and its
