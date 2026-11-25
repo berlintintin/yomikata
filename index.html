@@ -984,6 +984,23 @@ function primeSpeech(){
 }
 ['touchend', 'click', 'pointerdown', 'mousedown', 'keydown'].forEach(ev =>
   window.addEventListener(ev, primeSpeech, {passive: true}));
+/* iPhone and iPad only let a page start talking from inside a tap. The slideshow
+   buttons clear the speech queue first (to stop the last slide), and that clear
+   was wiping out the one-time unlock above before it took effect, so no sound.
+   Every slideshow button now calls this AFTER it has cleared the queue: it
+   speaks a silent space, which counts as the tap's speech and unlocks the voice.
+   (Starting a slideshow is the tap; mute with ♪ if you want quiet.) */
+function unlockSpeechFromTap(){
+  if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
+  try {
+    speechSynthesis.resume();
+    const u = new SpeechSynthesisUtterance(' ');
+    u.lang = 'ja-JP';
+    u.onstart = () => { speechOK = true; };
+    speechSynthesis.speak(u);
+    speechPrimed = true;
+  } catch(e) {}
+}
 /* iOS also suspends speech when the tab goes to the background and can leave the
    queue paused; nudge it awake whenever we come back. */
 document.addEventListener('visibilitychange', () => {
@@ -997,7 +1014,7 @@ const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { con
 const pick = (a, n) => shuffle(a).slice(0, n);
 function show(id){ if (id !== 's-hub' && hubSpeaking) stopHubSpeech();
   if (id !== 's-words' && WORDS) stopWordShow();
-  if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; }
+  if (id !== 's-slide' && SLIDE) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; updateWakeLock(); }
   if (id !== 's-round') { document.querySelector('.app').classList.remove('wide'); $('#s-round').classList.remove('two-col'); }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); $('#'+id).classList.add('active'); window.scrollTo(0,0); }
 function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 1600); }
@@ -2071,6 +2088,8 @@ function startSlides(){
   hideSoundNag();
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
   renderSlideOpts(); showSlideSettings(!!P.slideOptsOpen); show('s-slide'); step(true);
+  unlockSpeechFromTap();
+  updateWakeLock();
 }
 function restartHub(){ if (!SLIDE) return; clearSlideTimers(); SLIDE.ei = -1; step(true); }
 function curHubOf(){ return HUBS[SLIDE.order[SLIDE.hi % SLIDE.order.length]]; }
@@ -2131,14 +2150,15 @@ function slidePause(on){
   $('#sl-play').textContent = on ? '▶ Play' : '⏸ Pause';
   if (on) { clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} }
   else step(false);
+  updateWakeLock();
 }
-function stopSlides(){ clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; renderHome(); show('s-home'); }
+function stopSlides(){ clearSlideTimers(); try { speechSynthesis.cancel(); } catch(e) {} SLIDE = null; updateWakeLock(); renderHome(); show('s-home'); }
 $('#btn-slides').onclick = startSlides;
 $('#sl-close').onclick = stopSlides;
 $('#sl-sound').onclick = tapToSpeak;
-$('#sl-play').onclick = () => slidePause(!SLIDE.paused);
-$('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); };
-$('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); };
+$('#sl-play').onclick = () => { slidePause(!SLIDE.paused); unlockSpeechFromTap(); updateWakeLock(); };
+$('#sl-next').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi++; SLIDE.ei = -1; step(true); unlockSpeechFromTap(); };
+$('#sl-prev').onclick = () => { if (!SLIDE) return; clearSlideTimers(); SLIDE.hi = (SLIDE.hi - 1 + SLIDE.order.length) % SLIDE.order.length; SLIDE.ei = -1; step(true); unlockSpeechFromTap(); };
 
 /* ================= 📚 WORDS (passive word slideshow) =================
    One word per slide. Every word from the chosen lessons (the book's highlighted
@@ -2222,11 +2242,19 @@ function addExampleBox(note){
   $('#ws-extra').appendChild(box);
   return {box, parts: example.parts};
 }
+/* Which kanji explanation to give: 'short' (💡, what each kanji means and how
+   they add up), 'long' (📖, plus radicals, related words, stories), or 'off'.
+   Older saves stored true/false here, so read those as short/off. */
+function whyMode(){
+  if (P.wordWhy === false || P.wordWhy === 'off') return 'off';
+  return P.wordWhy === 'long' ? 'long' : 'short';
+}
+const whyTextFor = note => (whyMode() === 'long' && note.long) ? note.long : note.why;
 function addWhyBox(note){
-  const why = explainParts(note.why);
+  const why = explainParts(whyTextFor(note));
   const box = document.createElement('div');
   box.className = 'lessonbox';
-  box.innerHTML = `<span class="bulb" aria-hidden="true">💡</span>${why.html}`;
+  box.innerHTML = `<span class="bulb" aria-hidden="true">${whyMode() === 'long' ? '📖' : '💡'}</span>${why.html}`;
   $('#ws-extra').appendChild(box);
   return {box, parts: why.parts};
 }
@@ -2244,7 +2272,7 @@ async function runWordSlide(){
   const token = ++WORDS.token;
   const stale = () => !WORDS || WORDS.token !== token || WORDS.paused;
   const wantExample = !!(note && note.ja && P.wordExample !== false);
-  const wantWhy = !!(note && note.why && P.wordWhy !== false);
+  const wantWhy = !!(note && note.why && whyMode() !== 'off');
 
   // Draw the word alone; the reading and meaning hold their space but stay hidden.
   const wordEl = $('#ws-word');
@@ -2291,7 +2319,7 @@ async function runWordSlide(){
     const why = addWhyBox(note);
     spoke = await sayParts(why.parts, token, why.box);
     if (stale()) return;
-    if (!spoke) { await wordWait(Math.max(3000, note.why.split(/\s+/).length * 300)); if (stale()) return; }
+    if (!spoke) { await wordWait(Math.max(3000, whyTextFor(note).split(/\s+/).length * 300)); if (stale()) return; }
   }
 
   await wordWait(nextWaitSeconds() * 1000);           if (stale()) return;
@@ -2340,7 +2368,7 @@ function renderWordOpts(){
   $('#ws-opts').querySelectorAll('[data-wscope]').forEach(button => button.onclick = () => {
     P.wordScope = button.dataset.wscope; save();
     WORDS.deck = wordDeck(); WORDS.index = 0;
-    renderWordOpts(); runWordSlide();
+    renderWordOpts(); runWordSlide(); unlockSpeechFromTap();
   });
   const voice = $('#wsvoice');
   voice.oninput = () => { P.voiceRate = +voice.value; $('#wsvoice-num').innerHTML = `${voiceSpeed().toFixed(2)}× <i>${voiceLabel()}</i>`; };
@@ -2354,7 +2382,8 @@ function renderWordOpts(){
   bindVoiceMenus($('#ws-opts'));
   fillVoiceChoices();
 }
-/* 📝 Example / 💡 Why these kanji switches in the top bar. */
+/* Top-bar switches: 📝 Example on/off, and the kanji explanation as
+   💡 Short or 📖 Long (tap the lit one again to turn explanations off). */
 function renderWordExtras(){
   const bar = $('#ws-extras');
   if (!hasWordNotes) {
@@ -2363,11 +2392,16 @@ function renderWordExtras(){
   }
   bar.innerHTML =
     `<button class="lp${P.wordExample !== false ? ' on' : ''}" data-wextra="wordExample" aria-pressed="${P.wordExample !== false}">📝 Example</button>
-     <button class="lp${P.wordWhy !== false ? ' on' : ''}" data-wextra="wordWhy" aria-pressed="${P.wordWhy !== false}">💡 Why these kanji</button>`;
-  bar.querySelectorAll('[data-wextra]').forEach(button => button.onclick = () => {
-    const key = button.dataset.wextra;
-    P[key] = P[key] === false;   // flip it (missing counts as on)
-    save(); renderWordExtras(); runWordSlide();
+     <button class="lp${whyMode() === 'short' ? ' on' : ''}" data-why="short" aria-pressed="${whyMode() === 'short'}" title="What each kanji means and how they add up to the word">💡 Short why</button>
+     <button class="lp${whyMode() === 'long' ? ' on' : ''}" data-why="long" aria-pressed="${whyMode() === 'long'}" title="Radicals, related words, stories and facts">📖 Long why</button>`;
+  bar.querySelector('[data-wextra]').onclick = () => {
+    P.wordExample = P.wordExample === false;   // flip it (missing counts as on)
+    save(); renderWordExtras(); runWordSlide(); unlockSpeechFromTap();
+  };
+  bar.querySelectorAll('[data-why]').forEach(button => button.onclick = () => {
+    const choice = button.dataset.why;
+    P.wordWhy = whyMode() === choice ? 'off' : choice;   // tapping the lit one turns it off
+    save(); renderWordExtras(); runWordSlide(); unlockSpeechFromTap();
   });
 }
 function showWordSettings(open){
@@ -2382,6 +2416,7 @@ function pauseWordShow(paused){
   WORDS.paused = paused;
   $('#ws-play').textContent = paused ? '▶ Play' : '⏸ Pause';
   runWordSlide();   // paused: shows everything for this word; playing: starts the word over
+  updateWakeLock();
 }
 function startWordShow(){
   WORDS = {deck: wordDeck(), index: 0, token: 0, timers: [], paused: false};
@@ -2390,18 +2425,45 @@ function startWordShow(){
   renderWordOpts(); renderWordExtras(); showWordSettings(!!P.wordOptsOpen);
   show('s-words');
   runWordSlide();
+  unlockSpeechFromTap();   // this tap on 📚 Words is what lets iPhone/iPad speak
+  updateWakeLock();
 }
 function stopWordShow(){
   clearWordTimers();
   try { speechSynthesis.cancel(); } catch(e) {}
   WORDS = null;
+  updateWakeLock();
 }
+/* ---- Keep the screen awake while a slideshow plays ----
+   With nobody touching it, a phone dims and locks after a minute or so, and a
+   locked phone stops talking. The Screen Wake Lock API asks the browser to keep
+   the screen on (iPhone/iPad: iOS 16.4 or newer in Safari; also Chrome, Edge,
+   Android). It's held only while a slideshow is playing, let go when you pause
+   or close, and the browser drops it if you switch apps, so it's asked for
+   again when you come back. Browsers without it just behave as before. */
+let screenWakeLock = null;
+const slideshowPlaying = () => !!((WORDS && !WORDS.paused) || (SLIDE && !SLIDE.paused));
+async function updateWakeLock(){
+  if (!('wakeLock' in navigator)) return;
+  const wantAwake = slideshowPlaying() && !document.hidden;
+  try {
+    if (wantAwake && !screenWakeLock) {
+      screenWakeLock = await navigator.wakeLock.request('screen');
+      screenWakeLock.addEventListener('release', () => { screenWakeLock = null; });
+    } else if (!wantAwake && screenWakeLock) {
+      const lock = screenWakeLock; screenWakeLock = null;
+      await lock.release();
+    }
+  } catch(e) { screenWakeLock = null; }   // e.g. low battery mode can refuse it
+}
+document.addEventListener('visibilitychange', updateWakeLock);
+
 $('#btn-words').onclick = startWordShow;
 $('#ws-close').onclick = () => { stopWordShow(); renderHome(); show('s-home'); };
 $('#ws-settings').onclick = () => showWordSettings($('#ws-opts').hidden);
-$('#ws-play').onclick = () => pauseWordShow(!WORDS.paused);
-$('#ws-next').onclick = () => { if (!WORDS) return; WORDS.index++; runWordSlide(); };
-$('#ws-prev').onclick = () => { if (!WORDS) return; WORDS.index--; runWordSlide(); };
+$('#ws-play').onclick = () => { pauseWordShow(!WORDS.paused); unlockSpeechFromTap(); };
+$('#ws-next').onclick = () => { if (!WORDS) return; WORDS.index++; runWordSlide(); unlockSpeechFromTap(); };
+$('#ws-prev').onclick = () => { if (!WORDS) return; WORDS.index--; runWordSlide(); unlockSpeechFromTap(); };
 $('#ws-sound').onclick = () => {
   // Called straight from a tap, which iOS always lets speak; then start the word over.
   try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(' '); u.lang = 'ja-JP'; speechSynthesis.speak(u); } catch(e) {}

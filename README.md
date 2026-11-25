@@ -25,7 +25,7 @@ Pick any range of lessons, then choose a mode:
 | **Write the readings** | Type a kanji's on'yomi and kun'yomi from memory, with a three-step hint ladder. |
 | **On or kun?** | Drag a kanji's real readings into the right box; leave the impostors. |
 | **Pronunciations** | A passive, spoken slideshow — each kanji's readings with an example word. |
-| **📚 Words** | A passive, spoken slideshow of whole words, one per slide, shuffled from your lessons. Shows the word, waits, says the reading, waits, says the meaning, then an example sentence and what each kanji means and how they add up to the word. |
+| **📚 Words** | A passive, spoken slideshow of whole words, one per slide, shuffled from your lessons. Shows the word, waits, says the reading, waits, says the meaning, then an example sentence and why the word uses its kanji: 💡 short (what each kanji means and how they add up) or 📖 long (plus radical clues, related words, stories). Keeps the screen awake while it plays. |
 
 Plus a per-kanji lookup with every reading, every word, and a focused drill.
 
@@ -39,8 +39,8 @@ you play on. Audio uses the browser's Japanese voice.
     yomikata-notes.js     optional mini-lessons: how each kanji is built, a
                           memory hook, and an example sentence (💡 / 📝 in the
                           slideshow, and on each kanji's lookup page)
-    yomikata-words.js     optional kanji explanations + example sentences for
-                          the highlighted words (used by the 📚 Words slideshow)
+    yomikata-words.js     optional short + long kanji explanations and example
+                          sentences for the highlighted words (📚 Words slideshow)
 
 No build step, no dependencies, no server. Open `index.html` and it runs.
 Only Google Fonts is fetched from the network; it falls back to system fonts offline.
