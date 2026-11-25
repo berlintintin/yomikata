@@ -266,10 +266,15 @@ header .right{display:flex;align-items:center;gap:10px}
 .slrow select{grid-column:2 / -1;font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:4px 6px;max-width:100%}
 .slhint{grid-column:2 / -1;font-size:12px;color:var(--muted);line-height:1.4}
 .slextras{display:flex;gap:6px;flex-wrap:wrap}
-.slrow [data-soundtest]{grid-column:2 / -1;justify-self:start;white-space:nowrap;padding:5px 12px}
+.slrow [data-soundtest],.slrow [data-silent]{grid-column:2 / -1;justify-self:start;white-space:nowrap;padding:5px 12px}
+.slhead{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);margin:10px 0 2px;padding-top:10px;border-top:1px dashed var(--line)}
 /* 💥 Kanji Super-Combo! Words slideshow: the word big, then its reading, then its meaning */
 .wstage{padding-top:10px}
-.wtag{font-size:12px;color:var(--muted);letter-spacing:.04em;min-height:16px}
+.wtag{min-height:30px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+/* Which lesson the word is from: a stamp like 第14課 · Lesson 14 */
+.lessonstamp{display:inline-block;font-size:15px;font-weight:700;color:var(--bad);border:1.5px solid var(--bad);border-radius:999px;padding:3px 13px;letter-spacing:.02em}
+.lessonstamp .kj{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif}
+.wtag .inbook{font-size:13px;color:var(--muted)}
 .wword{font-weight:600;line-height:1.15;white-space:nowrap;margin-top:6px;font-size:min(128px, calc((min(100vw, 640px) - 90px) / var(--len, 2)))}
 .wword.in{animation:kin .5s ease-out}
 .wreading{margin-top:10px;font-size:clamp(28px,7.5vw,40px);font-weight:700;color:var(--muted);min-height:1.3em;visibility:hidden}
@@ -300,7 +305,7 @@ header .right{display:flex;align-items:center;gap:10px}
 .stage-k.in{animation:kin .5s ease-out}
 @keyframes kin{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 .stage-m{color:var(--muted);margin-top:6px;font-size:17px}
-.stage-m .lestag{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:6px}
+.stage-m .lestag{font-size:13px;font-weight:700;color:var(--bad);border:1.5px solid var(--bad);border-radius:999px;padding:2px 10px;margin-left:8px}
 .dots{display:flex;gap:6px;justify-content:center;margin:16px 0 4px;min-height:8px}
 .dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
 .dots i.on{background:var(--hi);transform:scale(1.3)}
@@ -516,7 +521,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25e</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25f</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1019,6 +1024,7 @@ function primeSpeech(){
 function unlockSpeechFromTap(sayHello){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
   try { GameVoice.unlock(); } catch(e) {}   // wakes the sound-effects side too, as GameVoice does
+  applySilentSetting();                     // 🔔 Play even on silent (⚙ Settings)
   try {
     nudgeSpeech();
     const u = new SpeechSynthesisUtterance(sayHello ? 'はじめます' : ' ');
@@ -2047,13 +2053,51 @@ function soundTest(statusEl){
           setTimeout(() => {
             const talking = speechSynthesis.speaking;
             report.push(talking ? 'C (GameVoice): speaking.' : `C (GameVoice): nothing (now: ${speechStateText()}).`);
-            show(`${talking ? '✓' : '✗'} ${voiceInfo()}`);
+            show(talking ? `✓ ${voiceInfo()}`
+              : `✗ ${isAppleTouchDevice ? 'First check the switch on the side of the iPhone: if orange shows, it’s on silent, which mutes speech. ' : ''}${voiceInfo()}`);
           }, 1500);
         }, 200);
       }, 2500);
     }, 200);
   }, 2500);
 }
+/* ---- Play even when the iPhone/iPad side switch is on silent ----
+   Normally web pages obey the ring/silent switch. iOS 17 and newer let a page
+   ask to be treated like a music or podcast app instead, which plays through
+   the switch. On by default, since the slideshows are meant to be listened to.
+   (Whether iOS applies this to the speech voice, and not just sound effects,
+   is up to iOS; if it doesn't, the switch still mutes the voice.) */
+const playOnSilent = () => P.playOnSilent !== false;
+function applySilentSetting(){
+  try { if (navigator.audioSession) navigator.audioSession.type = playOnSilent() ? 'playback' : 'auto'; } catch(e) {}
+}
+function silentSettingNote(){
+  if (navigator.audioSession) return 'Lets the voice play with the side switch on silent (iPhone/iPad, iOS 17+).';
+  if (isAppleTouchDevice) return 'This browser can’t do this yet (needs iOS 17 or newer). Use the side switch.';
+  return 'Only matters on iPhone and iPad.';
+}
+/* The Sound section at the bottom of both ⚙ Settings panels. */
+const soundSettingsRows = () => `
+     <div class="slhead">🔊 Sound</div>
+     <div class="slrow">
+       <span class="sllab">English</span>
+       <select data-voice="en" aria-label="English voice"></select>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Japanese</span>
+       <select data-voice="ja" aria-label="Japanese voice"></select>
+       <span class="slhint voicehint"></span>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Silent</span>
+       <button class="lp${playOnSilent() ? ' on' : ''}" data-silent aria-pressed="${playOnSilent()}">🔔 Play even on silent</button>
+       <span class="slhint">${silentSettingNote()}</span>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Test</span>
+       <button class="lp" data-soundtest>🔊 Test sound</button>
+       <span class="slhint" data-soundstatus></span>
+     </div>`;
 /* Text size for the example and explanation (both slideshows share it). */
 const textScale = () => (typeof P.textScale === 'number' && isFinite(P.textScale)) ? clamp(P.textScale, 0.8, 2) : 1;
 function applyTextScale(){ document.documentElement.style.setProperty('--read-scale', textScale()); }
@@ -2067,6 +2111,12 @@ const textSizeRow = () => `
      </div>`;
 /* Hook up the voice menus inside a settings panel. */
 function bindVoiceMenus(panel){
+  const silentButton = panel.querySelector('[data-silent]');
+  if (silentButton) silentButton.onclick = () => {
+    P.playOnSilent = !playOnSilent(); save(); applySilentSetting();
+    silentButton.classList.toggle('on', playOnSilent());
+    silentButton.setAttribute('aria-pressed', String(playOnSilent()));
+  };
   const sizeSlider = panel.querySelector('[data-textsize]');
   if (sizeSlider) {
     sizeSlider.oninput = () => {
@@ -2171,20 +2221,7 @@ function renderSlideOpts(){
        <span class="pacenum" id="slpacenum">${waitLabel()}</span>
      </div>
      ${textSizeRow()}
-     <div class="slrow">
-       <span class="sllab">English</span>
-       <select id="slenvoice" data-voice="en" aria-label="English voice"></select>
-     </div>
-     <div class="slrow">
-       <span class="sllab">Japanese</span>
-       <select id="sljavoice" data-voice="ja" aria-label="Japanese voice"></select>
-       <span class="slhint voicehint" id="slvoicehint"></span>
-     </div>
-     <div class="slrow">
-       <span class="sllab">Sound</span>
-       <button class="lp" data-soundtest>🔊 Test sound</button>
-       <span class="slhint" data-soundstatus></span>
-     </div>
+     ${soundSettingsRows()}
      `;
   renderExtrasBar();
   $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
@@ -2467,7 +2504,8 @@ async function runWordSlide(options = {}){
   $('#ws-reading').classList.remove('show');
   $('#ws-meaning').classList.remove('show');
   $('#ws-extra').innerHTML = '';
-  $('#ws-tag').textContent = `L${word.lesson}${isHL(word) ? ' · ★ in your book' : ''}`;
+  $('#ws-tag').innerHTML = `<span class="lessonstamp"><span class="kj">第${word.lesson}課</span> · Lesson ${word.lesson}</span>`
+    + (isHL(word) ? '<span class="inbook">★ highlighted in your book</span>' : '');
   $('#ws-count').textContent = `${WORDS.index + 1} / ${WORDS.deck.length}`;
   if (!options.keepScroll) scrollToWordTop();
 
@@ -2545,20 +2583,7 @@ function renderWordOpts(){
      ${secondsRow('wsgap', 'Meaning', meaningGapSeconds(), 'before the meaning')}
      ${secondsRow('wswait', 'Next', nextWaitSeconds(), 'before the next word')}
      ${textSizeRow()}
-     <div class="slrow">
-       <span class="sllab">English</span>
-       <select data-voice="en" aria-label="English voice"></select>
-     </div>
-     <div class="slrow">
-       <span class="sllab">Japanese</span>
-       <select data-voice="ja" aria-label="Japanese voice"></select>
-       <span class="slhint voicehint"></span>
-     </div>
-     <div class="slrow">
-       <span class="sllab">Sound</span>
-       <button class="lp" data-soundtest>🔊 Test sound</button>
-       <span class="slhint" data-soundstatus></span>
-     </div>`;
+     ${soundSettingsRows()}`;
   $('#ws-opts').querySelectorAll('[data-wscope]').forEach(button => button.onclick = () => {
     P.wordScope = button.dataset.wscope; save();
     WORDS.deck = wordDeck(); WORDS.index = 0;
@@ -2653,6 +2678,7 @@ async function updateWakeLock(){
 document.addEventListener('visibilitychange', updateWakeLock);
 
 applyTextScale();
+applySilentSetting();
 $('#btn-words').onclick = startWordShow;
 $('#ws-close').onclick = () => { stopWordShow(); renderHome(); show('s-home'); };
 $('#ws-settings').onclick = () => showWordSettings($('#ws-opts').hidden);
