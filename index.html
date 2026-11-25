@@ -265,6 +265,7 @@ header .right{display:flex;align-items:center;gap:10px}
 .slrow select{grid-column:2 / -1;font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:4px 6px;max-width:100%}
 .slhint{grid-column:2 / -1;font-size:12px;color:var(--muted);line-height:1.4}
 .slextras{display:flex;gap:6px;flex-wrap:wrap}
+.slrow [data-soundtest]{grid-column:2 / -1;justify-self:start;white-space:nowrap;padding:5px 12px}
 /* 📚 Words slideshow: the word big, then its reading, then its meaning */
 .wstage{padding-top:10px}
 .wtag{font-size:12px;color:var(--muted);letter-spacing:.04em;min-height:16px}
@@ -984,12 +985,11 @@ function primeSpeech(){
 }
 ['touchend', 'click', 'pointerdown', 'mousedown', 'keydown'].forEach(ev =>
   window.addEventListener(ev, primeSpeech, {passive: true}));
-/* iPhone and iPad only let a page start talking from inside a tap. The slideshow
-   buttons clear the speech queue first (to stop the last slide), and that clear
-   was wiping out the one-time unlock above before it took effect, so no sound.
-   Every slideshow button now calls this AFTER it has cleared the queue: it
-   speaks a silent space, which counts as the tap's speech and unlocks the voice.
-   (Starting a slideshow is the tap; mute with ♪ if you want quiet.) */
+/* iPhone and iPad only let a page start talking from inside a tap. Starting a
+   slideshow IS that tap (mute with ♪ if you want quiet). The start buttons call
+   this first thing, and then leave the speech queue alone, because clearing the
+   queue (or speaking right after a clear) in the same tap undoes the unlock on
+   iOS. Other buttons (Next, Back, Play) call it too, just in case. */
 function unlockSpeechFromTap(){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
   try {
@@ -1888,8 +1888,24 @@ const isMultilingual = v => !!v && /multilingual/i.test(v.name);
 function voicesFor(prefix){
   try { return speechSynthesis.getVoices().filter(v => (v.lang || '').toLowerCase().startsWith(prefix)); } catch(e) { return []; }
 }
+/* iPhone and iPad list voices that aren't actually downloaded (Premium and
+   Enhanced ones, Siri voices). Speaking with one of those is silent, and can
+   jam the queue. So there, "Auto" doesn't pick a voice at all: we only set the
+   language and iOS uses its own default voice, which is always installed. A
+   voice you choose yourself in ⚙ Settings is still used. */
+const isAppleTouchDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);   // iPads that report as a Mac
+/* If a chosen voice turns out to be silent, this flips on and from then on
+   everything is spoken with the system's default voices. */
+let voiceTrouble = false;
 function pickSlideVoices(){
   const ja = voicesFor('ja'), en = voicesFor('en');
+  if (isAppleTouchDevice) {
+    slVoiceJa = ja.find(v => v.name === P.jaVoiceName) || null;
+    enVoice = en.find(v => v.name === P.enVoiceName) || null;
+    if (document.querySelector('select[data-voice]')) fillVoiceChoices();
+    return;
+  }
   slVoiceJa = ja.find(v => v.name === P.jaVoiceName)
     || ja.find(v => isLocalVoice(v) && /Kyoko|O-ren|Otoya|Haruka|Ayumi|Ichiro|Sayaka|Nanami/i.test(v.name))
     || ja.find(isLocalVoice) || ja[0] || null;
@@ -1924,6 +1940,7 @@ function voicePlan(parts){
 function makeUtterance(part){
   const u = new SpeechSynthesisUtterance(part.t);
   u.lang = part.lang; u.rate = part.rate || 0.9;
+  if (voiceTrouble) return u;   // a chosen voice was silent: let the system pick by language
   if (part.lang === 'ja-JP' && slVoiceJa) u.voice = slVoiceJa;
   else if (/^en/i.test(part.lang) && enVoice) u.voice = enVoice;
   return u;
@@ -1932,7 +1949,7 @@ function makeUtterance(part){
 function fillVoiceChoices(){
   const fill = (select, list, chosenName, auto) => {
     if (!select) return;
-    select.innerHTML = `<option value="">Auto${auto ? ` (${escHtml(auto.name)})` : ''}</option>` + list.map(v =>
+    select.innerHTML = `<option value="">Auto (${auto ? escHtml(auto.name) : 'system voice'})</option>` + list.map(v =>
       `<option value="${escHtml(v.name)}"${v.name === chosenName ? ' selected' : ''}>${escHtml(v.name)}${isMultilingual(v) ? ' ⭐ speaks Japanese too' : ''}${isLocalVoice(v) ? '' : ' · online, slower'}</option>`).join('');
   };
   // Both slideshows have these menus; they share one choice.
@@ -1948,8 +1965,49 @@ function fillVoiceChoices(){
         : 'Voices marked “online” pause longer between languages. Microsoft Edge has “Multilingual” voices that read both languages in one voice.');
   document.querySelectorAll('.voicehint').forEach(hint => { hint.textContent = hintText; });
 }
+/* 🔊 Test sound (in both ⚙ Settings panels). Speaks a short Japanese and English
+   line straight from the tap, then reports what happened and which voices are
+   in use, so a silent phone can be diagnosed. If nothing plays with a chosen
+   voice, it switches to the system voices and tries again. */
+function soundTest(statusEl){
+  if (!('speechSynthesis' in window)) { statusEl.textContent = 'This browser has no speech.'; return; }
+  if (!GameVoice.enabled) { statusEl.textContent = 'Sound is off: tap ♪ at the top to turn it on.'; return; }
+  let heard = false;
+  const sayTest = () => {
+    [{t: 'テストです。', lang: 'ja-JP', rate: jaRate()}, {t: 'This is a test.', lang: 'en-US', rate: enRate()}].forEach(part => {
+      const u = makeUtterance(part);
+      u.onstart = () => { heard = true; speechOK = true; };
+      try { speechSynthesis.speak(u); } catch(e) {}
+    });
+  };
+  try { speechSynthesis.resume(); } catch(e) {}
+  sayTest();   // spoken inside the tap, so iOS allows it
+  statusEl.textContent = 'Speaking…';
+  const describe = () => {
+    const jaName = voiceTrouble || !slVoiceJa ? 'system default' : slVoiceJa.name;
+    const enName = voiceTrouble || !enVoice ? 'system default' : enVoice.name;
+    return `Japanese voice: ${jaName} · English voice: ${enName} · ${voicesFor('ja').length} Japanese and ${voicesFor('en').length} English voices found`;
+  };
+  setTimeout(() => {
+    if (heard) { statusEl.textContent = `✓ Sound is working. ${describe()}`; return; }
+    if (!voiceTrouble && (slVoiceJa || enVoice)) {
+      voiceTrouble = true;
+      try { speechSynthesis.cancel(); } catch(e) {}
+      setTimeout(sayTest, 150);
+      setTimeout(() => {
+        statusEl.textContent = heard
+          ? `✓ Working now, using the system voices (the chosen voice was silent). ${describe()}`
+          : `✗ Still nothing. On iPhone/iPad, check the ring/silent switch is on ring and the volume is up. ${describe()}`;
+      }, 2500);
+      return;
+    }
+    statusEl.textContent = `✗ Nothing played. On iPhone/iPad, check the ring/silent switch is on ring and the volume is up. ${describe()}`;
+  }, 2500);
+}
 /* Hook up the voice menus inside a settings panel. */
 function bindVoiceMenus(panel){
+  const testButton = panel.querySelector('[data-soundtest]');
+  if (testButton) testButton.onclick = () => soundTest(panel.querySelector('[data-soundstatus]'));
   panel.querySelectorAll('select[data-voice]').forEach(select => select.onchange = () => {
     const key = select.dataset.voice === 'en' ? 'enVoiceName' : 'jaVoiceName';
     P[key] = select.value || null;
@@ -1961,7 +2019,7 @@ function safeCancel(){
 }
 function speakSequence(parts, token, onDone){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) { onDone(false); return; }
-  safeCancel();
+  if (SLIDE.keepQueueOnce) SLIDE.keepQueueOnce = false; else safeCancel();
   SLIDE.timers.push(setTimeout(() => {
     if (!SLIDE || SLIDE.paused || SLIDE.token !== token) return;
     try { speechSynthesis.resume(); } catch(e) {}
@@ -1979,7 +2037,11 @@ function speakSequence(parts, token, onDone){
     });
     /* If nothing has actually been heard yet, offer a tap that speaks from inside
        the gesture — the one thing iOS always allows. */
-    SLIDE.timers.push(setTimeout(() => { if (SLIDE && !speechOK && GameVoice.enabled) showSoundNag(); }, 1800));
+    SLIDE.timers.push(setTimeout(() => {
+      if (!SLIDE || speechOK || !GameVoice.enabled) return;
+      if (!voiceTrouble && (slVoiceJa || enVoice)) voiceTrouble = true;   // next card uses system voices
+      showSoundNag();
+    }, 1800));
     const stillThisCard = () => SLIDE && SLIDE.token === token && !SLIDE.paused;
     if (last) last.onend = last.onerror = () => { if (stillThisCard()) onDone(true); };
     if (!spoke) { onDone(false); return; }
@@ -2048,6 +2110,11 @@ function renderSlideOpts(){
        <select id="sljavoice" data-voice="ja" aria-label="Japanese voice"></select>
        <span class="slhint voicehint" id="slvoicehint"></span>
      </div>
+     <div class="slrow">
+       <span class="sllab">Sound</span>
+       <button class="lp" data-soundtest>🔊 Test sound</button>
+       <span class="slhint" data-soundstatus></span>
+     </div>
      `;
   renderExtrasBar();
   $('#slopts').querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { P.slideScope = b.dataset.scope; save(); renderSlideOpts(); restartHub(); });
@@ -2085,10 +2152,11 @@ function showSlideSettings(open){
 }
 $('#sl-settings').onclick = () => showSlideSettings($('#slopts').hidden);
 function startSlides(){
+  unlockSpeechFromTap();   // first, inside the tap, before anything can clear the queue
   hideSoundNag();
   SLIDE = {order: shuffle(HUBS.map((_, i) => i)), hi: 0, ei: -1, timers: [], paused: false};
+  SLIDE.keepQueueOnce = true;   // the first card must not clear the queue (see unlockSpeechFromTap)
   renderSlideOpts(); showSlideSettings(!!P.slideOptsOpen); show('s-slide'); step(true);
-  unlockSpeechFromTap();
   updateWakeLock();
 }
 function restartHub(){ if (!SLIDE) return; clearSlideTimers(); SLIDE.ei = -1; step(true); }
@@ -2101,7 +2169,7 @@ function step(intro){
   SLIDE.token = (SLIDE.token || 0) + 1;
   const token = SLIDE.token;
   if (intro) {
-    try { speechSynthesis.cancel(); } catch(e) {}
+    if (!SLIDE.keepQueueOnce) { try { speechSynthesis.cancel(); } catch(e) {} }
     $('#sl-kanji').textContent = h.ch;
     $('#sl-kanji').classList.remove('in'); void $('#sl-kanji').offsetWidth; $('#sl-kanji').classList.add('in');
     $('#sl-mean').innerHTML = `${h.mn} <span class="lestag">L${h.lesson}</span>`;
@@ -2202,31 +2270,49 @@ function sayParts(parts, token, box){
     const segs = box ? [...box.querySelectorAll('.seg')] : [];
     const planned = voicePlan(parts);
     try { speechSynthesis.resume(); } catch(e) {}
-    planned.forEach((part, i) => {
-      const u = makeUtterance(part);
-      u.onstart = () => {
-        speechOK = true; $('#ws-sound').style.display = 'none';
-        if (!segs.length || !part.p) return;
-        segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
-        const now = segs.find(s => part.p.includes(+s.dataset.p));
-        if (now) now.scrollIntoView({block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth'});
-      };
-      if (i === planned.length - 1) u.onend = u.onerror = () => finish(true);
-      try { speechSynthesis.speak(u); } catch(e) {}
-    });
-    /* onend doesn't always fire (iOS), so also watch whether the voice is still talking.
-       If nothing has started after 4 seconds, speech is probably blocked: offer a tap. */
-    const startedAt = Date.now();
-    let heardTalking = false;
+
+    let started = false, retried = false;
+    let attempt = 0;   // bumped on a retry, so the cancelled first try can't count as finished
+    const speakAll = () => {
+      const thisAttempt = ++attempt;
+      planned.forEach((part, i) => {
+        const u = makeUtterance(part);
+        u.onstart = () => {
+          started = true; speechOK = true; $('#ws-sound').style.display = 'none';
+          if (!segs.length || !part.p) return;
+          segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
+          const now = segs.find(s => part.p.includes(+s.dataset.p));
+          if (now) now.scrollIntoView({block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth'});
+        };
+        if (i === planned.length - 1) u.onend = () => { if (thisAttempt === attempt) finish(true); };
+        try { speechSynthesis.speak(u); } catch(e) {}
+      });
+    };
+    speakAll();
+
+    /* Watch what actually happens (iOS doesn't always fire onend):
+       - once speech has started, we're done when the browser stops talking;
+       - if nothing has started after 3 seconds and a specific voice was set,
+         that voice is probably silent (not downloaded): switch to the system
+         voices and try once more;
+       - if it's still silent, offer the "Tap to turn on sound" button. */
+    let attemptStartedAt = Date.now();
     const watch = () => {
       if (finished) return;
       if (!WORDS || WORDS.token !== token) return finish(false);
       const talking = speechSynthesis.speaking || speechSynthesis.pending;
-      if (talking) heardTalking = true;
-      if (heardTalking && !talking) return finish(true);
-      if (!heardTalking && Date.now() - startedAt > 4000) {
-        if (!speechOK) $('#ws-sound').style.display = '';
-        return finish(false);
+      if (started && !talking) return finish(true);
+      if (!started && Date.now() - attemptStartedAt > 3000) {
+        if (!retried && !voiceTrouble && (slVoiceJa || enVoice)) {
+          retried = true; voiceTrouble = true;
+          attempt++;   // the cancel below ends the silent try; ignore its onend
+          try { speechSynthesis.cancel(); } catch(e) {}
+          attemptStartedAt = Date.now();
+          WORDS.timers.push(setTimeout(() => { if (WORDS && WORDS.token === token) speakAll(); }, 150));
+        } else {
+          if (!speechOK) $('#ws-sound').style.display = '';
+          return finish(false);
+        }
       }
       WORDS.timers.push(setTimeout(watch, 250));
     };
@@ -2261,10 +2347,10 @@ function addWhyBox(note){
 
 /* One slide, start to finish. Every await is followed by a check, so pressing
    Next, Back, Pause or Close cleanly abandons the old slide. */
-async function runWordSlide(){
+async function runWordSlide(options = {}){
   if (!WORDS) return;
   clearWordTimers();
-  safeCancel();
+  if (!options.keepQueue) safeCancel();   // stop the previous word (not on the very first, see startWordShow)
   if (WORDS.index >= WORDS.deck.length) { WORDS.deck = wordDeck(); WORDS.index = 0; }   // end of the deck: reshuffle
   if (WORDS.index < 0) WORDS.index = WORDS.deck.length - 1;
   const word = WORDS.deck[WORDS.index];
@@ -2364,6 +2450,11 @@ function renderWordOpts(){
        <span class="sllab">Japanese</span>
        <select data-voice="ja" aria-label="Japanese voice"></select>
        <span class="slhint voicehint"></span>
+     </div>
+     <div class="slrow">
+       <span class="sllab">Sound</span>
+       <button class="lp" data-soundtest>🔊 Test sound</button>
+       <span class="slhint" data-soundstatus></span>
      </div>`;
   $('#ws-opts').querySelectorAll('[data-wscope]').forEach(button => button.onclick = () => {
     P.wordScope = button.dataset.wscope; save();
@@ -2419,13 +2510,13 @@ function pauseWordShow(paused){
   updateWakeLock();
 }
 function startWordShow(){
+  unlockSpeechFromTap();   // first, inside the tap, before anything can clear the queue
   WORDS = {deck: wordDeck(), index: 0, token: 0, timers: [], paused: false};
   $('#ws-play').textContent = '⏸ Pause';
   $('#ws-sound').style.display = 'none';
   renderWordOpts(); renderWordExtras(); showWordSettings(!!P.wordOptsOpen);
   show('s-words');
-  runWordSlide();
-  unlockSpeechFromTap();   // this tap on 📚 Words is what lets iPhone/iPad speak
+  runWordSlide({keepQueue: true});   // don't clear the queue: that would undo the unlock
   updateWakeLock();
 }
 function stopWordShow(){
