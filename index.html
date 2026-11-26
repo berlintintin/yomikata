@@ -283,6 +283,11 @@ header .right{display:flex;align-items:center;gap:10px}
 #ws-extra{width:100%}
 #ws-extra .lessonbox{margin-top:16px}
 .wcount{text-align:center;color:var(--muted);font-size:13px;margin:4px 0 0}
+/* With explanations switched off, these stay under the meaning for the whole
+   slide, so you can ask about just the word you're stuck on. */
+.askwhy{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px;min-height:0}
+.askwhy:empty{display:none}
+.askwhy .lp{padding:6px 14px;font-size:14px}
 .slextras .lp{padding:5px 11px;font-size:13px}
 .slextras .warn{font-size:12.5px;color:var(--bad);border:1.5px dashed var(--bad);border-radius:999px;padding:4px 10px}
 #sl-sound{border-color:var(--bad);color:var(--bad);font-weight:700}
@@ -498,6 +503,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <div class="wword kj" id="ws-word"></div>
     <div class="wreading kj" id="ws-reading"></div>
     <div class="wmeaning" id="ws-meaning"></div>
+    <div class="askwhy" id="ws-askwhy"></div>
     <div id="ws-extra"></div>
   </div>
   <div class="wcount" id="ws-count"></div>
@@ -521,7 +527,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.25f</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.26b</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -2468,14 +2474,72 @@ function whyMode(){
   if (P.wordWhy === false || P.wordWhy === 'off') return 'off';
   return P.wordWhy === 'long' ? 'long' : 'short';
 }
-const whyTextFor = note => (whyMode() === 'long' && note.long) ? note.long : note.why;
-function addWhyBox(note){
-  const why = explainParts(whyTextFor(note));
+/* The explanation text for a word. `why` and `long` can each be one string or
+   an array of strings; with an array, one is picked at random each time, so a
+   word you see often can teach you something different. (The file has one of
+   each for now; add more any time.) */
+const pickOne = value => Array.isArray(value) ? value[Math.floor(Math.random() * value.length)] : value;
+const whyTextFor = (note, mode = whyMode()) => pickOne((mode === 'long' && note.long) ? note.long : note.why);
+function addWhyBox(note, mode = whyMode()){
+  const why = explainParts(whyTextFor(note, mode));
   const box = document.createElement('div');
-  box.className = 'lessonbox';
-  box.innerHTML = `<span class="bulb" aria-hidden="true">${whyMode() === 'long' ? '📖' : '💡'}</span>${why.html}`;
+  box.className = 'lessonbox whybox';
+  box.innerHTML = `<span class="bulb" aria-hidden="true">${mode === 'long' ? '📖' : '💡'}</span>${why.html}`;
   $('#ws-extra').appendChild(box);
   return {box, parts: why.parts};
+}
+
+/* ---- Explain this one (when 💡/📖 are both off in the top bar) ----
+   Each slide shows "💡 Short explanation" and "📖 Long explanation" under the
+   meaning. Tapping one doesn't stop anything: it lights up and queues that
+   explanation for THIS word. It's read in the explanation's normal spot, after
+   the reading, the meaning and (if on) the example. If you tap during the wait
+   at the end of the slide, it's read right away, before the next word.
+   Tap the lit one again to un-queue it; tap the other to switch. A new word
+   starts with nothing queued. While paused, tapping shows and reads it at once.
+
+   WORDS.askedWhy = {index, mode}: what was queued, and for which slide. */
+const askedWhyMode = () =>
+  (WORDS && WORDS.askedWhy && WORDS.askedWhy.index === WORDS.index) ? WORDS.askedWhy.mode : null;
+/* The explanation this slide should give: the top-bar setting if one is on,
+   otherwise whatever was asked for with the buttons (or none). */
+const whyForThisSlide = () => whyMode() !== 'off' ? whyMode() : askedWhyMode();
+
+function renderAskWhy(note){
+  const spot = $('#ws-askwhy');
+  if (!note || !note.why || whyMode() !== 'off') { spot.innerHTML = ''; return; }
+  spot.innerHTML =
+    `<button class="lp" data-askwhy="short" aria-pressed="false">💡 Short explanation</button>
+     <button class="lp" data-askwhy="long" aria-pressed="false">📖 Long explanation</button>`;
+  spot.querySelectorAll('[data-askwhy]').forEach(button => button.onclick = () => askForWhy(button.dataset.askwhy, note));
+  showAskedWhy();
+}
+/* Light up whichever button is queued (or has been read) on this slide. */
+function showAskedWhy(){
+  const asked = askedWhyMode();
+  $('#ws-askwhy').querySelectorAll('[data-askwhy]').forEach(button => {
+    const lit = button.dataset.askwhy === asked;
+    button.classList.toggle('on', lit);
+    button.setAttribute('aria-pressed', String(lit));
+  });
+}
+function askForWhy(mode, note){
+  if (!WORDS) return;
+  const alreadyAsked = askedWhyMode() === mode;
+  WORDS.askedWhy = alreadyAsked ? null : {index: WORDS.index, mode};
+  showAskedWhy();
+  if (WORDS.paused && !alreadyAsked) {
+    // Paused: nothing is coming up, so show and read it now (spoken from the tap).
+    clearWordTimers();
+    safeCancel();
+    const token = ++WORDS.token;
+    $('#ws-extra').querySelectorAll('.whybox').forEach(box => box.remove());
+    const why = addWhyBox(note, mode);
+    keepOnScreen(why.box.firstElementChild || why.box);
+    sayParts(why.parts, token, why.box);
+  } else if (WORDS.paused && alreadyAsked) {
+    $('#ws-extra').querySelectorAll('.whybox').forEach(box => box.remove());
+  }
 }
 
 /* One slide, start to finish. Every await is followed by a check, so pressing
@@ -2492,7 +2556,7 @@ async function runWordSlide(options = {}){
   const token = ++WORDS.token;
   const stale = () => !WORDS || WORDS.token !== token || WORDS.paused;
   const wantExample = !!(note && note.ja && P.wordExample !== false);
-  const wantWhy = !!(note && note.why && whyMode() !== 'off');
+  const hasWhy = !!(note && note.why);
 
   // Draw the word alone; the reading and meaning hold their space but stay hidden.
   const wordEl = $('#ws-word');
@@ -2508,12 +2572,13 @@ async function runWordSlide(options = {}){
     + (isHL(word) ? '<span class="inbook">★ highlighted in your book</span>' : '');
   $('#ws-count').textContent = `${WORDS.index + 1} / ${WORDS.deck.length}`;
   if (!options.keepScroll) scrollToWordTop();
+  renderAskWhy(note);
 
   if (WORDS.paused) {   // paused: show everything at once, silently, to read at your own pace
     $('#ws-reading').classList.add('show');
     $('#ws-meaning').classList.add('show');
     if (wantExample) addExampleBox(note);
-    if (wantWhy) addWhyBox(note);
+    if (hasWhy && whyForThisSlide()) addWhyBox(note, whyForThisSlide());
     return;
   }
 
@@ -2539,16 +2604,34 @@ async function runWordSlide(options = {}){
     if (stale()) return;
     if (!spoke) { await wordWait(5000);              if (stale()) return; }
   }
-  if (wantWhy) {
-    await wordWait(600);                              if (stale()) return;
-    const why = addWhyBox(note);
+  /* The explanation, if one is set in the top bar or was asked for with the
+     buttons. Returns false if the slide was abandoned meanwhile. */
+  let explainedAs = null;   // which explanation this slide has read so far
+  const giveExplanation = async mode => {
+    explainedAs = mode;
+    await wordWait(600);                              if (stale()) return false;
+    $('#ws-extra').querySelectorAll('.whybox').forEach(box => box.remove());
+    const why = addWhyBox(note, mode);
     keepOnScreen(why.box.firstElementChild || why.box);   // its first line; the rest follows as it's read
-    spoke = await sayParts(why.parts, token, why.box);
-    if (stale()) return;
-    if (!spoke) { await wordWait(Math.max(3000, whyTextFor(note).split(/\s+/).length * 300)); if (stale()) return; }
-  }
+    const spokeWhy = await sayParts(why.parts, token, why.box);
+    if (stale()) return false;
+    if (!spokeWhy) { await wordWait(Math.max(3000, why.parts.map(part => part.t).join(' ').split(/\s+/).length * 300)); if (stale()) return false; }
+    return true;
+  };
+  if (hasWhy && whyForThisSlide()) { if (!await giveExplanation(whyForThisSlide())) return; }
 
-  await wordWait(nextWaitSeconds() * 1000);           if (stale()) return;
+  /* The wait before the next word. It checks in every fifth of a second, so an
+     explanation asked for now (or switched to the other length) is read right
+     away; the wait then starts over after it. */
+  let nextWordAt = Date.now() + nextWaitSeconds() * 1000;
+  while (Date.now() < nextWordAt) {
+    await wordWait(200);                              if (stale()) return;
+    const wanted = hasWhy ? whyForThisSlide() : null;
+    if (wanted && wanted !== explainedAs) {
+      if (!await giveExplanation(wanted)) return;
+      nextWordAt = Date.now() + nextWaitSeconds() * 1000;
+    }
+  }
   WORDS.index++;
   runWordSlide();
 }
