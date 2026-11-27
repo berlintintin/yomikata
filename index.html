@@ -527,7 +527,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.27a</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.27b</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1031,6 +1031,13 @@ function primeSpeech(){
    is skipped entirely by newer iOS, so it never unlocked anything. */
 function unlockSpeechFromTap(sayHello){
   if (!('speechSynthesis' in window) || !GameVoice.enabled) return;
+  // Starting a slideshow, the engine shouldn't be busy. If it says it is, it's
+  // jammed from before (this survives a page refresh on iPhone), so clear it.
+  if (sayHello) {
+    try {
+      if (speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); speechSynthesis.resume(); }
+    } catch(e) {}
+  }
   try { GameVoice.unlock(); } catch(e) {}   // wakes the sound-effects side too, as GameVoice does
   applySilentSetting();                     // 🔔 Play even on silent (⚙ Settings)
   try {
@@ -1758,6 +1765,23 @@ const reducedMotion = () => { try { return matchMedia('(prefers-reduced-motion: 
    English is cut at sentence ends so each utterance stays short (long ones get
    cut off mid-sentence in some browsers). Every spoken piece is wrapped in a
    <span class="seg" data-p="N">, so the screen can highlight what's being read. */
+/* Split English into chunks of at most ~140 characters: at sentence ends
+   first, then at commas or semicolons if a sentence is still too long. */
+const SPEECH_CHUNK_MAX = 140;
+function splitForSpeech(text){
+  if (text.length <= SPEECH_CHUNK_MAX) return [text];
+  const chunks = [];
+  text.split(/(?<=[.!?])\s+/).forEach(sentence => {
+    if (sentence.length <= SPEECH_CHUNK_MAX) { chunks.push(sentence); return; }
+    let current = '';
+    sentence.split(/(?<=[,;:])\s+/).forEach(clause => {
+      if (current && (current + ' ' + clause).length > SPEECH_CHUNK_MAX) { chunks.push(current); current = clause; }
+      else current = current ? current + ' ' + clause : clause;
+    });
+    if (current) chunks.push(current);
+  });
+  return chunks.filter(chunk => /[A-Za-z0-9]/.test(chunk));
+}
 function explainParts(text, firstIndex){
   const parts = [];
   let html = '';
@@ -1777,7 +1801,11 @@ function explainParts(text, firstIndex){
       // After a Japanese bit, the English often starts ", the opposite is…".
       // Trim leading commas/dashes/colons so the voice doesn't say "comma".
       const said = piece.trim().replace(/^[,;:.\-–—]+\s*/, '');
-      parts.push({t: said, lang: 'en-US', rate: enRate(), p: [indexNow()]});
+      // One long utterance can jam the iPhone speech engine (it says it's still
+      // talking, forever). So long stretches are spoken a sentence at a time;
+      // every chunk still lights up the same piece on screen.
+      const here = indexNow();
+      splitForSpeech(said).forEach(chunk => parts.push({t: chunk, lang: 'en-US', rate: enRate(), p: [here]}));
     });
   });
   return {html, parts};
@@ -2378,60 +2406,79 @@ function wordWait(ms){ return new Promise(resolve => { if (WORDS) WORDS.timers.p
    Resolves true if something was heard, false if sound is off or blocked.
    Pieces inside `box` light up as they're read. */
 function sayParts(parts, token, box){
+  /* Speak the parts ONE AT A TIME (each starts when the last one ends), and
+     watch every part:
+       - not started after 3 s: the engine is jammed or the chosen voice is
+         silent. Clear the queue, wake the engine, switch to system voices and
+         try that part once more (the same thing as "way B" in Test sound).
+       - started but still "speaking" long after it should have finished: the
+         iPhone engine has stalled mid-phrase. Clear it and go on to the next.
+     Resolves true if anything was heard, false if sound is off or blocked.
+     Pieces inside `box` light up as they're read. */
   return new Promise(resolve => {
     if (!GameVoice.enabled || !('speechSynthesis' in window) || !parts.length) return resolve(false);
-    let finished = false;
-    const finish = spoke => { if (!finished) { finished = true; resolve(spoke); } };
     const segs = box ? [...box.querySelectorAll('.seg')] : [];
     const planned = voicePlan(parts);
-    nudgeSpeech();
-
-    let started = false, retried = false;
-    let attempt = 0;   // bumped on a retry, so the cancelled first try can't count as finished
-    const speakAll = () => {
-      const thisAttempt = ++attempt;
-      planned.forEach((part, i) => {
-        const u = makeUtterance(part);
-        u.onstart = () => {
-          started = true; speechOK = true; $('#ws-sound').style.display = 'none';
-          if (!segs.length || !part.p) return;
-          segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
-          const now = segs.find(s => part.p.includes(+s.dataset.p));
-          keepOnScreen(now);
-        };
-        if (i === planned.length - 1) u.onend = () => { if (thisAttempt === attempt) finish(true); };
-        try { speechSynthesis.speak(u); } catch(e) {}
-      });
+    let finished = false, heardAny = false, partIndex = 0, attempt = 0;
+    const finish = () => { if (!finished) { finished = true; resolve(heardAny); } };
+    const stale = () => !WORDS || WORDS.token !== token;
+    const unjam = () => {
+      try { speechSynthesis.cancel(); } catch(e) {}
+      try { speechSynthesis.resume(); } catch(e) {}
     };
-    speakAll();
+    // a generous "this should be done by now": about 90 ms per character at
+    // normal speed, plus 4 seconds of slack
+    const longestFor = part => 4000 + part.t.length * 90 / Math.max(0.5, part.rate || 1);
 
-    /* Watch what actually happens (iOS doesn't always fire onend):
-       - once speech has started, we're done when the browser stops talking;
-       - if nothing has started after 3 seconds and a specific voice was set,
-         that voice is probably silent (not downloaded): switch to the system
-         voices and try once more;
-       - if it's still silent, offer the "Tap to turn on sound" button. */
-    let attemptStartedAt = Date.now();
-    const watch = () => {
+    const speakPart = (retried) => {
       if (finished) return;
-      if (!WORDS || WORDS.token !== token) return finish(false);
-      const talking = speechSynthesis.speaking || speechSynthesis.pending;
-      if (started && !talking) return finish(true);
-      if (!started && Date.now() - attemptStartedAt > 3000) {
-        if (!retried && !voiceTrouble && (slVoiceJa || enVoice)) {
-          retried = true; voiceTrouble = true;
-          attempt++;   // the cancel below ends the silent try; ignore its onend
-          try { speechSynthesis.cancel(); } catch(e) {}
-          attemptStartedAt = Date.now();
-          WORDS.timers.push(setTimeout(() => { if (WORDS && WORDS.token === token) speakAll(); }, 150));
-        } else {
+      if (stale()) return finish();
+      if (partIndex >= planned.length) return finish();
+      const part = planned[partIndex];
+      const thisAttempt = ++attempt;
+      let started = false, ended = false;
+      const startedAt = Date.now();
+      const next = () => { if (thisAttempt !== attempt || ended) return; ended = true; partIndex++; speakPart(false); };
+      const u = makeUtterance(part);
+      u.onstart = () => {
+        if (thisAttempt !== attempt) return;
+        started = true; heardAny = true; speechOK = true; $('#ws-sound').style.display = 'none';
+        if (!segs.length || !part.p) return;
+        segs.forEach(s => s.classList.toggle('now', part.p.includes(+s.dataset.p)));
+        keepOnScreen(segs.find(s => part.p.includes(+s.dataset.p)));
+      };
+      u.onend = next;
+      u.onerror = e => { if ((e && e.error) !== 'canceled' && (e && e.error) !== 'interrupted') next(); };
+      nudgeSpeech();
+      try { speechSynthesis.speak(u); } catch(e) {}
+
+      const watch = () => {
+        if (finished || thisAttempt !== attempt || ended) return;
+        if (stale()) return finish();
+        const talking = speechSynthesis.speaking || speechSynthesis.pending;
+        const elapsed = Date.now() - startedAt;
+        if (started && !talking) return next();            // iOS sometimes skips onend
+        if (!started && elapsed > 3000) {
+          if (!retried) {                                    // jammed or silent voice: clear and retry once
+            if (slVoiceJa || enVoice) voiceTrouble = true;
+            attempt++; unjam();
+            WORDS.timers.push(setTimeout(() => speakPart(true), 200));
+            return;
+          }
           if (!speechOK) $('#ws-sound').style.display = '';
-          return finish(false);
+          return finish();                                   // still nothing: give up on sound for this step
         }
-      }
-      WORDS.timers.push(setTimeout(watch, 250));
+        if (started && elapsed > longestFor(part)) {        // stalled mid-phrase: clear and carry on
+          attempt++; unjam();
+          partIndex++;
+          WORDS.timers.push(setTimeout(() => speakPart(false), 200));
+          return;
+        }
+        WORDS.timers.push(setTimeout(watch, 250));
+      };
+      WORDS.timers.push(setTimeout(watch, 400));
     };
-    WORDS.timers.push(setTimeout(watch, 400));
+    speakPart(false);
   });
 }
 
