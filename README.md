@@ -1,6 +1,6 @@
 # 読み方 Yomikata
 
-A kanji **readings** trainer for Genki, lessons 9–19. Most kanji apps teach one
+A kanji **readings** trainer for Genki, lessons 3–19. Most kanji apps teach one
 meaning per character; this one drills the thing that actually stops you mid-sentence —
 which reading fires in which compound, and why.
 

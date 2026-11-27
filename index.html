@@ -527,7 +527,7 @@ header .right{display:flex;align-items:center;gap:10px}
     <button class="btn quiet" id="sum-home">Home</button>
   </div>
 </section>
-<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.26b</span></div>
+<div class="sig"><span class="logo"><span class="brand">ハインゼの<b>楽</b>しさ</span><small>Fun by Heinze</small></span><span class="yr">2026</span><span class="build" title="Which version of the page this is. If it doesn't match the newest, your browser is showing a saved copy.">v11.27a</span></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -909,7 +909,9 @@ function yomikataCheck(){
         if (seg.length !== chars.length) return problems.push(`L${n} ${h.ch} ${written}: ${seg.length} segments for ${chars.length} characters (${reading})`);
         const i = chars.indexOf(h.ch);
         if (i < 0) return problems.push(`L${n} ${h.ch} ${written}: the kanji is not in the word`);
-        if (!h.on.includes(seg[i]) && !h.kun.includes(seg[i])) problems.push(`L${n} ${h.ch} ${written}: reading "${seg[i]}" is not in its on/kun list`);
+        // Words flagged as exceptions (4th item true) use a special reading on purpose,
+        // like 今日 (きょう) or 大人 (おとな), so they're allowed off the list.
+        if (!w[3] && !h.on.includes(seg[i]) && !h.kun.includes(seg[i])) problems.push(`L${n} ${h.ch} ${written}: reading "${seg[i]}" is not in its on/kun list (flag it as an exception if that's on purpose)`);
         if (ws.has(written)) problems.push(`L${n} ${h.ch}: ${written} listed twice`);
         ws.add(written);
       });
@@ -2808,7 +2810,7 @@ $('#btn-review').onclick = () => { const ws = UNIQUE_WORDS.filter(w => wstat(w).
 $('#btn-test').onclick = () => speak('おんがく。おんよみと、くんよみ。');
 $('#btn-reset').onclick = () => { if (confirm('Erase all progress for this lesson?')) { P = {words:{}, hubs:{}, lessons: LESSONS_ON}; save(); renderHome(); toast('Progress reset'); } };
 (function startingLessonRange(){
-  const newest = ALL_LESSONS[ALL_LESSONS.length - 1];
+  const newest = ALL_LESSONS[ALL_LESSONS.length - 1], oldest = ALL_LESSONS[0];
   const saved = Array.isArray(P.lessons) ? P.lessons.filter(n => ALL_LESSONS.includes(n)) : [];
   if (!saved.length) { LESSONS_ON = ALL_LESSONS.slice(); }
   else {
@@ -2818,9 +2820,13 @@ $('#btn-reset').onclick = () => { if (confirm('Erase all progress for this lesso
     // added to the content file since, stretch it to include them.
     const previousNewest = P.newestLessonSeen || last;
     if (last >= previousNewest) last = newest;
+    // Same at the other end: if it started at the oldest lesson there was, and
+    // earlier lessons have been added since (like 3–8), start from them.
+    const previousOldest = P.oldestLessonSeen || first;
+    if (first <= previousOldest) first = oldest;
     LESSONS_ON = ALL_LESSONS.filter(n => n >= first && n <= last);
   }
-  P.lessons = LESSONS_ON; P.newestLessonSeen = newest; save();
+  P.lessons = LESSONS_ON; P.newestLessonSeen = newest; P.oldestLessonSeen = oldest; save();
 })();
 buildModel();
 renderHome();

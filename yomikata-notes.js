@@ -1,7 +1,7 @@
 /* =======================================================================
    yomikata-notes.js — "why it's this kanji" mini-lessons and example
    sentences for Yomikata's Pronunciations slideshow and kanji lookup page
-   (Genki lessons 9–19, one entry per kanji). Optional: if this file is
+   (Genki lessons 3–19, one entry per kanji). Optional: if this file is
    missing, the game simply runs without the extras.
    Keyed by the kanji itself.
      explain: English, with Japanese inside 「」 — 「かな」 or 「漢字|かな」
@@ -701,5 +701,269 @@ Object.assign(window.YOMIKATA_NOTES, {
   "多": {
     explain: "Two copies of 「夕|ゆう」, evening, stacked up. One explanation is two slabs of meat piled on each other, more than enough. A simpler hook: evening after evening piling up. Many. The kun'yomi 「おお」 gives 「多い|おおい」, many, a lot. Remember to use it at the end of a sentence, like there are many people. Before a noun, say 「多くの|おおくの」. The on'yomi 「た」 is in 「多分|たぶん」, probably, a large share of the chance. And 「多数決|たすうけつ」 is majority vote, deciding by the larger number. To recap: things piled up, meaning many.",
     ja: "[東京|とうきょう]は[人|ひと]が[多|おお|*]いです。",
-    en: "There are a lot of people in Tokyo." }
+    en: "There are a lot of people in Tokyo." },
+  /* ---------------- Lesson 3 ---------------- */
+  "一": {
+    explain: "The simplest kanji there is: one line, one. Counting with sticks, one stick is one. The on'yomi 「いち」 is the number itself, and it shrinks to 「いっ」 before some sounds, as in 「一分|いっぷん」, one minute. The kun'yomi 「ひと」 counts things: 「一つ|ひとつ」, one thing. And watch for the special 「一人|ひとり」, one person. To recap: one line, meaning one.",
+    ja: "[一|ひと|*]つください。", en: "One, please." },
+  "二": {
+    explain: "Two lines, two. Notice the bottom line is longer than the top, which keeps it steady. The on'yomi 「に」 is the number: 「二時|にじ」, two o'clock. The kun'yomi 「ふた」 counts things: 「二つ|ふたつ」, two things. And 「二日|ふつか」, the second day of the month, has a special reading of its own. To recap: two lines, meaning two.",
+    ja: "りんごを[二|ふた|*]つ[買|か]いました。", en: "I bought two apples." },
+  "三": {
+    explain: "Three lines, three. The middle one is the shortest. The on'yomi 「さん」 is the number: 「三時|さんじ」, three o'clock, and 「三月|さんがつ」, March, the third month. The kun'yomi 「みっ」 counts things: 「三つ|みっつ」, three things. Fun fact: one, two and three are lines, but four switches to a box, because four lines would be too easy to misread. To recap: three lines, meaning three.",
+    ja: "[三時|さんじ|*]に[会|あ]いましょう。", en: "Let's meet at three." },
+  "四": {
+    explain: "Four is a box with two little legs inside, often pictured as a window or a nostril shape. It has several readings. The on'yomi 「し」 is in 「四月|しがつ」, April. But 「し」 sounds like 「死|し」, death, so people usually say the kun'yomi 「よん」 for the number, and 「よ」 in 「四時|よじ」, four o'clock. 「四つ|よっつ」 is four things. That's why many Japanese hospitals and hotels skip room four. To recap: a box with legs, meaning four.",
+    ja: "[四時|よじ|*]に[帰|かえ]ります。", en: "I'll go home at four." },
+  "五": {
+    explain: "Five is often explained as two lines, heaven and earth, with an X between them, the crossing point in the middle. The on'yomi 「ご」 is the number: 「五時|ごじ」, five o'clock, and 「五月|ごがつ」, May. The kun'yomi 「いつ」 counts things: 「五つ|いつつ」, five things. To recap: lines with a crossing in the middle, meaning five.",
+    ja: "[五月|ごがつ|*]は[暖|あたた]かいです。", en: "May is warm." },
+  "六": {
+    explain: "Six is often pictured as a little house with a roof on top and two walls splaying out below. The on'yomi 「ろく」 is the number: 「六時|ろくじ」, six o'clock. It shrinks to 「ろっ」 before some sounds: 「六百|ろっぴゃく」, six hundred, and 「六分|ろっぷん」, six minutes. The kun'yomi 「むっ」 counts things: 「六つ|むっつ」. To recap: a little house shape, meaning six.",
+    ja: "[毎朝|まいあさ][六時|ろくじ|*]に[起|お]きます。", en: "I get up at six every morning." },
+  "七": {
+    explain: "Seven looks like a cross with its tail swept to the right, often explained as a cut, a slice. The on'yomi 「しち」 is the number: 「七時|しちじ」, seven o'clock, and 「七月|しちがつ」, July. But 「しち」 is easy to mishear as 「いち」, so people often say the kun'yomi 「なな」 instead: 「七つ|ななつ」, seven things. A cultural note: Tanabata, the star festival, is on the seventh day of the seventh month. To recap: a cut with a swept tail, meaning seven.",
+    ja: "[七時|しちじ|*]に[晩|ばん]ご[飯|はん]を[食|た]べます。", en: "I eat dinner at seven." },
+  "八": {
+    explain: "Two strokes spreading apart, like something splitting in two. Eight. The shape spreads wider as it goes down, so it's considered a lucky number in Japan, a future that keeps opening up. The on'yomi 「はち」 is the number: 「八時|はちじ」. It shrinks to 「はっ」 before some sounds: 「八百|はっぴゃく」, eight hundred. The kun'yomi 「やっ」 counts things: 「八つ|やっつ」. To recap: two strokes spreading apart, meaning eight.",
+    ja: "[八時|はちじ|*]に[学校|がっこう]へ[行|い]きます。", en: "I go to school at eight." },
+  "九": {
+    explain: "Nine is often pictured as a bent arm reaching out. The on'yomi 「きゅう」 is the number. Another on'yomi, 「く」, is in 「九時|くじ」, nine o'clock, and 「九月|くがつ」, September. But 「く」 sounds like 「苦|く」, suffering, so like four, nine is considered a little unlucky. The kun'yomi 「ここの」 counts things: 「九つ|ここのつ」. To recap: a bent arm, meaning nine.",
+    ja: "[九時|くじ|*]から[授業|じゅぎょう]です。", en: "Class is from nine." },
+  "十": {
+    explain: "A simple cross, ten. Picture all ten fingers, both hands crossed. The on'yomi 「じゅう」 is the number: 「十時|じゅうじ」, ten o'clock, and 「十月|じゅうがつ」, October. It shrinks to 「じゅっ」 or 「じっ」 before some sounds: 「十歳|じゅっさい」, ten years old. The kun'yomi 「とお」 is ten things, the last of the counting words. To recap: a cross, meaning ten.",
+    ja: "[十時|じゅうじ|*]に[寝|ね]ます。", en: "I go to bed at ten." },
+  "百": {
+    explain: "One line on top of 「白|しろ」, white. The traditional explanation: 「白|はく」 gave the sound, and the extra line made it one hundred. The on'yomi 「ひゃく」 is hundred. Its sound changes after other numbers: 「三百|さんびゃく」, three hundred, 「六百|ろっぴゃく」, six hundred, 「八百|はっぴゃく」, eight hundred. Those three are the tricky ones to memorize. You'll also see it in 「百円|ひゃくえん」 shops, Japan's hundred-yen stores. To recap: one plus white, meaning hundred.",
+    ja: "これは[百円|ひゃくえん|*]です。", en: "This is a hundred yen." },
+  "千": {
+    explain: "Thousand is often explained as 「人|ひと」, a person, with a line across: a crowd of people, a thousand. The on'yomi 「せん」 is thousand. It changes after three: 「三千|さんぜん」, three thousand. And it shrinks after eight: 「八千|はっせん」. The thousand-yen bill is the one you'll use most, 「千円|せんえん」. Compare 「十|じゅう」, ten, and 「千|せん」: the slanting top stroke makes the difference. To recap: a person with a line, meaning thousand.",
+    ja: "[千円|せんえん|*]あります。", en: "I have a thousand yen." },
+  "万": {
+    explain: "Ten thousand, a number English doesn't have one word for. Japanese counts big numbers in groups of four zeros, so 「万|まん」 is a key unit. 「一万|いちまん」 is ten thousand, 「十万|じゅうまん」 is a hundred thousand, and 「百万|ひゃくまん」 is a million. The ten-thousand-yen bill is the biggest everyday bill. The kanji began as a picture of a scorpion, borrowed for its sound. To recap: the big counting unit, ten thousand.",
+    ja: "この[時計|とけい]は[一万|いちまん|*][円|えん]です。", en: "This watch is ten thousand yen." },
+  "円": {
+    explain: "The modern kanji is simplified from an older one with a frame, 「囗|くにがまえ」, around a round shape. Round, a circle, and the round coin: yen. The on'yomi 「えん」 is the money: 「百円|ひゃくえん」, a hundred yen. 「円高|えんだか」 is a strong yen. The kun'yomi 「まる」 gives 「円い|まるい」, round. The 「¥」 sign is just a Y for yen. To recap: a round coin, meaning yen, and circle.",
+    ja: "コーヒーは[三百|さんびゃく][円|えん|*]です。", en: "Coffee is three hundred yen." },
+  "時": {
+    explain: "On the left is the sun radical, 「日|ひへん」: time words love it. On the right is 「寺|じ」, temple, giving the sound じ. Temples rang bells to mark the hours of the sun. Time, hour. The on'yomi 「じ」 makes every o'clock: 「一時|いちじ」, 「三時|さんじ」. 「時間|じかん」 is time, hours. The kun'yomi 「とき」 is a time, a when: 「子どもの時|こどものとき」, when I was a child. 「時々|ときどき」 means sometimes. To recap: the sun plus a temple bell, meaning time.",
+    ja: "[今|いま][何時|なんじ|*]ですか。", en: "What time is it now?" },
+  /* ---------------- Lesson 4 ---------------- */
+  "日": {
+    explain: "A picture of the sun: a circle with a dot in the middle, squared off for the brush. Sun, and day. As a radical on the left it marks time words: 「時|じ」, 「明|あか」, 「晩|ばん」. It has lots of readings. 「日本|にほん」 is Japan, the sun's origin. 「日曜日|にちようび」 is Sunday, sun day. 「毎日|まいにち」 is every day. Counting days uses 「か」: 「三日|みっか」, three days. To recap: a picture of the sun, meaning sun, and day.",
+    ja: "[毎日|まいにち|*][日本語|にほんご]を[勉強|べんきょう]します。", en: "I study Japanese every day." },
+  "本": {
+    explain: "「木|き」, a tree, with a short line marking its root. The root, the origin, the basis. Books were once made from tree bark and bound strips of wood, so it also means book. The on'yomi 「ほん」 is a book: 「本|ほん」. 「日本|にほん」 is the origin of the sun, Japan. The kun'yomi 「もと」 means origin, and shows up in names like 「山本|やまもと」, the base of the mountain. To recap: a tree with its root marked, meaning book, and origin.",
+    ja: "[本|ほん|*]を[読|よ]みます。", en: "I read books." },
+  "人": {
+    explain: "A picture of a person walking, seen from the side: two legs. As a radical on the left it stands up straight, 「亻|にんべん」, in kanji about people: 「休|やす」, 「作|つく」, 「何|なに」. The on'yomi 「じん」 makes nationalities: 「日本人|にほんじん」, a Japanese person. 「にん」 counts people: 「三人|さんにん」. The kun'yomi 「ひと」 is a person: 「この人|このひと」. And 「一人|ひとり」, alone, is special. To recap: a walking person, meaning person.",
+    ja: "あの[人|ひと|*]は[先生|せんせい]です。", en: "That person is a teacher." },
+  "月": {
+    explain: "A picture of a crescent moon, with two lines inside. Moon, and month, since a month is one turn of the moon. The on'yomi 「げつ」 is in 「月曜日|げつようび」, Monday, moon day. 「がつ」 names the months: 「一月|いちがつ」, January. The kun'yomi 「つき」 is the moon itself. Careful: on the left of body kanji, the same shape means meat, not moon. To recap: a crescent moon, meaning moon, and month.",
+    ja: "[月曜日|げつようび|*]は[忙|いそが]しいです。", en: "I'm busy on Mondays." },
+  "火": {
+    explain: "A picture of a fire: flames leaping up, with sparks on either side. Fire. At the bottom of other kanji it flattens into four dots, 「灬|れっか」. The on'yomi 「か」 is in 「火曜日|かようび」, Tuesday, fire day. 「火山|かざん」 is a volcano, a fire mountain. The kun'yomi 「ひ」 is fire itself, and it softens to 「び」 in 「花火|はなび」, fireworks, fire flowers. To recap: a picture of flames, meaning fire.",
+    ja: "[火曜日|かようび|*]にテニスをします。", en: "I play tennis on Tuesdays." },
+  "水": {
+    explain: "A picture of flowing water: a stream down the middle with splashes on each side. Squeezed onto the left of other kanji, it becomes three drops, the water radical, 「氵|さんずい」, in 「海|うみ」, 「泳|およ」, and 「洗|あら」. The on'yomi 「すい」 is in 「水曜日|すいようび」, Wednesday, water day. The kun'yomi 「みず」 is water. To recap: a flowing stream, meaning water.",
+    ja: "[水|みず|*]をください。", en: "Water, please." },
+  "木": {
+    explain: "A picture of a tree: a trunk, branches reaching out, and roots spreading at the bottom. Tree. Two trees make 「林|はやし」, a grove, and three make 「森|もり」, a forest. On the left of other kanji it marks things made of wood, like 「校|こう」, school. The on'yomi 「もく」 is in 「木曜日|もくようび」, Thursday, tree day. The kun'yomi 「き」 is a tree. To recap: a picture of a tree, meaning tree.",
+    ja: "[木曜日|もくようび|*]に[図書館|としょかん]へ[行|い]きます。", en: "I go to the library on Thursdays." },
+  "金": {
+    explain: "A roof over 「土|つち」, the earth, with two nuggets of metal hidden inside. Metal dug from the ground: gold, and money. On the left of other kanji it marks metals, like 「鉄|てつ」, iron. The on'yomi 「きん」 is in 「金曜日|きんようび」, Friday, gold day. The kun'yomi 「かね」 is money: 「お金|おかね」. 「お金持ち|おかねもち」, money holder, is a rich person. To recap: nuggets in the earth, meaning gold, and money.",
+    ja: "[金曜日|きんようび|*]に[映画|えいが]を[見|み]ます。", en: "I watch a movie on Friday." },
+  "土": {
+    explain: "A picture of a lump of earth, or a sprout pushing up through the ground. Soil, earth. On the left of other kanji it marks ground and places: 「地|ち」, 「場|ば」. The on'yomi 「ど」 is in 「土曜日|どようび」, Saturday, earth day. 「と」 is in 「土地|とち」, land. The kun'yomi 「つち」 is soil. Here's the full week: sun, moon, fire, water, tree, gold, earth, the sun, the moon and the five old planets. To recap: a lump of earth, meaning soil.",
+    ja: "[土曜日|どようび|*]は[休|やす]みです。", en: "Saturday is a day off." },
+  "曜": {
+    explain: "A big kanji with three parts: the sun radical, 「日|ひへん」, on the left, and on the right two wings over a short-tailed bird, 「隹|ふるとり」. The old meaning was the bright light of the sun and planets. The seven days of the week are named after the seven lights in the sky, so it means weekday. Its on'yomi is 「よう」, in every day name: 「日曜日|にちようび」, and 「曜日|ようび」, day of the week. To recap: the sun with a bright bird, meaning weekday.",
+    ja: "[今日|きょう]は[何曜日|なんようび|*]ですか。", en: "What day of the week is it today?" },
+  "上": {
+    explain: "A line for the ground with a mark above it. Up, above. Its mirror, 「下|した」, has the mark below. The kun'yomi 「うえ」 is above, on top: 「机の上|つくえのうえ」, on the desk. 「のぼ」 gives 「上る|のぼる」, to go up. The on'yomi 「じょう」 is in 「上手|じょうず」, skillful, an upper hand. 「屋上|おくじょう」 is a rooftop. To recap: a mark above the line, meaning up.",
+    ja: "[本|ほん]は[机|つくえ]の[上|うえ|*]にあります。", en: "The book is on the desk." },
+  "下": {
+    explain: "A line with a mark below it. Down, below, the mirror of 「上|うえ」, up. The kun'yomi 「した」 is under, below. 「くだ」 gives 「下さい|ください」, please give me, literally hand it down. The on'yomi 「か」 is in 「地下鉄|ちかてつ」, underground iron, the subway. And 「下手|へた」, a lower hand, means bad at something, the opposite of 「上手|じょうず」. To recap: a mark below the line, meaning down.",
+    ja: "[猫|ねこ]は[机|つくえ]の[下|した|*]にいます。", en: "The cat is under the desk." },
+  "中": {
+    explain: "A box with a line straight through the middle, like an arrow through a target. Middle, inside. The kun'yomi 「なか」 is inside: 「かばんの中|かばんのなか」, inside the bag. The on'yomi 「ちゅう」 is in 「中国|ちゅうごく」, the middle kingdom, China, and 「中学|ちゅうがく」, middle school. After a span of time it reads 「じゅう」, throughout: 「一年中|いちねんじゅう」, all year. To recap: a line through the middle, meaning middle, and inside.",
+    ja: "かばんの[中|なか|*]に[本|ほん]があります。", en: "There's a book in the bag." },
+  "半": {
+    explain: "A line cut straight down the middle, with a mark on each side: something split into two equal halves. Half. Its on'yomi is 「はん」. After a time it means half past: 「三時半|さんじはん」, half past three. 「半分|はんぶん」 is half. 「半年|はんとし」 is half a year. And 「半額|はんがく」, half price, is the sticker you'll see on supermarket bento in the evening. To recap: split down the middle, meaning half.",
+    ja: "[三時半|さんじはん|*]に[会|あ]いましょう。", en: "Let's meet at half past three." },
+  /* ---------------- Lesson 5 ---------------- */
+  "山": {
+    explain: "A picture of a mountain range: three peaks, the middle one tallest. Mountain. The kun'yomi 「やま」 is a mountain, and it's in tons of family names: 「山田|やまだ」, 「山本|やまもと」, 「山川|やまかわ」. The on'yomi 「さん」 follows mountain names: 「富士山|ふじさん」, Mt. Fuji. It's 「さん」 like the honorific, but it's a different word. To recap: three peaks, meaning mountain.",
+    ja: "[山|やま|*]に[登|のぼ]りました。", en: "I climbed a mountain." },
+  "川": {
+    explain: "A picture of a river: water flowing between two banks, three lines running down. River. The kun'yomi 「かわ」 is a river. In names it often softens to 「がわ」: 「小川|おがわ」, little river. Lots of family names are about the land: 「山川|やまかわ」, mountain and river. Rivers and their water connect to the water radical, 「氵|さんずい」. To recap: three flowing lines, meaning river.",
+    ja: "[川|かわ|*]で[泳|およ]ぎました。", en: "I swam in the river." },
+  "元": {
+    explain: "Two lines on top of a pair of legs, 「儿|ひとあし」: a person with their head drawn on top. The head, the beginning, the origin. The on'yomi 「げん」 is in 「元気|げんき」, the origin of your energy: healthy, fine. 「がん」 is in 「元日|がんじつ」, New Year's Day, the first day. The kun'yomi 「もと」 is origin: 「地元|じもと」, your hometown area. To recap: a person's head, meaning origin.",
+    ja: "お[元気|げんき|*]ですか。", en: "How are you?" },
+  "気": {
+    explain: "Steam rising, the radical 「气|きがまえ」, over a shape that once was rice cooking. Air, vapor, energy, spirit. Its on'yomi 「き」 is everywhere. 「元気|げんき」 is your source energy: healthy. 「天気|てんき」 is the sky's mood: weather. 「電気|でんき」 is electric energy. 「人気|にんき」 is people's feeling about something: popularity. 「気持ち|きもち」 is a feeling. To recap: rising steam, meaning spirit, and energy.",
+    ja: "[今日|きょう]はいい[天気|てんき|*]ですね。", en: "Nice weather today, isn't it?" },
+  "天": {
+    explain: "「大|だい」, a person standing with arms out, with an extra line above the head. What's above us: the sky, the heavens. Its on'yomi is 「てん」. 「天気|てんき」 is the sky's energy: weather. 「天国|てんごく」 is heaven, the sky country. 「天才|てんさい」 is a genius, a talent from the heavens. And 「天皇|てんのう」 is the emperor. To recap: the line above a person's head, meaning heaven.",
+    ja: "[明日|あした]の[天気|てんき|*]はどうですか。", en: "How's the weather tomorrow?" },
+  "私": {
+    explain: "On the left is 「禾|のぎへん」, a grain plant. On the right is a shape that means keeping something to yourself. Your own private share of the harvest: private, and I. The kun'yomi 「わたし」 is I, the everyday polite word. The on'yomi 「し」 means private: 「私立大学|しりつだいがく」, a private university. To recap: your own share of grain, meaning I, and private.",
+    ja: "[私|わたし|*]は[学生|がくせい]です。", en: "I am a student." },
+  "今": {
+    explain: "A roof shape over a line, often explained as things gathered together under one cover, into this moment. Now. The kun'yomi 「いま」 is now. The on'yomi 「こん」 means this, the current one: 「今晩|こんばん」, tonight, 「今月|こんげつ」, this month, and 「今週|こんしゅう」, this week. Two very common words have special readings: 「今日|きょう」, today, and 「今年|ことし」, this year. To recap: gathered into this moment, meaning now.",
+    ja: "[今|いま|*]、[何時|なんじ]ですか。", en: "What time is it now?" },
+  "田": {
+    explain: "A picture of a rice field from above: a square divided into four paddies by raised paths. Rice field. The kun'yomi 「た」 is in tons of family names: 「田中|たなか」, in the middle of the rice fields, and it softens to 「だ」 in 「山田|やまだ」, the mountain rice field. 「田んぼ|たんぼ」 is a rice paddy. As a part, it sits on top of 「男|おとこ」, man, a field plus strength. To recap: a divided field, meaning rice field.",
+    ja: "[田中|たなか|*]さんは[学生|がくせい]です。", en: "Mr. Tanaka is a student." },
+  "女": {
+    explain: "A picture of a woman kneeling with her arms crossed in front. Woman. On the left of other kanji, it marks family and relationship words: 「好|す」, like, 「姉|あね」, 「妹|いもうと」, and 「婚|こん」, marriage. The kun'yomi 「おんな」 is woman: 「女の人|おんなのひと」, a woman, and 「女の子|おんなのこ」, a girl. The on'yomi 「じょ」 is in 「女性|じょせい」, woman, the polite word. To recap: a kneeling woman, meaning woman.",
+    ja: "あの[女|おんな|*]の[人|ひと]は[先生|せんせい]です。", en: "That woman is a teacher." },
+  "男": {
+    explain: "Two parts stacked: 「田|た」, a rice field, on top, and 「力|ちから」, strength, below. Strength in the rice field: the one who works the fields, a man. The kun'yomi 「おとこ」 is man: 「男の人|おとこのひと」, a man, and 「男の子|おとこのこ」, a boy. The on'yomi 「だん」 is in 「男性|だんせい」, man, the polite word. To recap: a field plus strength, meaning man.",
+    ja: "[男|おとこ|*]の[子|こ]が[走|はし]っています。", en: "A boy is running." },
+  "見": {
+    explain: "「目|め」, an eye, on top of a pair of legs: an eye walking around, looking. To see. Compare 「兄|あに」, a mouth on legs. The kun'yomi 「み」 gives 「見る|みる」, to see, and 「花見|はなみ」, flower viewing. The on'yomi 「けん」 is in 「見物|けんぶつ」, sightseeing, and 「意見|いけん」, an opinion, how you see it. To recap: an eye on legs, meaning to see.",
+    ja: "テレビを[見|み|*]ます。", en: "I watch TV." },
+  "行": {
+    explain: "A picture of a crossroads, four roads meeting, split in two. To go. The left half is the step radical, 「彳|ぎょうにんべん」, which marks walking and going in other kanji. The kun'yomi 「い」 gives 「行く|いく」, to go. The on'yomi 「こう」 is in 「旅行|りょこう」, travel, and 「銀行|ぎんこう」, a bank. 「ぎょう」 means a line of text: 「一行目|いちぎょうめ」, the first line. To recap: a crossroads, meaning to go.",
+    ja: "[明日|あした][京都|きょうと]へ[行|い|*]きます。", en: "I'm going to Kyoto tomorrow." },
+  "食": {
+    explain: "A lid on top of a bowl of food on a stand. To eat, food. Squeezed onto the left of other kanji, it becomes the food radical, 「飠|しょくへん」: 「飲|の」, drink, and 「飯|はん」, rice. The kun'yomi 「た」 gives 「食べる|たべる」, to eat, and 「食べ物|たべもの」, food. The on'yomi 「しょく」 is in 「食事|しょくじ」, a meal, and 「食堂|しょくどう」, a cafeteria. To recap: a covered bowl of food, meaning to eat.",
+    ja: "[朝|あさ]ご[飯|はん]を[食|た|*]べます。", en: "I eat breakfast." },
+  "飲": {
+    explain: "On the left is the food radical, 「飠|しょくへん」. On the right is 「欠|あくび」, a person with their mouth wide open. A mouth opened for food and drink: to drink. The kun'yomi 「の」 gives 「飲む|のむ」, to drink, and 「飲み物|のみもの」, a drink. In Japanese you also drink medicine: 「薬を飲む|くすりをのむ」. The on'yomi 「いん」 is in 「飲酒運転|いんしゅうんてん」, drunk driving. To recap: food plus an open mouth, meaning to drink.",
+    ja: "コーヒーを[飲|の|*]みます。", en: "I drink coffee." },
+  /* ---------------- Lesson 6 ---------------- */
+  "東": {
+    explain: "「日|ひ」, the sun, seen through 「木|き」, a tree. The sun rising behind the trees: east. The kun'yomi 「ひがし」 is east: 「東口|ひがしぐち」, the east exit of a station. The on'yomi 「とう」 is in 「東京|とうきょう」, the eastern capital, Tokyo, named because it lies east of the old capital, Kyoto. 「関東|かんとう」 is the Tokyo region. To recap: the sun behind a tree, meaning east.",
+    ja: "[東口|ひがしぐち|*]で[待|ま]っています。", en: "I'm waiting at the east exit." },
+  "西": {
+    explain: "Often explained as a bird settling into its nest at sunset, when the sun goes down in the west. West. The kun'yomi 「にし」 is west: 「西口|にしぐち」, the west exit. The on'yomi 「せい」 is in 「西洋|せいよう」, the West, Western countries. 「さい」 is in 「関西|かんさい」, the Osaka and Kyoto region, Tokyo's big rival. To recap: a bird nesting at sunset, meaning west.",
+    ja: "[西口|にしぐち|*]はどこですか。", en: "Where is the west exit?" },
+  "南": {
+    explain: "Often explained as a tent or a hanging bell, warmed by the sun from the south. South. The kun'yomi 「みなみ」 is south: 「南口|みなみぐち」, the south exit. The on'yomi 「なん」 is in 「南東|なんとう」, southeast, and 「南極|なんきょく」, the South Pole, Antarctica. Remember the order in Japanese is north, south, east, west in the same pairs as English: 「東西南北|とうざいなんぼく」. To recap: the warm side, meaning south.",
+    ja: "[駅|えき]の[南口|みなみぐち|*]に[来|き]てください。", en: "Please come to the south exit of the station." },
+  "北": {
+    explain: "Two people sitting back to back. Turning your back: in old China, palaces faced south, so the back was to the north. North. The kun'yomi 「きた」 is north: 「北口|きたぐち」, the north exit. The on'yomi 「ほく」 is in 「東北|とうほく」, the northeast region of Japan, and it shrinks to 「ほっ」 in 「北海道|ほっかいどう」 and 「北極|ほっきょく」, the North Pole. To recap: two people back to back, meaning north.",
+    ja: "[北海道|ほっかいどう|*]は[寒|さむ]いです。", en: "Hokkaido is cold." },
+  "口": {
+    explain: "A picture of an open mouth. Mouth, and any opening. As a part it's everywhere: 「名|な」, 「品|ひん」, 「語|ご」. The kun'yomi 「くち」 is mouth, and it softens to 「ぐち」 for an opening: 「出口|でぐち」, exit, 「入り口|いりぐち」, entrance, and the station exits, 「北口|きたぐち」 and 「東口|ひがしぐち」. The on'yomi 「こう」 is in 「人口|じんこう」, population, people's mouths to feed. To recap: an open mouth, meaning mouth, and opening.",
+    ja: "[北口|きたぐち|*]で[会|あ]いましょう。", en: "Let's meet at the north exit." },
+  "出": {
+    explain: "Often explained as a foot stepping out of an opening, or a sprout pushing up through the ground. To come out, to go out. The kun'yomi 「で」 gives 「出る|でる」, to exit, 「出口|でぐち」, the exit, and 「出かける|でかける」, to go out. 「だ」 gives 「出す|だす」, to take out, to hand in. The on'yomi 「しゅっ」 is in 「出席|しゅっせき」, attendance, and 「しゅつ」 in 「輸出|ゆしゅつ」, export. To recap: stepping out of an opening, meaning to exit.",
+    ja: "[七時|しちじ]に[家|いえ]を[出|で|*]ます。", en: "I leave the house at seven." },
+  "右": {
+    explain: "A hand reaching down over 「口|くち」, a mouth. The hand you eat with: the right hand. Compare 「左|ひだり」: the same hand on top, but holding a tool, 「工|こう」, instead. The kun'yomi 「みぎ」 is right: 「右手|みぎて」, right hand. The on'yomi 「う」 is in 「右折|うせつ」, a right turn, and 「ゆう」 in 「左右|さゆう」, left and right. To recap: a hand to the mouth, meaning right.",
+    ja: "[右|みぎ|*]に[曲|ま]がってください。", en: "Please turn right." },
+  "左": {
+    explain: "A hand reaching down over 「工|こう」, a carpenter's tool. The hand that holds the tool steady: left. Compare 「右|みぎ」, a hand over a mouth, the hand you eat with. The kun'yomi 「ひだり」 is left: 「左手|ひだりて」, left hand, and 「左利き|ひだりきき」, left-handed. The on'yomi 「さ」 is in 「左折|させつ」, a left turn. Japan drives on the left. To recap: a hand holding a tool, meaning left.",
+    ja: "[銀行|ぎんこう]は[左|ひだり|*]です。", en: "The bank is on the left." },
+  "分": {
+    explain: "「八|はち」, two strokes splitting apart, over 「刀|かたな」, a knife. A knife cutting something into parts: to divide, a part. Minutes are parts of an hour. The on'yomi changes sound: 「五分|ごふん」, five minutes, 「十分|じゅっぷん」, ten minutes. 「ぶん」 means a part: 「自分|じぶん」, your own part, oneself. The kun'yomi 「わ」 gives 「分ける|わける」, to divide, and 「分かる|わかる」, to understand, to sort it out. To recap: a knife cutting in two, meaning minute, and to divide.",
+    ja: "[五分|ごふん|*][待|ま]ってください。", en: "Please wait five minutes." },
+  "先": {
+    explain: "A foot on top of a pair of legs, 「儿|ひとあし」: a person stepping out ahead. Ahead, before. The on'yomi 「せん」 is in 「先生|せんせい」, someone born before you, a teacher, and 「先週|せんしゅう」, last week, 「先月|せんげつ」, last month. 「先輩|せんぱい」 is your senior at school or work. The kun'yomi 「さき」 gives 「先に|さきに」, ahead, first. To recap: a foot stepping ahead, meaning ahead.",
+    ja: "[先生|せんせい|*]に[聞|き]きました。", en: "I asked the teacher." },
+  "生": {
+    explain: "A picture of a sprout pushing up out of the ground, a line for the earth at the bottom. Life, birth, growing. The on'yomi 「せい」 means a student, someone growing: 「学生|がくせい」, 「先生|せんせい」, born before you. 「しょう」 is in 「一生|いっしょう」, a whole life. The kun'yomi 「う」 gives 「生まれる|うまれる」, to be born. It has more readings than almost any other kanji. To recap: a sprout from the ground, meaning life, and birth.",
+    ja: "[私|わたし]は[大学|だいがく]の[学生|がくせい|*]です。", en: "I'm a college student." },
+  "大": {
+    explain: "A picture of a person standing with arms and legs stretched out wide. Big. Add a line above and you get 「天|てん」, heaven; a dot below gives 「太|ふと」, fat. The on'yomi 「だい」 is in 「大学|だいがく」, big school, university. 「たい」 is in 「大変|たいへん」, a big change, tough. The kun'yomi 「おお」 gives 「大きい|おおきい」, big. 「大人|おとな」, adult, is special. To recap: arms and legs out wide, meaning big.",
+    ja: "[大|おお|*]きい[犬|いぬ]ですね。", en: "What a big dog." },
+  "学": {
+    explain: "「子|こ」, a child, under a roof, with hands and marks of learning above. A child learning at school. Learning. The on'yomi 「がく」 is in 「大学|だいがく」, university, 「学生|がくせい」, student, and 「文学|ぶんがく」, literature. It shrinks to 「がっ」 in 「学校|がっこう」, school. The kun'yomi 「まな」 gives 「学ぶ|まなぶ」, to learn. To recap: a child under a roof, meaning learning.",
+    ja: "[学校|がっこう|*]へ[行|い]きます。", en: "I go to school." },
+  "外": {
+    explain: "「夕|ゆう」, evening, beside 「卜|ぼく」, a crack read for fortune-telling. Fortunes read outside the normal daytime hours: outside. The kun'yomi 「そと」 is outside. The on'yomi 「がい」 is in 「外国|がいこく」, an outside country, a foreign country, and 「外国人|がいこくじん」, a foreigner. 「海外|かいがい」, beyond the sea, means overseas. To recap: outside the usual, meaning outside.",
+    ja: "[外国|がいこく|*]に[行|い]きたいです。", en: "I want to go abroad." },
+  "国": {
+    explain: "The enclosure radical, 「囗|くにがまえ」, a border, with 「玉|たま」, a jewel, inside. A precious land within its borders: a country. The kun'yomi 「くに」 is country. The on'yomi 「こく」 is in 「外国|がいこく」, and it changes to 「ごく」 in 「中国|ちゅうごく」, China, and 「天国|てんごく」, heaven. It shrinks to 「こっ」 in 「国会|こっかい」, the Diet, Japan's parliament. To recap: a jewel within borders, meaning country.",
+    ja: "どこの[国|くに|*]から[来|き]ましたか。", en: "What country are you from?" },
+  /* ---------------- Lesson 7 ---------------- */
+  "京": {
+    explain: "A picture of a tall building on a hill: a palace, so the capital. Its on'yomi is 「きょう」. 「東京|とうきょう」 is the eastern capital, Tokyo. 「京都|きょうと」 was the capital for over a thousand years, the capital city. 「上京|じょうきょう」 means going up to the capital, moving to Tokyo. It's also a popular name: 「京子|きょうこ」. To recap: a building on a hill, meaning capital.",
+    ja: "[京都|きょうと|*]はきれいな[町|まち]です。", en: "Kyoto is a beautiful city." },
+  "子": {
+    explain: "A picture of a baby: a big head, arms stretched out, and legs wrapped in a blanket. Child. It's the bottom of 「学|がく」, a child learning, and 「字|じ」, a child under a roof. The kun'yomi 「こ」 is child: 「子ども|こども」, 「女の子|おんなのこ」, a girl, and the end of many girls' names, like 「京子|きょうこ」. The on'yomi 「し」 is in 「女子学生|じょしがくせい」, a female student. To recap: a baby in a blanket, meaning child.",
+    ja: "[子|こ|*]どもが[三人|さんにん]います。", en: "I have three children." },
+  "小": {
+    explain: "A line split down the middle with a dot on each side: something cut into tiny pieces. Small. Add one stroke and you get 「少|すこ」, a little. The kun'yomi 「ちい」 gives 「小さい|ちいさい」, small. The on'yomi 「しょう」 is in 「小学校|しょうがっこう」, small school, elementary school. In names it can be 「お」 or 「こ」: 「小川|おがわ」. To recap: split into tiny bits, meaning small.",
+    ja: "[小|ちい|*]さい[犬|いぬ]がいます。", en: "There's a small dog." },
+  "会": {
+    explain: "A roof shape, people gathering under one cover, over a shape for speaking. People coming together: to meet. The kun'yomi 「あ」 gives 「会う|あう」, to meet a person, and it takes 「に」: 「友だちに会う|ともだちにあう」. The on'yomi 「かい」 is in 「会社|かいしゃ」, a company, people gathered, and 「会議|かいぎ」, a meeting. To recap: people under one roof, meaning to meet.",
+    ja: "[明日|あした][友|とも]だちに[会|あ|*]います。", en: "I'll meet a friend tomorrow." },
+  "社": {
+    explain: "On the left is the altar radical, 「礻|しめすへん」, the mark of gods and worship. On the right is 「土|つち」, earth. An earth altar, a local shrine, where the community gathered. From there: a group of people, a company. The on'yomi 「しゃ」 is in 「会社|かいしゃ」, company, and 「社会|しゃかい」, society. 「じゃ」 is in 「神社|じんじゃ」, a Shinto shrine. To recap: an altar on the earth, meaning shrine, and company.",
+    ja: "[父|ちち]は[会社|かいしゃ|*]で[働|はたら]いています。", en: "My father works at a company." },
+  "父": {
+    explain: "A picture of a hand holding a stick or a tool: the one in charge of the household, the father. The kun'yomi 「ちち」 is how you talk about your own father to others. 「お父さん|おとうさん」, with the reading 「とう」, is someone else's father, or what you call yours. The on'yomi 「ふ」 is in 「祖父|そふ」, grandfather, and 「父母|ふぼ」, parents. To recap: a hand holding a tool, meaning father.",
+    ja: "[父|ちち|*]は[医者|いしゃ]です。", en: "My father is a doctor." },
+  "母": {
+    explain: "A picture of a woman, 「女|おんな」, with two dots added, often explained as a mother nursing a baby. Mother. The same shape is inside 「毎|まい」, every. The kun'yomi 「はは」 is how you talk about your own mother. 「お母さん|おかあさん」, with the reading 「かあ」, is someone else's mother, or what you call yours. The on'yomi 「ぼ」 is in 「祖母|そぼ」, grandmother, and 「母語|ぼご」, mother tongue. To recap: a woman with a baby, meaning mother.",
+    ja: "[母|はは|*]は[料理|りょうり]が[上手|じょうず]です。", en: "My mother is good at cooking." },
+  "高": {
+    explain: "A picture of a tall tower: a roof, a window, and a gate at the bottom. High, tall, and expensive. The kun'yomi 「たか」 gives 「高い|たかい」, high, tall, or expensive. The on'yomi 「こう」 is in 「高校|こうこう」, high school, and 「最高|さいこう」, the highest, the best. Its opposite is 「安い|やすい」, cheap, or 「低い|ひくい」, low. To recap: a tall tower, meaning high.",
+    ja: "この[時計|とけい]は[高|たか|*]いです。", en: "This watch is expensive." },
+  "校": {
+    explain: "On the left is 「木|き」, a tree, wood. On the right is 「交|こう」, crossing, which gives the sound. Wooden crossbeams, the frame of a school building. School. Its on'yomi is 「こう」: 「学校|がっこう」, school, 「高校|こうこう」, high school, and 「中学校|ちゅうがっこう」, junior high. To recap: wooden crossbeams, meaning school.",
+    ja: "[学校|がっこう|*]は[九時|くじ]からです。", en: "School starts at nine." },
+  "毎": {
+    explain: "Often explained as 「母|はは」, a mother, with an ornament on her head: a mother is there every day. Every. Its on'yomi is 「まい」: 「毎日|まいにち」, every day, 「毎週|まいしゅう」, every week, 「毎晩|まいばん」, every night, 「毎年|まいとし」, every year. It also sits beside the water radical in 「海|うみ」, the sea. To recap: a mother there every day, meaning every.",
+    ja: "[毎日|まいにち|*]コーヒーを[飲|の]みます。", en: "I drink coffee every day." },
+  "語": {
+    explain: "On the left is the speech radical, 「言|ごんべん」: a sure clue the kanji is about words. On the right is 「吾|ご」, I, which gives the sound. My words: language. Its on'yomi is 「ご」, and it ends every language name: 「日本語|にほんご」, 「英語|えいご」, English. 「敬語|けいご」 is honorific language, respectful speech. To recap: my words, meaning language.",
+    ja: "[日本語|にほんご|*]を[勉強|べんきょう]しています。", en: "I'm studying Japanese." },
+  "文": {
+    explain: "A picture of a person with a pattern drawn on their chest. Patterns, then writing, sentences, and culture. Its on'yomi is 「ぶん」. 「文学|ぶんがく」 is literature. 「作文|さくぶん」 is a composition, a made piece of writing. 「文化|ぶんか」 is culture, and 「文法|ぶんぽう」 is grammar, the rules of sentences. 「文字|もじ」, letters, uses a special short reading. To recap: a patterned person, meaning writing, and sentence.",
+    ja: "[大学|だいがく]で[文学|ぶんがく|*]を[勉強|べんきょう]しています。", en: "I study literature at college." },
+  "帰": {
+    explain: "In its old form, the right side was a broom, 「帚|ほうき」. The traditional explanation is a bride with her broom, going to the home where she belongs. To return home. The kun'yomi 「かえ」 gives 「帰る|かえる」, to go home, and 「帰り|かえり」, the way back. The on'yomi 「き」 is in 「帰国|きこく」, returning to your country, and 「帰宅|きたく」, returning home. To recap: going back home, meaning to return.",
+    ja: "[六時|ろくじ]に[家|いえ]に[帰|かえ|*]ります。", en: "I go home at six." },
+  "入": {
+    explain: "Two strokes leaning together, like an arrowhead or a tent opening you slip into. To enter. Careful, it's the mirror of 「人|ひと」, person. The kun'yomi 「はい」 gives 「入る|はいる」, to enter. 「い」 gives 「入れる|いれる」, to put in, and 「入り口|いりぐち」, the entrance. The on'yomi 「にゅう」 is in 「輸入|ゆにゅう」, import. To recap: slipping in, meaning to enter.",
+    ja: "[部屋|へや]に[入|はい|*]ってください。", en: "Please come into the room." },
+  /* ---------------- Lesson 8 ---------------- */
+  "員": {
+    explain: "「口|くち」, a mouth, on top of 「貝|かい」, a shell, money. Mouths to be paid: the number of people on the payroll, members. Its on'yomi is 「いん」, and it ends job titles: 「会社員|かいしゃいん」, office worker, 「店員|てんいん」, store clerk, 「駅員|えきいん」, station staff. 「会員|かいいん」 is a member. To recap: paid mouths, meaning member.",
+    ja: "[兄|あに]は[会社員|かいしゃいん|*]です。", en: "My older brother is an office worker." },
+  "新": {
+    explain: "「立|た」 and 「木|き」, a tree, beside 「斤|きん」, an axe. Freshly cut wood: new. The kun'yomi 「あたら」 gives 「新しい|あたらしい」, new. The on'yomi 「しん」 is in 「新聞|しんぶん」, newly heard things, a newspaper, and 「新幹線|しんかんせん」, the new trunk line, the bullet train. 「新鮮|しんせん」 means fresh. To recap: freshly cut wood, meaning new.",
+    ja: "[新|あたら|*]しい[車|くるま]を[買|か]いました。", en: "I bought a new car." },
+  "聞": {
+    explain: "「門|もん」, a gate, with 「耳|みみ」, an ear, inside. An ear pressed at the gate: to listen, to hear. Compare 「問|もん」, a mouth at the gate, asking. The kun'yomi 「き」 gives 「聞く|きく」, to listen, and also to ask. 「聞こえる|きこえる」 is can be heard. The on'yomi 「ぶん」 is in 「新聞|しんぶん」, a newspaper, new things heard. To recap: an ear at the gate, meaning to listen.",
+    ja: "[音楽|おんがく]を[聞|き|*]きます。", en: "I listen to music." },
+  "作": {
+    explain: "On the left is the person radical, 「亻|にんべん」. On the right is a shape often explained as a saw cutting wood. A person at work with a tool: to make. The kun'yomi 「つく」 gives 「作る|つくる」, to make. The on'yomi 「さく」 is in 「作文|さくぶん」, a composition, 「作品|さくひん」, a work of art, and 「作者|さくしゃ」, the author. To recap: a person with a tool, meaning to make.",
+    ja: "[母|はは]は[晩|ばん]ご[飯|はん]を[作|つく|*]ります。", en: "My mother makes dinner." },
+  "仕": {
+    explain: "On the left is the person radical, 「亻|にんべん」. On the right is 「士|し」, a gentleman or a retainer, which gives the sound. A person in service: to serve. The kun'yomi 「つか」 gives 「仕える|つかえる」, to serve someone. The on'yomi 「し」 is in 「仕事|しごと」, work, a job, things done in service. 「仕返し|しかえし」 is revenge, paying someone back. To recap: a person in service, meaning to serve.",
+    ja: "[仕事|しごと|*]は[楽|たの]しいです。", en: "My job is fun." },
+  "事": {
+    explain: "A picture of a hand holding a tool or a writing brush: doing a task. A matter, a thing. The kun'yomi 「こと」 is a thing, an abstract matter, and it softens to 「ごと」 in 「仕事|しごと」, work. The on'yomi 「じ」 is in 「食事|しょくじ」, a meal, 「火事|かじ」, a fire, and 「返事|へんじ」, a reply. To recap: a hand doing a task, meaning thing, and matter.",
+    ja: "[仕事|しごと|*]が[忙|いそが]しいです。", en: "Work is busy." },
+  "電": {
+    explain: "The rain lid, 「雨|あめかんむり」, on top: weather. Underneath, a flash of lightning. It first meant lightning, the electricity in a storm. Electricity. Its on'yomi is 「でん」. 「電車|でんしゃ」 is an electric car, a train. 「電気|でんき」 is electricity, and lights. 「電話|でんわ」 is electric talk, a telephone. 「電池|でんち」, an electric pond, is a battery. To recap: lightning under a rain cloud, meaning electricity.",
+    ja: "[電車|でんしゃ|*]で[学校|がっこう]へ[行|い]きます。", en: "I go to school by train." },
+  "車": {
+    explain: "A picture of a cart seen from above: a box in the middle, an axle through it, and the two wheels as the lines top and bottom. Car, vehicle. On the left of other kanji it marks wheels: 「転|てん」, to roll. The kun'yomi 「くるま」 is a car. The on'yomi 「しゃ」 is in 「電車|でんしゃ」, a train, 「自転車|じてんしゃ」, a bicycle, and 「駐車場|ちゅうしゃじょう」, a parking lot. To recap: a cart from above, meaning car.",
+    ja: "[車|くるま|*]で[行|い]きましょう。", en: "Let's go by car." },
+  "休": {
+    explain: "The person radical, 「亻|にんべん」, leaning against 「木|き」, a tree. A person resting in the shade: to rest. The kun'yomi 「やす」 gives 「休む|やすむ」, to rest, or to take a day off, and 「休み|やすみ」, a holiday, a break. The on'yomi 「きゅう」 is in 「休日|きゅうじつ」, a day off. To recap: a person against a tree, meaning to rest.",
+    ja: "[明日|あした]は[休|やす|*]みです。", en: "Tomorrow is a day off." },
+  "言": {
+    explain: "A mouth, 「口|くち」, at the bottom, with lines of words coming out above. To say. On the left of other kanji it becomes the speech radical, 「言|ごんべん」, a sure sign of words: 「話|はな」, 「語|ご」, 「読|よ」. The kun'yomi 「い」 gives 「言う|いう」, to say. 「こと」 gives 「言葉|ことば」, a word, language. The on'yomi 「げん」 is in 「方言|ほうげん」, a dialect. To recap: words from a mouth, meaning to say.",
+    ja: "[先生|せんせい]は[何|なん]と[言|い|*]いましたか。", en: "What did the teacher say?" },
+  "読": {
+    explain: "On the left is the speech radical, 「言|ごんべん」: words. On the right is 「売|う」, to sell, which gives the old sound. Words spoken out, like a street seller calling: reading aloud, to read. The kun'yomi 「よ」 gives 「読む|よむ」, to read, and 「読み物|よみもの」, reading matter. The on'yomi 「どく」 is in 「読書|どくしょ」, reading books. To recap: words called out, meaning to read.",
+    ja: "[毎晩|まいばん][本|ほん]を[読|よ|*]みます。", en: "I read a book every night." },
+  "思": {
+    explain: "「田|た」, which here was once a head, on top of 「心|こころ」, a heart. Your head and your heart working together: to think. The heart radical at the bottom marks thoughts and feelings: 「意|い」, 「悪|わる」, 「急|いそ」. The kun'yomi 「おも」 gives 「思う|おもう」, to think, and 「思い出す|おもいだす」, to remember. The on'yomi 「し」 is in 「不思議|ふしぎ」, mysterious. To recap: head and heart, meaning to think.",
+    ja: "[明日|あした]は[雨|あめ]だと[思|おも|*]います。", en: "I think it will rain tomorrow." },
+  "次": {
+    explain: "On the left are two strokes, often explained as a person resting. On the right is 「欠|あくび」, a person with their mouth wide open, yawning. Taking a breath before going on: next, the one that follows. The kun'yomi 「つぎ」 is next: 「次の駅|つぎのえき」, the next station, which you'll hear on every train. The on'yomi 「じ」 is in 「次回|じかい」, next time, and 「目次|もくじ」, table of contents. To recap: a pause before going on, meaning next.",
+    ja: "[次|つぎ|*]の[駅|えき]で[降|お]ります。", en: "I get off at the next station." },
+  "何": {
+    explain: "On the left is the person radical, 「亻|にんべん」. On the right is 「可|か」, which gives the sound. It began as a person carrying a load on their shoulder, then was borrowed for the question word. What. It only has kun'yomi: 「なに」, what, as in 「何か|なにか」, something, and 「なん」 before counters and some sounds: 「何時|なんじ」, what time, 「何人|なんにん」, how many people. To recap: a person with a question, meaning what.",
+    ja: "[何|なに|*]を[食|た]べますか。", en: "What will you eat?" }
 });

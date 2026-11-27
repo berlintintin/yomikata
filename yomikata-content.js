@@ -47,6 +47,116 @@
 window.YOMIKATA_CONTENT = (function () {
   const lessons = {};
 
+  /* ---------- Lesson 3 (読み書き編 pp.304–305) ---------- */
+  lessons[3] = [
+  {ch:'一',mn:'one',on:['いち','いっ'],kun:['ひと'],words:[['一','いち','one'],['一時','いち.じ',"one o'clock"],['一年生','いち.ねん.せい','first-year student'],['一分','いっ.ぷん','one minute'],['一つ','ひと.つ','one (thing)']]},
+  {ch:'二',mn:'two',on:['に'],kun:['ふた'],words:[['二','に','two'],['二時','に.じ',"two o'clock"],['二年生','に.ねん.せい','second-year student'],['二つ','ふた.つ','two (things)'],['二日間','ふつ.か.かん','two days',true]]},
+  {ch:'三',mn:'three',on:['さん'],kun:['みっ'],words:[['三','さん','three'],['三時','さん.じ',"three o'clock"],['三年生','さん.ねん.せい','third-year student'],['三月','さん.がつ','March'],['三つ','みっ.つ','three (things)']]},
+  {ch:'四',mn:'four',on:['し'],kun:['よん','よ','よっ'],words:[['四','よん','four'],['四時','よ.じ',"four o'clock"],['四年生','よ.ねん.せい','fourth-year student'],['四月','し.がつ','April'],['四つ','よっ.つ','four (things)']]},
+  {ch:'五',mn:'five',on:['ご'],kun:['いつ'],words:[['五','ご','five'],['五時','ご.じ',"five o'clock"],['五月','ご.がつ','May'],['五歳','ご.さい','five years old'],['五つ','いつ.つ','five (things)']]},
+  {ch:'六',mn:'six',on:['ろく','ろっ'],kun:['むっ'],words:[['六','ろく','six'],['六時','ろく.じ',"six o'clock"],['六百','ろっ.ぴゃく','six hundred'],['六分','ろっ.ぷん','six minutes'],['六つ','むっ.つ','six (things)']]},
+  {ch:'七',mn:'seven',on:['しち'],kun:['なな'],words:[['七','しち','seven'],['七時','しち.じ',"seven o'clock"],['七月','しち.がつ','July'],['七つ','なな.つ','seven (things)'],['七人','なな.にん','seven people']]},
+  {ch:'八',mn:'eight',on:['はち','はっ'],kun:['やっ'],words:[['八','はち','eight'],['八時','はち.じ',"eight o'clock"],['八百','はっ.ぴゃく','eight hundred'],['八歳','はっ.さい','eight years old'],['八つ','やっ.つ','eight (things)']]},
+  {ch:'九',mn:'nine',on:['きゅう','く'],kun:['ここの'],words:[['九','きゅう','nine'],['九時','く.じ',"nine o'clock"],['九月','く.がつ','September'],['九歳','きゅう.さい','nine years old'],['九つ','ここの.つ','nine (things)']]},
+  {ch:'十',mn:'ten',on:['じゅう','じゅっ','じっ'],kun:['とお'],words:[['十','じゅう','ten'],['十時','じゅう.じ',"ten o'clock"],['十月','じゅう.がつ','October'],['十歳','じゅっ.さい','ten years old']]},
+  {ch:'百',mn:'hundred',on:['ひゃく','びゃく','ぴゃく'],kun:[],words:[['百','ひゃく','hundred'],['三百','さん.びゃく','three hundred'],['六百','ろっ.ぴゃく','six hundred'],['八百','はっ.ぴゃく','eight hundred']]},
+  {ch:'千',mn:'thousand',on:['せん','ぜん'],kun:[],words:[['千','せん','thousand'],['三千','さん.ぜん','three thousand'],['八千','はっ.せん','eight thousand'],['千円','せん.えん','one thousand yen']]},
+  {ch:'万',mn:'ten thousand',on:['まん'],kun:[],words:[['一万','いち.まん','ten thousand'],['十万','じゅう.まん','one hundred thousand'],['百万','ひゃく.まん','one million']]},
+  {ch:'円',mn:'yen; circle',on:['えん'],kun:['まる'],words:[['百円','ひゃく.えん','one hundred yen'],['円','えん','yen; circle'],['円高','えん.だか','strong yen'],['円い','まる.い','round']]},
+  {ch:'時',mn:'time',on:['じ'],kun:['とき'],words:[['一時','いち.じ',"one o'clock"],['時間','じ.かん','time; hours'],['子どもの時','こ.ど.も.の.とき',"in one's childhood"],['時々','とき.どき','sometimes'],['時計','と.けい','watch; clock',true]]}
+  ];
+
+  /* ---------- Lesson 4 (読み書き編 pp.308–309) ---------- */
+  lessons[4] = [
+  {ch:'日',mn:'day; sun',on:['に','にち','にっ'],kun:['び','ひ','か'],words:[['日本','に.ほん','Japan'],['日曜日','にち.よう.び','Sunday'],['毎日','まい.にち','every day'],['母の日','はは.の.ひ',"Mother's Day"],['日記','にっ.き','diary'],['三日','みっ.か','three days']]},
+  {ch:'本',mn:'book; basis',on:['ほん'],kun:['もと'],words:[['本','ほん','book'],['日本','に.ほん','Japan'],['日本語','に.ほん.ご','Japanese language'],['山本さん','やま.もと.さ.ん','Mr./Ms. Yamamoto']]},
+  {ch:'人',mn:'person',on:['じん','にん'],kun:['ひと'],words:[['日本人','に.ほん.じん','Japanese people'],['一人で','ひと.り.で','alone',true],['この人','こ.の.ひと','this person'],['三人','さん.にん','three people']]},
+  {ch:'月',mn:'moon; month',on:['げつ','がつ'],kun:['つき'],words:[['月曜日','げつ.よう.び','Monday'],['一月','いち.がつ','January'],['月','つき','moon'],['今月','こん.げつ','this month'],['一か月','いっ.か.げつ','one month']]},
+  {ch:'火',mn:'fire',on:['か'],kun:['ひ','び'],words:[['火曜日','か.よう.び','Tuesday'],['火','ひ','fire'],['火山','か.ざん','volcano'],['花火','はな.び','fireworks'],['火星','か.せい','Mars']]},
+  {ch:'水',mn:'water',on:['すい'],kun:['みず'],words:[['水曜日','すい.よう.び','Wednesday'],['水','みず','water'],['水泳','すい.えい','swimming'],['水道','すい.どう','water supply'],['水着','みず.ぎ','swimwear']]},
+  {ch:'木',mn:'tree',on:['もく'],kun:['き'],words:[['木曜日','もく.よう.び','Thursday'],['木','き','tree'],['木村さん','き.むら.さ.ん','Mr./Ms. Kimura']]},
+  {ch:'金',mn:'gold; money',on:['きん'],kun:['かね'],words:[['金曜日','きん.よう.び','Friday'],['お金','お.かね','money'],['料金','りょう.きん','charge; fee'],['お金持ち','お.かね.も.ち','rich person']]},
+  {ch:'土',mn:'soil',on:['ど','と'],kun:['つち'],words:[['土曜日','ど.よう.び','Saturday'],['土','つち','soil'],['土地','と.ち','land'],['粘土','ねん.ど','clay']]},
+  {ch:'曜',mn:'weekday',on:['よう'],kun:[],words:[['日曜日','にち.よう.び','Sunday'],['曜日','よう.び','day of the week']]},
+  {ch:'上',mn:'up',on:['じょう'],kun:['うえ','のぼ'],words:[['上','うえ','top; above'],['上手な','じょう.ず.な','good at'],['屋上','おく.じょう','rooftop'],['上る','のぼ.る','to go up']]},
+  {ch:'下',mn:'down',on:['か'],kun:['した','くだ'],words:[['下','した','under'],['地下鉄','ち.か.てつ','subway'],['下手な','へ.た.な','poor at',true],['下さい','くだ.さ.い','please give/do …']]},
+  {ch:'中',mn:'middle',on:['ちゅう','じゅう'],kun:['なか'],words:[['中','なか','inside'],['中国','ちゅう.ごく','China'],['中学','ちゅう.がく','junior high school'],['一年中','いち.ねん.じゅう','all year around']]},
+  {ch:'半',mn:'half',on:['はん'],kun:[],words:[['三時半','さん.じ.はん','half past three'],['半分','はん.ぶん','half'],['半年','はん.とし','half a year'],['半額','はん.がく','half price']]}
+  ];
+
+  /* ---------- Lesson 5 (読み書き編 pp.312–313) ---------- */
+  lessons[5] = [
+  {ch:'山',mn:'mountain',on:['さん'],kun:['やま'],words:[['山','やま','mountain'],['山川さん','やま.かわ.さ.ん','Mr./Ms. Yamakawa'],['富士山','ふ.じ.さん','Mt. Fuji']]},
+  {ch:'川',mn:'river',on:[],kun:['かわ','がわ'],words:[['川','かわ','river'],['山川さん','やま.かわ.さ.ん','Mr./Ms. Yamakawa'],['小川さん','お.がわ.さ.ん','Mr./Ms. Ogawa']]},
+  {ch:'元',mn:'origin',on:['げん','がん'],kun:['もと'],words:[['元気な','げん.き.な','fine; energetic'],['元日','がん.じつ','the first day of the year'],['地元','じ.もと','local']]},
+  {ch:'気',mn:'spirit',on:['き'],kun:[],words:[['元気な','げん.き.な','fine; energetic'],['天気','てん.き','weather'],['電気','でん.き','electricity; light'],['気持ち','き.も.ち','feeling'],['人気','にん.き','popularity']]},
+  {ch:'天',mn:'heaven',on:['てん'],kun:[],words:[['天気','てん.き','weather'],['天国','てん.ごく','heaven'],['天皇','てん.のう','Japanese emperor'],['天才','てん.さい','genius']]},
+  {ch:'私',mn:'I; private',on:['し'],kun:['わたし'],words:[['私','わたし','I'],['私立大学','し.りつ.だい.がく','private university']]},
+  {ch:'今',mn:'now',on:['こん'],kun:['いま'],words:[['今','いま','now'],['今日','きょ.う','today',true],['今晩','こん.ばん','tonight'],['今月','こん.げつ','this month']]},
+  {ch:'田',mn:'rice field',on:[],kun:['た','だ'],words:[['田中さん','た.なか.さ.ん','Mr./Ms. Tanaka'],['山田さん','やま.だ.さ.ん','Mr./Ms. Yamada'],['田んぼ','た.ん.ぼ','rice field']]},
+  {ch:'女',mn:'woman',on:['じょ'],kun:['おんな'],words:[['女の人','おんな.の.ひと','woman'],['女性','じょ.せい','woman'],['女の子','おんな.の.こ','girl'],['長女','ちょう.じょ','the eldest daughter']]},
+  {ch:'男',mn:'man',on:['だん'],kun:['おとこ'],words:[['男の人','おとこ.の.ひと','man'],['男性','だん.せい','man'],['男の子','おとこ.の.こ','boy'],['男子学生','だん.し.がく.せい','male student']]},
+  {ch:'見',mn:'to see',on:['けん'],kun:['み'],words:[['見る','み.る','to see'],['見物','けん.ぶつ','sightseeing'],['花見','はな.み','flower viewing'],['意見','い.けん','opinion']]},
+  {ch:'行',mn:'to go',on:['こう','ぎょう'],kun:['い'],words:[['行く','い.く','to go'],['銀行','ぎん.こう','bank'],['一行目','いち.ぎょう.め','first line'],['旅行','りょ.こう','travel']]},
+  {ch:'食',mn:'to eat',on:['しょく'],kun:['た'],words:[['食べる','た.べ.る','to eat'],['食べ物','た.べ.もの','food'],['食堂','しょく.どう','cafeteria'],['食事','しょく.じ','meal'],['朝食','ちょう.しょく','breakfast']]},
+  {ch:'飲',mn:'to drink',on:['いん'],kun:['の'],words:[['飲む','の.む','to drink'],['飲み物','の.み.もの','drink'],['飲酒運転','いん.しゅ.うん.てん','drunken driving']]}
+  ];
+
+  /* ---------- Lesson 6 (読み書き編 pp.318–319) ---------- */
+  lessons[6] = [
+  {ch:'東',mn:'east',on:['とう'],kun:['ひがし'],words:[['東','ひがし','east'],['東口','ひがし.ぐち','east exit'],['東京','とう.きょう','Tokyo'],['関東','かん.とう','Kanto area'],['東洋','とう.よう','the East']]},
+  {ch:'西',mn:'west',on:['せい','さい'],kun:['にし'],words:[['西','にし','west'],['西口','にし.ぐち','west exit'],['北西','ほく.せい','northwest'],['関西','かん.さい','Kansai area'],['西洋','せい.よう','the West']]},
+  {ch:'南',mn:'south',on:['なん'],kun:['みなみ'],words:[['南','みなみ','south'],['南口','みなみ.ぐち','south exit'],['南東','なん.とう','southeast'],['南極','なん.きょく','Antarctica']]},
+  {ch:'北',mn:'north',on:['ほく','ほっ'],kun:['きた'],words:[['北','きた','north'],['北口','きた.ぐち','north exit'],['東北','とう.ほく','Tohoku area'],['北極','ほっ.きょく','North Pole'],['北海道','ほっ.かい.どう','Hokkaido']]},
+  {ch:'口',mn:'mouth',on:['こう'],kun:['ぐち','くち'],words:[['北口','きた.ぐち','north exit'],['口','くち','mouth'],['人口','じん.こう','population'],['入り口','い.り.ぐち','entrance']]},
+  {ch:'出',mn:'to exit',on:['しゅっ','しゅつ'],kun:['で','だ'],words:[['出る','で.る','to exit'],['出口','で.ぐち','exit'],['出かける','で.か.け.る','to go out'],['出す','だ.す','to take something out'],['出席','しゅっ.せき','attendance'],['輸出','ゆ.しゅつ','export']]},
+  {ch:'右',mn:'right',on:['う','ゆう'],kun:['みぎ'],words:[['右','みぎ','right'],['右折','う.せつ','right turn'],['左右','さ.ゆう','right and left'],['右手','みぎ.て','right hand'],['右側','みぎ.がわ','right side']]},
+  {ch:'左',mn:'left',on:['さ'],kun:['ひだり'],words:[['左','ひだり','left'],['左折','さ.せつ','left turn'],['左手','ひだり.て','left hand'],['左利き','ひだり.き.き','left-handed']]},
+  {ch:'分',mn:'minute; to divide',on:['ふん','ぷん','ぶん'],kun:['わ'],words:[['五分','ご.ふん','five minutes'],['十分','じゅっ.ぷん','ten minutes'],['自分','じ.ぶん','oneself'],['分ける','わ.け.る','to divide']]},
+  {ch:'先',mn:'ahead',on:['せん'],kun:['さき'],words:[['先生','せん.せい','teacher'],['先週','せん.しゅう','last week'],['先に','さき.に','ahead'],['先月','せん.げつ','last month'],['先輩','せん.ぱい','senior member']]},
+  {ch:'生',mn:'birth',on:['せい','しょう'],kun:['う'],words:[['学生','がく.せい','student'],['先生','せん.せい','teacher'],['生まれる','う.ま.れ.る','to be born']]},
+  {ch:'大',mn:'big',on:['だい','たい'],kun:['おお'],words:[['大学生','だい.がく.せい','college student'],['大きい','おお.き.い','big'],['大変な','たい.へん.な','tough'],['大人','おと.な','adult',true],['大使館','たい.し.かん','embassy']]},
+  {ch:'学',mn:'learning',on:['がく','がっ'],kun:['まな'],words:[['大学','だい.がく','university'],['学生','がく.せい','student'],['学校','がっ.こう','school'],['学ぶ','まな.ぶ','to study'],['学部','がく.ぶ','department; faculty']]},
+  {ch:'外',mn:'outside',on:['がい'],kun:['そと'],words:[['外国','がい.こく','foreign country'],['外国人','がい.こく.じん','foreigner'],['外','そと','outside'],['海外','かい.がい','overseas']]},
+  {ch:'国',mn:'country',on:['こく','ごく','こっ'],kun:['くに'],words:[['外国','がい.こく','foreign country'],['中国','ちゅう.ごく','China'],['国','くに','country'],['韓国','かん.こく','South Korea'],['国会','こっ.かい','the Diet']]}
+  ];
+
+  /* ---------- Lesson 7 (読み書き編 pp.324–325) ---------- */
+  lessons[7] = [
+  {ch:'京',mn:'capital',on:['きょう'],kun:[],words:[['東京','とう.きょう','Tokyo'],['京子','きょう.こ','Kyoko'],['京都','きょう.と','Kyoto'],['上京する','じょう.きょう.す.る','to go to the capital']]},
+  {ch:'子',mn:'child',on:['し'],kun:['こ'],words:[['子ども','こ.ど.も','child'],['京子','きょう.こ','Kyoko'],['女の子','おんな.の.こ','girl'],['男の子','おとこ.の.こ','boy'],['女子学生','じょ.し.がく.せい','female student']]},
+  {ch:'小',mn:'small',on:['しょう'],kun:['ちい'],words:[['小さい','ちい.さ.い','small'],['小学校','しょう.がっ.こう','elementary school'],['小学生','しょう.がく.せい','elementary school student']]},
+  {ch:'会',mn:'to meet',on:['かい'],kun:['あ'],words:[['会う','あ.う','to meet'],['会社','かい.しゃ','company'],['会社員','かい.しゃ.いん','office worker'],['会議','かい.ぎ','meeting'],['教会','きょう.かい','church']]},
+  {ch:'社',mn:'company',on:['しゃ','じゃ'],kun:[],words:[['会社','かい.しゃ','company'],['神社','じん.じゃ','shrine'],['社会','しゃ.かい','society'],['入社','にゅう.しゃ','entry to a company']]},
+  {ch:'父',mn:'father',on:['ふ'],kun:['ちち','とう'],words:[['父','ちち','father'],['お父さん','お.とう.さ.ん','father'],['父母','ふ.ぼ','father and mother'],['祖父','そ.ふ','grandfather']]},
+  {ch:'母',mn:'mother',on:['ぼ'],kun:['はは','かあ'],words:[['母','はは','mother'],['お母さん','お.かあ.さ.ん','mother'],['母語','ぼ.ご','mother tongue'],['祖母','そ.ぼ','grandmother']]},
+  {ch:'高',mn:'high',on:['こう'],kun:['たか'],words:[['高い','たか.い','expensive; high'],['高校','こう.こう','high school'],['高校生','こう.こう.せい','high school student'],['最高','さい.こう','the best']]},
+  {ch:'校',mn:'school',on:['こう'],kun:[],words:[['学校','がっ.こう','school'],['高校','こう.こう','high school'],['高校生','こう.こう.せい','high school student'],['中学校','ちゅう.がっ.こう','junior high school']]},
+  {ch:'毎',mn:'every',on:['まい'],kun:[],words:[['毎日','まい.にち','every day'],['毎週','まい.しゅう','every week'],['毎晩','まい.ばん','every night'],['毎年','まい.ねん','every year']]},
+  {ch:'語',mn:'word',on:['ご'],kun:[],words:[['日本語','に.ほん.ご','Japanese language'],['英語','えい.ご','English language'],['敬語','けい.ご','honorific expressions']]},
+  {ch:'文',mn:'sentence',on:['ぶん'],kun:[],words:[['文学','ぶん.がく','literature'],['作文','さく.ぶん','composition'],['文化','ぶん.か','culture'],['文法','ぶん.ぽう','grammar']]},
+  {ch:'帰',mn:'to return',on:['き'],kun:['かえ'],words:[['帰る','かえ.る','to return'],['帰国','き.こく','going home (to one\'s country)'],['帰宅','き.たく','returning home'],['帰り','かえ.り','return']]},
+  {ch:'入',mn:'to enter',on:['にゅう'],kun:['はい','い','いり'],words:[['入る','はい.る','to enter'],['入り口','い.り.ぐち','entrance'],['入れる','い.れ.る','to put something in'],['輸入','ゆ.にゅう','import']]}
+  ];
+
+  /* ---------- Lesson 8 (読み書き編 pp.329–330) ---------- */
+  lessons[8] = [
+  {ch:'員',mn:'member',on:['いん'],kun:[],words:[['会社員','かい.しゃ.いん','office worker'],['店員','てん.いん','store clerk'],['駅員','えき.いん','station attendant'],['会員','かい.いん','member']]},
+  {ch:'新',mn:'new',on:['しん'],kun:['あたら'],words:[['新しい','あたら.し.い','new'],['新聞','しん.ぶん','newspaper'],['新幹線','しん.かん.せん','bullet train'],['新鮮な','しん.せん.な','fresh']]},
+  {ch:'聞',mn:'to listen',on:['ぶん'],kun:['き'],words:[['聞く','き.く','to listen'],['新聞','しん.ぶん','newspaper'],['聞こえる','き.こ.え.る','can be heard']]},
+  {ch:'作',mn:'to make',on:['さく'],kun:['つく'],words:[['作る','つく.る','to make'],['作文','さく.ぶん','composition'],['作品','さく.ひん','work (of art, etc.)'],['作者','さく.しゃ','author']]},
+  {ch:'仕',mn:'to serve',on:['し'],kun:['つか'],words:[['仕事','し.ごと','job'],['仕返し','し.かえ.し','revenge'],['仕える','つか.え.る','to serve; to work under']]},
+  {ch:'事',mn:'thing',on:['じ'],kun:['ごと','こと'],words:[['仕事','し.ごと','job'],['事','こと','thing'],['火事','か.じ','fire'],['食事','しょく.じ','meal'],['返事','へん.じ','reply']]},
+  {ch:'電',mn:'electricity',on:['でん'],kun:[],words:[['電車','でん.しゃ','train'],['電気','でん.き','electricity; light'],['電話','でん.わ','telephone'],['電池','でん.ち','battery']]},
+  {ch:'車',mn:'car',on:['しゃ'],kun:['くるま'],words:[['車','くるま','car'],['電車','でん.しゃ','train'],['自転車','じ.てん.しゃ','bicycle'],['車いす','くるま.い.す','wheelchair'],['駐車場','ちゅう.しゃ.じょう','parking lot']]},
+  {ch:'休',mn:'to rest',on:['きゅう'],kun:['やす'],words:[['休む','やす.む','to be absent; to rest'],['休み','やす.み','holiday; absence'],['休日','きゅう.じつ','holiday']]},
+  {ch:'言',mn:'to say',on:['げん'],kun:['い','こと'],words:[['言う','い.う','to say'],['言語学','げん.ご.がく','linguistics'],['方言','ほう.げん','dialect'],['言葉','こと.ば','word; language']]},
+  {ch:'読',mn:'to read',on:['どく'],kun:['よ'],words:[['読む','よ.む','to read'],['読書','どく.しょ','reading books'],['読み物','よ.み.もの','reading matter']]},
+  {ch:'思',mn:'to think',on:['し'],kun:['おも'],words:[['思う','おも.う','to think'],['不思議な','ふ.し.ぎ.な','mysterious'],['思い出す','おも.い.だ.す','to recall; to remember']]},
+  {ch:'次',mn:'next',on:['じ'],kun:['つぎ'],words:[['次','つぎ','next'],['次女','じ.じょ','second daughter'],['目次','もく.じ','table of contents'],['次回','じ.かい','next time']]},
+  {ch:'何',mn:'what',on:[],kun:['なに','なん'],words:[['何','なに','what'],['何時','なん.じ','what time'],['何人','なん.にん','how many people'],['何か','なに.か','something']]}
+  ];
+
   lessons[9] = [
  {ch:'午',mn:'noon',on:['ご'],kun:[],words:[['午前','ご.ぜん','A.M.'],['午後','ご.ご','P.M.; in the afternoon'],['午前中','ご.ぜん.ちゅう','in the morning'],['正午','しょう.ご','noon']]},
  {ch:'後',mn:'after',on:['ご'],kun:['あと','うし'],words:[['午後','ご.ご','P.M.; in the afternoon'],['後で','あと.で','later'],['後ろ','うし.ろ','back; behind'],['最後に','さい.ご.に','lastly']]},
@@ -288,7 +398,7 @@ window.YOMIKATA_CONTENT = (function () {
 };
 
   /* Words highlighted in the textbook. Editable in-app: tap ☆ in a kanji's word list. */
-  const highlighted = ['分野','小野さん','習う','主に','ご主人','二十五歳','集める','発表する','作品','写真','写す','文字','活動','生活','結婚する','歩く','目的','目','洋服','服','食堂','力仕事','授業','試験','貸す','図書館','地図','旅館','映画館','終わる','宿題','春','秋','冬','冬休み','花','不安な','姉','お姉さん','兄','お兄さん','漢字','卒業する','工学','研究','質問','多い','食べ物','飲み物','物','買い物','鳥','料理','特に','安い','ご飯','朝ご飯','昼ご飯','肉','悪い','気分が悪い','体','同じ','着く','着る','着物','水着','空港','昼','海',
+  const highlighted = ['一','一時','二','二時','三','三時','四','四時','五','五時','六','六時','六百','七','七時','八','八時','八百','九','九時','十','十時','百','三百','千','三千','八千','千円','一万','十万','百万','百円','日本','日曜日','本','日本人','一人で','この人','月曜日','一月','火曜日','水曜日','水','木曜日','金曜日','土曜日','上','下','中','三時半','山','山川さん','川','元気な','天気','私','今','今日','田中さん','山田さん','女の人','男の人','見る','行く','食べる','飲む','東','東口','西','西口','南','南口','北','北口','出る','出口','出かける','右','左','五分','十分','先生','学生','大学生','大きい','大学','外国','外国人','中国','東京','京子','子ども','小さい','会う','会社','父','お父さん','母','お母さん','高い','高校','高校生','学校','毎日','日本語','文学','帰る','入る','会社員','新しい','新聞','聞く','作る','仕事','電車','電気','車','休む','休み','言う','読む','思う','次','何','何時','何人','分野','小野さん','習う','主に','ご主人','二十五歳','集める','発表する','作品','写真','写す','文字','活動','生活','結婚する','歩く','目的','目','洋服','服','食堂','力仕事','授業','試験','貸す','図書館','地図','旅館','映画館','終わる','宿題','春','秋','冬','冬休み','花','不安な','姉','お姉さん','兄','お兄さん','漢字','卒業する','工学','研究','質問','多い','食べ物','飲み物','物','買い物','鳥','料理','特に','安い','ご飯','朝ご飯','昼ご飯','肉','悪い','気分が悪い','体','同じ','着く','着る','着物','水着','空港','昼','海',
  '彼','彼女','時代','留学生','留学する','家族','父親','親切な','切る','英語','店','去年','急に','急ぐ','乗る','本当に','音楽','楽しい','医者',
  /* L9 */ '午前','午後','午前中','正午','後で','後ろ','最後に','前','名前','有名な','白い','白','白鳥','雨','書く','辞書','教科書','図書館','友だち','親友','友人','時間','二時間','間','人間','一週間','家','家族','作家','家事','話す','話','電話','会話','少し','少ない','少々','少女','少年','古い','中古','古代','知る','知人','知り合い','来る','来ます','来ない','来週','来日',
  /* L10 */ '住む','住所','お正月','正しい','三年生','来年','今年','年','売る','売店','買う','買い物','売買','町','長い','道','雪','新雪','雪だるま','立つ','自分','自動車','自転車','自由','夜','夜中','今夜','夜明け','朝','朝食','毎朝','持つ','持ってくる','気持ち',
